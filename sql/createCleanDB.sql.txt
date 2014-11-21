@@ -88,4 +88,4 @@ CREATE TABLE DoctorStaffAccess (
      FOREIGN KEY (StaffUsername) REFERENCES Staff(StaffUsername)
 );
 
-select  from information_schema.COLUMNS where TABLE_SCHEMA='ece356_22_2014';
+select * from information_schema.COLUMNS where TABLE_SCHEMA='ece356_22_2014';
