@@ -27,7 +27,7 @@ public class UserDBAO {
             con.close();
             return returnval;
         }
-        return "";
+        return "error";
     }
    
 }
