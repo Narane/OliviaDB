@@ -24,6 +24,6 @@ public  class UserFinder {
             return new UserStaff();
         }
  
-        return null;
+        return new UserError();
     }
 }
