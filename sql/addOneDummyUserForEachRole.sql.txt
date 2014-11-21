@@ -1,0 +1,68 @@
+CREATE PROCEDURE `addOneDummyUserForEachRole`()
+BEGIN
+INSERT INTO `ece356_22_2014`.`User`
+(`Username`,
+`FirstName`,
+`LastName`,
+`Password`,
+`Role`)
+VALUES
+('h86kim',
+'Heesang',
+'Kim',
+'hkim',
+'patient');
+
+INSERT INTO `ece356_22_2014`.`User`
+(`Username`,
+`FirstName`,
+`LastName`,
+`Password`,
+`Role`)
+VALUES
+('kmyin',
+'Kwang-Man',
+'Yin',
+'kmyin',
+'doctor');
+
+INSERT INTO `ece356_22_2014`.`User`
+(`Username`,
+`FirstName`,
+`LastName`,
+`Password`,
+`Role`)
+VALUES
+('bzhong',
+'Botian',
+'Zhong',
+'bzhong',
+'staff');
+
+INSERT INTO `ece356_22_2014`.`User`
+(`Username`,
+`FirstName`,
+`LastName`,
+`Password`,
+`Role`)
+VALUES
+('bjleskow',
+'Blaise',
+'Leskowsky',
+'bjleskow',
+'legal');
+
+INSERT INTO `ece356_22_2014`.`User`
+(`Username`,
+`FirstName`,
+`LastName`,
+`Password`,
+`Role`)
+VALUES
+('a49chen',
+'Aaron',
+'Chen',
+'a49chen',
+'finance');
+
+END

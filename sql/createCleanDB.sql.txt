@@ -1,0 +1,91 @@
+# SQL script to create clean database
+CREATE DATABASE IF NOT EXISTS ece356_22_2014;
+Use ece356_22_2014;
+
+DROP TABLE IF EXISTS
+   DoctorStaffAccess, Appointment, Visits, DoctorPatientAccess, Costs, Staff, Patient, Doctor, User CASCADE;
+
+CREATE TABLE User (
+     Username varchar(30),     
+     FirstName varchar(30),     
+     LastName varchar(30),     
+     Password varchar(30),     
+     Role varchar(10),     
+     PRIMARY KEY (Username)     
+);
+
+CREATE TABLE Doctor ( 
+	DoctorUsername varchar(30), 
+    PRIMARY KEY (DoctorUsername)
+);
+
+CREATE TABLE Patient ( 
+	PatientUsername varchar(30), 
+	DoctorUsername varchar(30), 
+    CellNumber NUMERIC(10,0), 
+    HomeNumber NUMERIC(10,0), 
+    PatientNumber integer, 
+    Address varchar(100), 
+    SIN NUMERIC(9,0), 
+    PRIMARY KEY (PatientUsername), 
+    FOREIGN KEY (DoctorUsername) REFERENCES Doctor( DoctorUsername), 
+    check(CellNumber  -1 AND HomeNumber  -1)
+);
+
+CREATE TABLE Staff ( 
+	StaffUsername varchar(30),      
+    PRIMARY KEY (StaffUsername)
+);
+
+CREATE TABLE Costs (
+     ProcedureName varchar(100),
+     Cost NUMERIC(10, 2),
+     PRIMARY KEY (ProcedureName)
+);
+
+CREATE TABLE DoctorPatientAccess (     
+	PatientUsername varchar(30),      
+    DoctorUsername varchar(30),      
+    FOREIGN KEY (DoctorUsername) REFERENCES Doctor(DoctorUsername),     
+    FOREIGN KEY (PatientUsername) REFERENCES Patient(PatientUsername),     
+    PRIMARY KEY (PatientUsername, DoctorUsername)     
+); 
+
+CREATE TABLE Visits (     
+	PatientUsername varchar(30),      
+    StartTime datetime,  
+    ProcedureName varchar(100),      
+    DoctorUsername varchar(30),      
+    EndTime datetime,     
+    CurrentStatus varchar(60),      
+    PrescriptionStart datetime,      
+    PrescriptionEnd datetime,      
+    Diagnosis varchar(100),     
+    Prescription varchar(100),      
+    Comments varchar(100),      
+    ProcedureTime datetime,      
+    PRIMARY KEY (PatientUsername, StartTime),      
+    FOREIGN KEY (PatientUsername) REFERENCES Patient(PatientUserName),     
+    FOREIGN KEY (ProcedureName) REFERENCES Costs(ProcedureName),      
+    FOREIGN KEY (DoctorUsername) REFERENCES Doctor(DoctorUserName)     
+);
+  
+CREATE TABLE Appointment (     
+	DoctorUsername varchar(30),     
+    PatientUsername varchar(30),     
+    StartTime datetime,     
+    EndTime datetime,     
+    PRIMARY Key (DoctorUsername, StartTime),     
+    FOREIGN KEY (DoctorUsername) REFERENCES Doctor(DoctorUsername),     
+    FOREIGN KEY (PatientUsername) REFERENCES Patient(PatientUsername)     
+);  
+  
+CREATE TABLE DoctorStaffAccess (
+     DoctorUsername varchar(30),
+     StaffUsername varchar(30),
+     PRIMARY KEY (DoctorUsername, StaffUsername),
+     FOREIGN KEY (DoctorUsername) REFERENCES Doctor(DoctorUsername),
+     FOREIGN KEY (StaffUsername) REFERENCES Staff(StaffUsername)
+);
+
+select * from information_schema.COLUMNS where TABLE_SCHEMA='ece356_22_2014';
