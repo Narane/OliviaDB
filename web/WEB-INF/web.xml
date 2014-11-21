@@ -1,12 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
-     <servlet>
+    <servlet>
         <servlet-name>LoginServlet</servlet-name>
         <servlet-class>ece356.LoginServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>MenuServlet</servlet-name>
         <servlet-class>ece356.MenuServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdatePersonalInfoServlet</servlet-name>
+        <servlet-class>ece356.UpdatePersonalInfoServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>VisitationServlet</servlet-name>
+        <servlet-class>ece356.VisitationServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AppointmentServlet</servlet-name>
+        <servlet-class>ece356.AppointmentServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UsersServlet</servlet-name>
+        <servlet-class>ece356.UsersServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PatientAssignmentServlet</servlet-name>
+        <servlet-class>ece356.PatientAssignmentServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AccessRightsServlet</servlet-name>
+        <servlet-class>ece356.AccessRightsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>FinanceServlet</servlet-name>
+        <servlet-class>ece356.FinanceServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
@@ -16,9 +44,35 @@
         <servlet-name>MenuServlet</servlet-name>
         <url-pattern>/MenuServlet</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdatePersonalInfoServlet</servlet-name>
+        <url-pattern>/UpdatePersonalInfoServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VisitationServlet</servlet-name>
+        <url-pattern>/VisitationServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AppointmentServlet</servlet-name>
+        <url-pattern>/AppointmentServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UsersServlet</servlet-name>
+        <url-pattern>/UsersServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PatientAssignmentServlet</servlet-name>
+        <url-pattern>/PatientAssignmentServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AccessRightsServlet</servlet-name>
+        <url-pattern>/AccessRightsServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FinanceServlet</servlet-name>
+        <url-pattern>/FinanceServlet</url-pattern>
+    </servlet-mapping>
     <session-config>
-        <session-timeout>
-            20
-        </session-timeout>
+        <session-timeout>20</session-timeout>
     </session-config>
 </web-app>
