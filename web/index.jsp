@@ -9,10 +9,10 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Hello World Title</title>
+        <title>St. Olivia Hospital</title>
     </head>
     <body>
-        <h1>Some Hospital Website Page</h1>
+        <h1>PageSt. Olivia Hospital</h1>
         <ul>
             <li><a href="LoginServlet">Staff Login Button</a></li>
         </ul>
