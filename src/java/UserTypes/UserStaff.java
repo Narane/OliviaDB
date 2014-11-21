@@ -5,14 +5,14 @@ package UserTypes;
  * @author Heesang
  * get back to work
  */
-public class UserDoctor extends BaseUser{
+public class UserStaff extends BaseUser{
     
-    public UserDoctor(){
+    public UserStaff(){
     }
     
     @Override
     public String GetTestValue(){
-        return "DOCTORS WITHOUT BORDERS";
+        return "STAFF OF POWER";
     }
     
 }
