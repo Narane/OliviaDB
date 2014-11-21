@@ -12,7 +12,7 @@
         <title>St. Olivia Hospital</title>
     </head>
     <body>
-        <h1>PageSt. Olivia Hospital</h1>
+        <h1>St. Olivia Hospital</h1>
         <ul>
             <li><a href="LoginServlet">Staff Login Button</a></li>
         </ul>
