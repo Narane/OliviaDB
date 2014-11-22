@@ -7,6 +7,7 @@ public class UserDBAO {
     //public static final String url = "jdbc:mysql://eceweb.uwaterloo.ca:3306/";
     public static final String user = "user_h86kim";
     public static final String pwd = "user_h86kim";
+    public static final String schema = "ece356_22_2014";
     
     public static String getRole(String username)
         throws ClassNotFoundException, SQLException {
@@ -16,8 +17,7 @@ public class UserDBAO {
         con = DriverManager.getConnection(url, user, pwd);
         stmt = con.createStatement();
         
-        String query = "select role " +
-                   "from ece356_22_2014.User " +
+        String query = "select role from" + schema +".User " +
                    "where Username = \"" + username + "\"";
         
         ResultSet rs = stmt.executeQuery(query);
