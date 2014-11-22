@@ -3,10 +3,15 @@ import java.io.*;
 import java.util.Date;
 import javax.servlet.*;
 import javax.servlet.http.*;
-import java.sql.SQLException;
 
-public class MenuServlet extends HttpServlet {
-    public void doPost(HttpServletRequest req, HttpServletResponse res)
+public class MenuServlet extends SecureHTTPServlet {
+    
+    //This is what you need to edit to do stuff
+    @Override
+    public void innerFunction(
+            HttpServletRequest req, 
+            HttpServletResponse res, 
+            ServletOutputStream out)
         throws ServletException,  IOException {
         
         HttpSession session = req.getSession();
@@ -15,24 +20,6 @@ public class MenuServlet extends HttpServlet {
         Date lastVisit = (Date) session.getAttribute("lastVisit");;
         String role = "SOMETHING BROKE PLEASE FIX";
         
-        try{
-            if(!UserDBAO.securityCheck(req, res)){
-                res.sendRedirect("LoginServlet");
-                return;
-            }
-            role = UserDBAO.getRole(username);
-        }   
-        catch(Exception e){
-            req.setAttribute("exception", e);
-            // Set the name of jsp to be displayed if connection fails
-            String url = "/error.jsp";
-            getServletContext().getRequestDispatcher(url).forward(req, res);
-        }
-
-        res.setContentType("text/html");
-        ServletOutputStream out = res.getOutputStream();
-        out.println(MarkupHelper.HeadOpen("Main Menu", role));
-        
         if(loggedIn.booleanValue() == true) {
             out.println("<p>Welcome back, " + username + "</p>");
             out.println("<p>You belong to group: " + role + "</p>");
@@ -40,12 +27,5 @@ public class MenuServlet extends HttpServlet {
             lastVisit = new Date();
             session.setAttribute("lastVisit", lastVisit);
         }
-        
-        out.println(MarkupHelper.HeadClose());
-    }
-
-    public void doGet(HttpServletRequest req, HttpServletResponse res)
-        throws ServletException, IOException {
-        doPost(req, res);
     }
 }

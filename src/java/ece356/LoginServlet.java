@@ -46,8 +46,13 @@ public class LoginServlet extends HttpServlet {
                 out.println("</form>");
                 
                 Boolean failedLogin = (Boolean) session.getAttribute("failedLogin");
+                Boolean sessionExpired = (Boolean) session.getAttribute("sessionExpired");
                 if (failedLogin.booleanValue() == true){
                     out.println("<p><font color=\"red\">Invalid login information</font>");
+                }
+                else if(sessionExpired.booleanValue() == true){
+                    out.println("<p><font color=\"red\">Session has expired</font>");
+                    session.setAttribute("sessionExpired", new Boolean(false));
                 }
                 
             } else {
