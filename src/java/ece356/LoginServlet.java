@@ -14,6 +14,7 @@ public class LoginServlet extends HttpServlet {
         if (loggedIn == null) {
             loggedIn = new Boolean(false);
         }
+        
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         Date lastVisit;
@@ -22,6 +23,7 @@ public class LoginServlet extends HttpServlet {
         out.println("<html>");
         out.println("<body>");
         out.print("<head><title>Login Page</title>");
+        
         if (loggedIn.booleanValue() == true) {
             // user is already logged in
             res.sendRedirect("MenuServlet");
@@ -42,15 +44,36 @@ public class LoginServlet extends HttpServlet {
                     "value=\"\" SIZE=30>");
                 out.println("<p><input type=\"submit\" value=\"log in\">");
                 out.println("</form>");
+                
+                Boolean failedLogin = (Boolean) session.getAttribute("failedLogin");
+                if (failedLogin.booleanValue() == true){
+                    out.println("<p><font color=\"red\">Invalid login information</font>");
+                }
+                
             } else {
                 // user has submitted the log in form
                 out.println("Logging in " + username);
                 session.setAttribute("username", username);
                 session.setAttribute("password", password);
-                session.setAttribute("loggedIn", new Boolean(true));
-                session.setAttribute("lastVisit", new Date());
-                out.println("<a href=\"MenuServlet\">Reload Page</a>");
-                res.sendRedirect("MenuServlet");
+                try{
+                    if(UserDBAO.securityCheck(req, res)){
+                        session.setAttribute("loggedIn", new Boolean(true));
+                        session.setAttribute("lastVisit", new Date());
+                        session.setAttribute("failedLogin", new Boolean(false));
+                        out.println("<a href=\"MenuServlet\">Reload Page</a>");
+                        res.sendRedirect("MenuServlet");
+                    }
+                    else{
+                        session.setAttribute("failedLogin", new Boolean(true));
+                        res.sendRedirect("LoginServlet");
+                    }
+                }
+                catch(Exception e){
+                    req.setAttribute("exception", e);
+                    // Set the name of jsp to be displayed if connection fails
+                    String url = "/error.jsp";
+                    getServletContext().getRequestDispatcher(url).forward(req, res);
+                }
             }
             out.println("</body>");
             out.println("</html>");

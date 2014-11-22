@@ -5,7 +5,6 @@
  */
 package ece356;
 
-import UserTypes.UserFinder;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.ResultSet;

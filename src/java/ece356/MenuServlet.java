@@ -3,7 +3,6 @@ import java.io.*;
 import java.util.Date;
 import javax.servlet.*;
 import javax.servlet.http.*;
-import UserTypes.*;
 import java.sql.SQLException;
 
 public class MenuServlet extends HttpServlet {
@@ -23,25 +22,14 @@ public class MenuServlet extends HttpServlet {
         // of this function; that is NOT POSSIBLE
         String role = "";
         try{
-            role = UserDBAO.getRole(username);
+            if(UserDBAO.securityCheck(req, res)){
+                role = UserDBAO.getRole(username);
+            };
         } catch(Exception e){
             req.setAttribute("exception", e);
             // Set the name of jsp to be displayed if connection fails
             String url = "/error.jsp";
             getServletContext().getRequestDispatcher(url).forward(req, res);
-        }
-        
-        //Example on calling a specific user function based on role passed in.
-        // UserFinder returns a particular user from UserTypes, then any
-        //  functions can be called upon that returned user type
-        String testText = UserFinder.GetUser(role).GetTestValue();
-        
-        if (loggedIn == null) {
-            loggedIn = new Boolean(false);
-        }
-        
-        if(loggedIn == false){
-            res.sendRedirect("LoginServlet");
         }
 
         res.setContentType("text/html");
@@ -54,9 +42,6 @@ public class MenuServlet extends HttpServlet {
             out.println("<p>You last visited on " + lastVisit);
             lastVisit = new Date();
             session.setAttribute("lastVisit", lastVisit);
-            
-            ///////////////////////////whoa
-            out.println("<p>Your message of the day: " + testText);
         }
         
         out.println(MarkupHelper.HeadClose());

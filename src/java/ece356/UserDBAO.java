@@ -1,6 +1,10 @@
 package ece356;
 
+import java.io.IOException;
 import java.sql.*;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class UserDBAO {
     public static final String url = "jdbc:mysql://eceweb.uwaterloo.ca:3306/";
@@ -17,7 +21,7 @@ public class UserDBAO {
         con = DriverManager.getConnection(url, user, pwd);
         stmt = con.createStatement();
         
-        String query = "select role from" + schema +".User " +
+        String query = "select role from " + schema +".User " +
                    "where Username = \"" + username + "\"";
         
         ResultSet rs = stmt.executeQuery(query);
@@ -38,8 +42,31 @@ public class UserDBAO {
         con = DriverManager.getConnection(url, user, pwd);
         stmt = con.createStatement();
         
-        return stmt.executeQuery(query);
-        
+        return stmt.executeQuery(query); 
     }
    
+    public static Boolean securityCheck(HttpServletRequest req, HttpServletResponse res)
+        throws SQLException, ClassNotFoundException {
+        Statement stmt;
+        Connection con;
+        Class.forName("com.mysql.jdbc.Driver");
+        con = DriverManager.getConnection(url, user, pwd);
+        stmt = con.createStatement();
+        
+        String username = req.getParameter("username");
+        String password = req.getParameter("password");
+        String query = "select password from " + schema +".User " +
+                   "where Username = \"" + username + "\"";
+        
+        ResultSet rs = stmt.executeQuery(query);
+        while (rs.next()) {
+            if(password.equals((String)rs.getString("password"))){
+                con.close();
+                return true;
+            }
+        }
+        
+        con.close();
+        return false;
+    }
 }
