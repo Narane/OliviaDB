@@ -27,69 +27,55 @@ public class MarkupHelper {
         return sb.toString();
     }
     
-    public static String buildSidebar(String role){
+    private static String buildSidebar(String role){
         StringBuilder sb = new StringBuilder(256);
         sb.append("<sidebar>");
         
-        sb.append("<p><a href=\"MenuServlet\">");
-        sb.append("Main Menu");
-        sb.append("</a></p>");
+        sb.append(buildSidebarHelper("MenuServlet", "Main Menu"));
         
         if(role.equals("superuser")){
-            sb.append("<p><a href=\"AuditTrailServlet\">");
-            sb.append("Audit trail");
-            sb.append("</a></p>");
+            sb.append(buildSidebarHelper("AuditTrailServlet", "Audit trail"));
         }
         
         if(role.equals("patient") || role.equals("doctor") || role.equals("staff") || role.equals("superuser")){
-            sb.append("<p><a href=\"UpdatePersonalInfoServlet\">");
-            sb.append("Update personal information");
-            sb.append("</a></p>");
+            sb.append(buildSidebarHelper("UpdatePersonalInfoServlet", "Update personal information"));
         }
 
         if(role.equals("patient") || role.equals("doctor") || role.equals("legal") || role.equals("superuser")){
-            sb.append("<p><a href=\"VisitationServlet\">");
-            sb.append("View visitation records");
-            sb.append("</a></p>");
+            sb.append(buildSidebarHelper("VisitationServlet", "View visitation records"));
         }
  
         if(role.equals("patient") || role.equals("doctor") || role.equals("staff") || role.equals("superuser")){
-            sb.append("<p><a href=\"AppointmentServlet\">");
-            sb.append("View appointments");
-            sb.append("</a></p>");
+            sb.append(buildSidebarHelper("AppointmentServlet", "View appointments"));
         }
         
-        sb.append("<p><a href=\"UsersServlet\">");
         if(role.equals("patient")){
-            sb.append("View your profile");
+            sb.append(buildSidebarHelper("UsersServlet", "View your profile"));
         }
         else if(role.equals("doctor") || role.equals("superuser")){
-            sb.append("View hospital profiles");
+            sb.append(buildSidebarHelper("UsersServlet", "View hospital profiles"));
         }
         else if(role.equals("staff")){
-            sb.append("View associates");
+            sb.append(buildSidebarHelper("UsersServlet", "View associates"));
         }
-        sb.append("</a></p>");
         
         if(role.equals("staff") || role.equals("superuser")){
-            sb.append("<p><a href=\"PatientAssignmentServlet\">");
-            sb.append("Assign patients");
-            sb.append("</a></p>");
+            sb.append(buildSidebarHelper("PatientAssignmentServlet", "Assign patients"));
         }
         
         if(role.equals("doctor") || role.equals("superuser")){
-            sb.append("<p><a href=\"AccessRightsServlet\">");
-            sb.append("Change peer access rights");
-            sb.append("</a></p>");
+            sb.append(buildSidebarHelper("AccessRightsServlet", "Change peer access rights"));
         }
         
         if(role.equals("finance") || role.equals("superuser")){
-            sb.append("<p><a href=\"FinanceServlet\">");
-            sb.append("Finance hub");
-            sb.append("</a></p>");
+            sb.append(buildSidebarHelper("FinanceServlet", "Finance hub"));
         }        
         
         sb.append("</sidebar>");
         return sb.toString();
+    }
+    
+    private static String buildSidebarHelper(String servletName, String description){
+        return("<p><a href=\"" + servletName + "\">" + description + "</a></p>");
     }
 }
