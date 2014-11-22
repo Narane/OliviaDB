@@ -29,5 +29,17 @@ public class UserDBAO {
         }
         return "error";
     }
+    
+    public static ResultSet executeQuery(String query) 
+        throws ClassNotFoundException, SQLException {
+        Statement stmt;
+        Connection con;
+        Class.forName("com.mysql.jdbc.Driver");
+        con = DriverManager.getConnection(url, user, pwd);
+        stmt = con.createStatement();
+        
+        return stmt.executeQuery(query);
+        
+    }
    
 }
