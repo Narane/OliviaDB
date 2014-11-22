@@ -46,7 +46,7 @@ public class LoginServlet extends HttpServlet {
                 out.println("</form>");
                 
                 Boolean failedLogin = (Boolean) session.getAttribute("failedLogin");
-                if (failedLogin.booleanValue() == true){
+                if (failedLogin != null && failedLogin.booleanValue() == true){
                     out.println("<p><font color=\"red\">Invalid login information</font>");
                 }
                 
