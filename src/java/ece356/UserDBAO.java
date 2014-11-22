@@ -8,12 +8,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class UserDBAO {
-    public static final String url = "jdbc:mysql://localhost:3306/";
-    //public static final String url = "jdbc:mysql://eceweb.uwaterloo.ca:3306/";
-    public static final String user = "root";        
-    //public static final String user = "user_h86kim";
-    public static final String pwd = "root";
-    //public static final String pwd = "user_h86kim";
+    //public static final String url = "jdbc:mysql://localhost:3306/";
+    public static final String url = "jdbc:mysql://eceweb.uwaterloo.ca:3306/";
+    //public static final String user = "root";        
+    public static final String user = "user_h86kim";
+    //public static final String pwd = "root";
+    public static final String pwd = "user_h86kim";
     public static final String schema = "ece356_22_2014";
     
     public static ResultSet getColumns(String tablename)
@@ -60,7 +60,9 @@ public class UserDBAO {
         con = DriverManager.getConnection(url, user, pwd);
         stmt = con.createStatement();
         
-        return stmt.executeQuery(query); 
+        ResultSet rs = stmt.executeQuery(query); 
+        con.close();
+        return rs;
     }
     
     public static int executeUpdate(String query)
@@ -72,7 +74,9 @@ public class UserDBAO {
         con = DriverManager.getConnection(url, user, pwd);
         stmt = con.createStatement();
         
-        return stmt.executeUpdate(query); 
+        int rowCount =  stmt.executeUpdate(query); 
+        con.close();
+        return rowCount;
     }
    
     public static Boolean securityCheck(HttpServletRequest req, HttpServletResponse res)
