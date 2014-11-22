@@ -5,6 +5,7 @@ import java.sql.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 public class UserDBAO {
     public static final String url = "jdbc:mysql://eceweb.uwaterloo.ca:3306/";
@@ -53,8 +54,16 @@ public class UserDBAO {
         con = DriverManager.getConnection(url, user, pwd);
         stmt = con.createStatement();
         
-        String username = req.getParameter("username");
-        String password = req.getParameter("password");
+        HttpSession session = req.getSession();
+        String username = (String) session.getAttribute("username");
+        if(username == null){
+            username = req.getParameter("username");
+        }
+        String password = (String) session.getAttribute("password");
+        if(password == null){
+            password = req.getParameter("password");
+        }
+        
         String query = "select password from " + schema +".User " +
                    "where Username = \"" + username + "\"";
         
