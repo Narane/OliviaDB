@@ -44,6 +44,14 @@ public class MarkupHelper {
         if(role.equals("patient") || role.equals("doctor") || role.equals("legal") || role.equals("superuser")){
             sb.append(buildSidebarHelper("VisitationServlet", "View visitation records"));
         }
+        
+        if(role.equals("staff") || role.equals("superuser")){
+            sb.append(buildSidebarHelper("CreateVisitationServlet", "Create visitation records"));
+        }
+        
+        if(role.equals("patient")){
+            sb.append(buildSidebarHelper("ViewVisitationServlet", "View visitation records"));
+        }
  
         if(role.equals("patient") || role.equals("doctor") || role.equals("staff") || role.equals("superuser")){
             sb.append(buildSidebarHelper("AppointmentServlet", "View appointments"));

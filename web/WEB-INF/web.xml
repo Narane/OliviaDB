@@ -40,6 +40,14 @@
         <servlet-name>AuditTrailServlet</servlet-name>
         <servlet-class>ece356.AuditTrailServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CreateVisitationServlet</servlet-name>
+        <servlet-class>ece356.CreateVisitationServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ViewVisitationServlet</servlet-name>
+        <servlet-class>ece356.ViewVisitationServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/LoginServlet</url-pattern>
@@ -79,6 +87,14 @@
     <servlet-mapping>
         <servlet-name>AuditTrailServlet</servlet-name>
         <url-pattern>/AuditTrailServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CreateVisitationServlet</servlet-name>
+        <url-pattern>/CreateVisitationServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ViewVisitationServlet</servlet-name>
+        <url-pattern>/ViewVisitationServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>20</session-timeout>
