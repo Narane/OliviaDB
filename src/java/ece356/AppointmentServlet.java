@@ -1,20 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ece356;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.Date;
+import javax.servlet.*;
+import javax.servlet.http.*;
 
 /**
  *
- * @author bleskows
+ * @author aarchen
  */
 public class AppointmentServlet extends HttpServlet {
 
@@ -27,21 +19,63 @@ public class AppointmentServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+    protected void processRequest(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet AppointmentServlet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet AppointmentServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        
+        HttpSession session = req.getSession();
+        Boolean loggedIn = (Boolean) session.getAttribute("loggedIn");
+        String username = (String) session.getAttribute("username");
+        
+        String role = "";
+        try{
+            role = UserDBAO.getRole(username);
+        } catch(Exception e){
+            req.setAttribute("exception", e);
+            // TODO: Change error functionality to do something other than display error
+            String url = "/error.jsp";
+            getServletContext().getRequestDispatcher(url).forward(req, res);
         }
+        
+        if(loggedIn == null){
+            loggedIn = new Boolean(false);
+        }
+        
+        if(loggedIn == false){
+            res.sendRedirect("LoginServlet");
+        }
+        
+        res.setContentType("text/html");
+        ServletOutputStream out = res.getOutputStream();
+        out.println(MarkupHelper.HeadOpen("Main Menu", role));
+        out.println("<html>");
+        out.println("<body>");
+       
+        if(loggedIn.booleanValue()==true && role == "patient"){
+            //View past and current appointments
+            //Update personal info
+            out.println("Check your appointments, " + username);
+            
+        }
+        
+        else if(loggedIn.booleanValue()==true && role == "doctor"){
+            //View current appointments
+            out.println("Check your appointments, Doctor " + username);
+            
+        }
+        
+        else if(loggedIn.booleanValue()==true && role == "staff"){
+            //Enter, delete, update appointments
+            //Update patient info
+            out.println("Check your appointments, " + username);
+            
+        }
+        
+        else{
+            /* Get out of here! */
+        }
+        
+        out.println(MarkupHelper.HeadClose());
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
