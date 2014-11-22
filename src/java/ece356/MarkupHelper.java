@@ -37,7 +37,7 @@ public class MarkupHelper {
             sb.append(buildSidebarHelper("AuditTrailServlet", "Audit trail"));
         }
         
-        if(role.equals("patient") || role.equals("doctor") || role.equals("staff") || role.equals("superuser")){
+        if(role.equals("patient")){
             sb.append(buildSidebarHelper("UpdatePersonalInfoServlet", "Update personal information"));
         }
 
