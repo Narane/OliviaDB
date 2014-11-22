@@ -51,10 +51,14 @@ h1,h2, h3 {
 	display: block;
 	border-bottom: 1px solid #ccc;
 	padding-bottom: 5px;
+        font-weight: bold;
 }
 
 h1 {
 	font-size: 30px;
+        padding-top: 5px;
+        background-color:#eeeeee;
+        text-align: center;
 }
 
 h2 {
