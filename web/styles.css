@@ -10,7 +10,7 @@ dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td,
 article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
+figure, figcaption, footer, sidebar, hgroup,
 menu, nav, output, ruby, section, summary,
 time, mark, audio, video {
   margin: 0;
@@ -203,9 +203,9 @@ td {
 }
 
 
-/* Header */
+/* Sidebar */
 
-header {
+sidebar {
 	background-color: #171717;
 	color: #FDFDFB;
   width:180px;
@@ -224,11 +224,11 @@ header {
 	-webkit-font-smoothing: antialiased;
 }
 
-p.header {
+p.sidebar {
 	font-size: 16px;
 }
 
-h1.header {
+h1.sidebar {
 	font-family: Arial, sans-serif;
 	font-size: 30px;
 	font-weight: 300;
@@ -238,11 +238,11 @@ h1.header {
 }
 
 
-h1.header, a.header, a.name, header a{
+h1.sidebar, a.sidebar, a.name, sidebar a{
 	color: #fff;
 }
 
-a.header {
+a.sidebar {
 	text-decoration: underline;
 }
 
@@ -250,12 +250,12 @@ a.name {
 	white-space: nowrap;
 }
 
-header ul {
+sidebar ul {
   list-style:none;
   padding:0;
 }
 
-header li {
+sidebar li {
 	list-style-type: none;
   width:132px;
   height:15px;
@@ -279,7 +279,7 @@ header li {
 
 }
 
-header li:hover {
+sidebar li:hover {
 	background: #C3001D;
 	background: -moz-linear-gradient(top, #C3001D 0%, #950119 100%);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f8f8f8), color-stop(100%,#dddddd));
@@ -362,7 +362,7 @@ footer {
     margin:0;
   }
 
-  header, section, footer {
+  sidebar, section, footer {
     float:none;
     position:static;
     width:auto;
@@ -374,7 +374,7 @@ footer {
 		padding:0;
 	}
 
-  header {
+  sidebar {
     padding-right:320px;
   }
 
@@ -383,11 +383,11 @@ footer {
     margin:0 0 20px;
   }
 
-  header a small {
+  sidebar a small {
     display:inline;
   }
 
-  header ul {
+  sidebar ul {
     position:absolute;
     right:130px;
     top:84px;
@@ -399,7 +399,7 @@ footer {
     word-wrap:break-word;
   }
 
-  header {
+  sidebar {
     padding:10px 20px 0;
 		margin-right: 0;
   }
@@ -413,14 +413,14 @@ footer {
 		margin: 0 0 0 30px;
 	}
 
-  header ul, header p.view {
+  sidebar ul, sidebar p.view {
     position:static;
   }
 }
 
 @media print, screen and (max-width: 480px) {
 
-  header ul li.download {
+  sidebar ul li.download {
     display:none;
   }
 

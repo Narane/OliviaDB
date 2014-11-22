@@ -46,12 +46,9 @@ public class MenuServlet extends HttpServlet {
 
         res.setContentType("text/html");
         ServletOutputStream out = res.getOutputStream();
-        out.println("<html>");
-        out.println("<body>");
+        out.println(MarkupHelper.HeadOpen("Main Menu", role));
         
         if(loggedIn.booleanValue() == true) {
-            out.println("<head><title>Main Menu</title></head>");
-
             out.println("<p>Welcome back, " + username);
             out.println("<p>You belong to group: " + role);
             out.println("<p>You last visited on " + lastVisit);
@@ -61,13 +58,8 @@ public class MenuServlet extends HttpServlet {
             ///////////////////////////whoa
             out.println("<p>Your message of the day: " + testText);
         }
-        else
-        {
-            out.println("<head><title>Main Menu</title><meta http-equiv=\"refresh\" content=\"1;url=\"LoginServlet\"></head>");
-        }
         
-        out.println("</body>");
-        out.println("</html>");
+        out.println(MarkupHelper.HeadClose());
     }
 
     public void doGet(HttpServletRequest req, HttpServletResponse res)

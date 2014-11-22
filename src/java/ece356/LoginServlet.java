@@ -50,6 +50,7 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("loggedIn", new Boolean(true));
                 session.setAttribute("lastVisit", new Date());
                 out.println("<a href=\"MenuServlet\">Reload Page</a>");
+                res.sendRedirect("MenuServlet");
             }
             out.println("</body>");
             out.println("</html>");
