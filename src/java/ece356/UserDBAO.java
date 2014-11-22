@@ -14,6 +14,21 @@ public class UserDBAO {
     public static final String pwd = "user_h86kim";
     public static final String schema = "ece356_22_2014";
     
+    public static ResultSet getColumns(String tablename)
+    throws ClassNotFoundException, SQLException {
+            String query = "show columns from "+
+                    tablename +
+                    " in ece356_22_2014;";
+            Connection con;
+            Statement stmt;
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection(url, user, pwd);
+            stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            
+            return rs;
+    }
+    
     public static String getRole(String username)
         throws ClassNotFoundException, SQLException {
         Statement stmt;
