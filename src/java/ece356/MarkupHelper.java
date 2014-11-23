@@ -73,7 +73,11 @@ public class MarkupHelper {
         
         if(role.equals("finance") || role.equals("superuser")){
             sb.append(buildSidebarHelper("FinanceServlet", "Finance hub"));
-        }        
+        }
+        
+        if(role.equals("superuser")) {
+            sb.append(buildSidebarHelper("CreateProcedureServlet", "Create Procedures"));
+        }
         
         sb.append("</sidebar>");
         return sb.toString();

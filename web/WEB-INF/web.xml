@@ -44,6 +44,10 @@
         <servlet-name>ViewVisitationServlet</servlet-name>
         <servlet-class>ece356.ViewVisitationServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CreateProcedureServlet</servlet-name>
+        <servlet-class>ece356.CreateProcedureServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/LoginServlet</url-pattern>
@@ -87,6 +91,10 @@
     <servlet-mapping>
         <servlet-name>ViewVisitationServlet</servlet-name>
         <url-pattern>/ViewVisitationServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CreateProcedureServlet</servlet-name>
+        <url-pattern>/CreateProcedureServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>20</session-timeout>
