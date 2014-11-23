@@ -84,6 +84,9 @@ public class UsersServlet extends SecureHTTPServlet {
             } else if (role.toLowerCase().equals("staff")) {
                 out.println("<h3>Staff User Directory</h3>");
                 rs_user_dir = UserDBAO.executeQuery("select FirstName, LastName, Role from ece356_22_2014.User where role in (\'doctor\', \'staff\')");
+            } else if (role.toLowerCase().equals("superuser")){
+                out.println("<h3>Admin User Directory</h3>");
+                rs_user_dir = UserDBAO.executeQuery("select * from ece356_22_2014.User");
             }
 
             ResultSetMetaData md_user = rs_user_dir.getMetaData();
