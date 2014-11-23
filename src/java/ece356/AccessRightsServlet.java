@@ -57,12 +57,12 @@ public class AccessRightsServlet extends SecureHTTPServlet {
         
         out.println("<p>Update</p>");
         out.println(
-            "<form method=\"post\">\n" +
-            "  Doctor username: <input type=\"text\" value=\"\" SIZE=30 name=\"doctorname\"><br>\n" +
-            "  Patient username: <input type=\"text\" value=\"\" SIZE=30 name=\"patientname\"><br>\n" +
+            "<form method=\"post\">" +
+            "Remove access: <input type=\"checkbox\" name=\"deletemode\" value=\"deletemode\"><br>" +
+            "  Doctor username: <input type=\"text\" value=\"\" SIZE=30 name=\"doctorname\"><br>" +
+            "  Patient username: <input type=\"text\" value=\"\" SIZE=30 name=\"patientname\"><br>" +
             resultString +
-            "  <input type=\"submit\" value=\"Grant access\">\n" +
-            "</form> ");
+            "<input type=\"submit\" value=\"Grant access\"></form>");
     }
 
     private String grantAccess(String username, HttpServletRequest req) 
@@ -112,7 +112,7 @@ public class AccessRightsServlet extends SecureHTTPServlet {
             if (!(rs.next() && compareRole.equals((String)rs.getString("role")))) {
                 //Input doctor isn't actually a doctor... or user doesn't exist
                 if(sb.length() > 0){
-                    sb.append("</br>");
+                    sb.append("<br>");
                 }
                 sb.append("Invalid patient username");
             }
@@ -121,17 +121,41 @@ public class AccessRightsServlet extends SecureHTTPServlet {
                 return("<p><font color=\"red\">" + sb.toString() + "</font></p>");
             }
             
-            //Also check that the entry isn't duplicate in the access chart
-            query = "SELECT * FROM " + schema +".DoctorPatientAccess " +
-                   "WHERE PatientUsername = \"" + patientName + "\"" +
-                   "AND DoctorUsername = \"" + doctorName + "\"";
+            //Check that the doctor actually has the rights to the patient
+            query = "SELECT * FROM " + schema + ".Patient " +
+                    "WHERE PatientUsername = \"" + patientName + "\"" +
+                    "AND DoctorUsername = \"" + username + "\"";
             rs = stmt.executeQuery(query);
-            if (rs.next()) {
-                return("<p><font color=\"red\">Duplicate entry found</font></p>");
+            if (!rs.next()) {
+                return("<p><font color=\"red\">User " + username + " has no access to patient " + patientName + "</font></p>");
             }
             
+            //Also check that the entry isn't duplicate in the access chart
+            if(req.getParameter("deletemode") != null){
+                query = "DELETE FROM " + schema +".DoctorPatientAccess " +
+                        "WHERE PatientUsername = \"" + patientName + "\"" +
+                        "AND DoctorUsername = \"" + doctorName + "\"";
+                int ret = stmt.executeUpdate(query);
+                if(ret > 0){
+                    return("<p><font color=\"green\">Deletion successful</font></p>");
+                } else {
+                    return("<p><font color=\"red\">Deletion failed; no entry found</font></p>");
+                }
+            }
+            else{
+                query = "SELECT * FROM " + schema +".DoctorPatientAccess " +
+                        "WHERE PatientUsername = \"" + patientName + "\"" +
+                        "AND DoctorUsername = \"" + doctorName + "\"";
+                rs = stmt.executeQuery(query);
+                if (rs.next()) {
+                    return("<p><font color=\"red\">Duplicate entry found</font></p>");
+                }
+            }
+
+
+            
             //Do the insert now that it's confirmed to be safe
-            query = "INSERT INTO " + UserDBAO.schema + ".DoctorPatientAccess(PatientUsername, DoctorUsername) " +
+            query = "INSERT INTO " + schema + ".DoctorPatientAccess(PatientUsername, DoctorUsername) " +
                     "VALUES('" + patientName + "', '" + doctorName + "');";
             stmt.executeUpdate(query);
             con.close();
