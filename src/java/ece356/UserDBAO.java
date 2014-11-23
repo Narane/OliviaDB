@@ -38,7 +38,9 @@ public class UserDBAO {
     }
     
     public static ResultData getPatientInfo(String doctor_username,
-            String f_name, String l_name, String p_num, String v_date, String username)
+            String f_name, String l_name, String p_num, String v_date,
+            String diagnosis, String comment, String prescription,
+            String surgery, String username)
         throws ClassNotFoundException, SQLException {
             String query = "";
             
@@ -52,6 +54,14 @@ public class UserDBAO {
                 query += "and PV.PatientNumber" + " like" + "(\'" + p_num + "\') ";
             if (v_date != null && !v_date.trim().isEmpty())
                 query += "and PV.EndTime" + " like" + "(\'" + v_date +  "\') ";
+            if (diagnosis != null && !diagnosis.trim().isEmpty())
+                query += "and PV.Diagnosis" + " like" + "(\'" + diagnosis +  "\') ";
+            if (comment != null && !comment.trim().isEmpty())
+                query += "and PV.Comments" + " like" + "(\'" + comment +  "\') ";
+            if (prescription != null && !prescription.trim().isEmpty())
+                query += "and PV.Prescription" + " like" + "(\'" + prescription +  "\') ";
+            if (surgery != null && !surgery.trim().isEmpty())
+                query += "and PV.ProcedureName" + " like" + "(\'" + surgery +  "\') ";
             
             Connection con;
             Statement stmt;

@@ -40,8 +40,8 @@ public class UsersServlet extends SecureHTTPServlet {
             response.setContentType("text/html;charset=UTF-8");
 
             HttpSession session = request.getSession();
-            //String username = (String) session.getAttribute("username");
-            String username = "kmyin";
+            String username = (String) session.getAttribute("username");
+            //String username = "kmyin";
             String role = "Doctor";
             Boolean is_query = false;
 
@@ -49,8 +49,14 @@ public class UsersServlet extends SecureHTTPServlet {
             String l_name = request.getParameter("l_name");
             String p_num = request.getParameter("p_num");
             String v_date = request.getParameter("v_date");
+            String diagnosis = request.getParameter("diagnosis");
+            String comment = request.getParameter("comment");
+            String prescription = request.getParameter("prescription");
+            String surgery = request.getParameter("surgery");
 
-            if (f_name != null || l_name != null || p_num != null || v_date != null) {
+            if (f_name != null || l_name != null || p_num != null ||
+                    v_date != null || diagnosis != null || comment != null ||
+                    prescription != null || surgery != null) {
                 is_query = true;
             }
             
@@ -80,20 +86,19 @@ public class UsersServlet extends SecureHTTPServlet {
             out.println("<div>");
             out.println("<body>");
 
-            out.println("<h3>" + role.substring(0, 1).toUpperCase() + role.substring(1) + " User Directory</h3>");
+            
 
             if (role.toLowerCase().equals("doctor")){
+                out.println("<h3>List of Current Patients</h3>");
                 rs_user_dir = UserDBAO.executeQuery("select * from ece356_22_2014.Patient where DoctorUsername = \'" +
                         username +
                         "\';");
             } else if (role.toLowerCase().equals("patient")) {
-                rs_user_dir = UserDBAO.executeQuery("select * from ece356_22_2014.Patient where DoctorUsername = \'" +
-                        username +
-                        "\';");
+                out.println("<h3>Patient User Directory</h3>");
+                rs_user_dir = UserDBAO.executeQuery("select FirstName, LastName, Role from ece356_22_2014.User where Username like(\'" + username + "\')");
             } else if (role.toLowerCase().equals("staff")) {
-                rs_user_dir = UserDBAO.executeQuery("select * from ece356_22_2014.Patient where DoctorUsername = \'" +
-                        username +
-                        "\';");
+                out.println("<h3>Staff User Directory</h3>");
+                rs_user_dir = UserDBAO.executeQuery("select FirstName, LastName, Role from ece356_22_2014.User where role in (\'doctor\', \'staff\')");
             }
 
             ResultSetMetaData md_user = rs_user_dir.getMetaData();
@@ -102,7 +107,7 @@ public class UsersServlet extends SecureHTTPServlet {
             out.println("<table border=1>");
 
             out.println("<tr>");
-            for (int j = 1; j < c_count; j++){
+            for (int j = 1; j <= c_count; j++){
                 out.println("<th>");
                 out.println(md_user.getColumnLabel(j));
             }    
@@ -110,7 +115,7 @@ public class UsersServlet extends SecureHTTPServlet {
 
             while (rs_user_dir.next()) {
                 out.println("<tr>");
-                for (int j = 1; j < c_count; j++) {
+                for (int j = 1; j <= c_count; j++) {
                     out.println("<td>");
                     out.println(rs_user_dir.getString(j));
                 }
@@ -141,6 +146,16 @@ public class UsersServlet extends SecureHTTPServlet {
                 out.println("Visit Date: <input type=\"text\" name=\"v_date\">" +
                         "<input type=\"checkbox\" name=\"v_date_cb\">" + 
                         "<br>");
+                out.println("Diagnosis: <input type=\"text\" name=\"diagnosis\">" +
+                        "<input type=\"checkbox\" name=\"diagnosis_cb\">");
+                out.println("Comment: <input type=\"text\" name=\"comment\">" +
+                        "<input type=\"checkbox\" name=\"comment_cb\">" + 
+                        "<br>");
+                out.println("Prescription: <input type=\"text\" name=\"prescription\">" +
+                        "<input type=\"checkbox\" name=\"prescription_cb\">");
+                out.println("Surgery: <input type=\"text\" name=\"surgery\">" +
+                        "<input type=\"checkbox\" name=\"surgery_cb\">" + 
+                        "<br>");
 
                 out.println("<br>");
                 out.println("<input type=\"submit\" value=\"Submit\">");
@@ -154,7 +169,8 @@ public class UsersServlet extends SecureHTTPServlet {
 
                 // returns queried results
                 is_query = false;
-                ResultData rd = UserDBAO.getPatientInfo(username, f_name, l_name, p_num, v_date, username);
+                ResultData rd = UserDBAO.getPatientInfo(username, f_name, l_name,
+                        p_num, v_date, diagnosis, comment, prescription, surgery, username);
                 ResultSet rs_patient_info = rd.rs;
                 //rs_patient_info = UserDBAO.executeQuery("select * from ece356_22_2014.User;");
                 c_count = rd.l.size();
@@ -167,7 +183,7 @@ public class UsersServlet extends SecureHTTPServlet {
                 out.println("<table border=1>");
                 // first row for column names
                 out.println("<tr>");
-                for (int j = 0; j < c_count; j++){
+                for (int j = 0; j <= c_count; j++){
                     out.println("<th>");
                     out.println(rd.l.get(j).toString());
                 }    
@@ -177,7 +193,7 @@ public class UsersServlet extends SecureHTTPServlet {
 
                 while (rs_patient_info.next()) {
                     out.println("<tr>");
-                    for (int j = 1; j < c_count; j++) {
+                    for (int j = 1; j <= c_count; j++) {
                         out.println("<td>");
                         out.println(rs_patient_info.getString(j));
                     }
