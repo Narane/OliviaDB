@@ -20,5 +20,6 @@ public class FinanceServlet extends SecureHTTPServlet {
             ServletOutputStream out)
         throws ServletException,  IOException {
         
+        out.println("<p>Date: <input type=\"text\" id=\"datepicker\"></p>");
     }
 }

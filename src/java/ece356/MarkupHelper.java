@@ -11,7 +11,12 @@ public class MarkupHelper {
         StringBuilder sb = new StringBuilder(256);
         sb.append("<!DOCTYPE html><html><head><title>");
         sb.append(pageTitle);
-        sb.append("</title><link rel=\"stylesheet\" href=\"styles.css\"></head><body><div class=\"wrapper\">");
+        sb.append("</title>\n   <link rel=\"stylesheet\" href=\"styles.css\">\n" +
+                "   <link rel=\"stylesheet\" href=\"JQUERYPACKAGE/jquery-ui.css\">\n" +
+                "   <script src=\"JQUERYPACKAGE/jquery-1.10.2.js\"></script>\n" +
+                "   <script src=\"JQUERYPACKAGE/jquery-ui.js\"></script>\n" +
+                "   <script> $(function() { $( \"#datepicker\" ).datepicker();});</script>\n" +
+                "</head><body><div class=\"wrapper\">");
         sb.append(buildSidebar(role));
         sb.append("<section>");
         sb.append("<span class=\"octicon octicon-link\"></span><h2>");
