@@ -48,6 +48,7 @@ public class CreateProcedureServlet extends SecureHTTPServlet {
         // errors from the function but that's going to override return type
         // of this function; that is NOT POSSIBLE
         String role = "";
+        String status = "";
         try {
             if(UserDBAO.securityCheck(req, res)){
                 role = UserDBAO.getRole(username);
@@ -63,8 +64,6 @@ public class CreateProcedureServlet extends SecureHTTPServlet {
             if(!loggedIn){
                 res.sendRedirect("LoginServlet");
             }
-            
-            int updateCount = createProcedure(req);
 
             res.setContentType("text/html");
             out.println(
@@ -74,18 +73,25 @@ public class CreateProcedureServlet extends SecureHTTPServlet {
                 "  <input type=\"submit\" value=\"Create Cost\">\n" +
                 "</form> ");
             
+            int updateCount = createProcedure(req);
+            
             if (updateCount > 0) {
                 DecimalFormat df = new DecimalFormat("#.00");
                 df.setMaximumFractionDigits(2);
                 BigDecimal decimalCost = new BigDecimal(df.format(Double.parseDouble(req.getParameter("cost"))));
-                out.println("Successfully created procedure \"" + 
-                    req.getParameter("pname") + "\" with cost $" + decimalCost.toString());
+                status = "Successfully created procedure \"" + 
+                    req.getParameter("pname") + "\" with cost $" + decimalCost.toString();
             }
             
             else if (updateCount == 0){
-                out.println("Procedure not inserted!");
+                status = "Procedure not inserted!";
             }
+            out.println(status);
             
+        }
+        catch (SQLException sqlE) {
+            status  = sqlE.getMessage();
+            out.println(status);
         }
         catch (Exception e) {
             req.setAttribute("exception", e);
