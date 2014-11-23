@@ -165,9 +165,26 @@ public class PatientAssignmentServlet extends SecureHTTPServlet {
             }
             
             if(assigning){
+                 //We probably don't want to re-update the same entry and cause access deletions
+                query = "SELECT * FROM " + schema +".Patient WHERE " +
+                       "DoctorUsername = \"" + doctorName + "\"" +
+                       " AND PatientUsername = \"" + patientName + "\"";
+                ResultSet rs = stmt.executeQuery(query);
+                if(rs.next()){
+                    //Already got the patient assigned to this doctor
+                    return("<p><font color=\"red\">Patient is already assigned to specified doctor</font></p>");
+                }
+                
                 query = "UPDATE " + schema +".Patient set " +
                        "DoctorUsername = \"" + doctorName + "\"" +
-                       "WHERE PatientUsername = \"" + patientName + "\"";
+                       " WHERE PatientUsername = \"" + patientName + "\"";
+                stmt.executeUpdate(query);
+                
+                //Also delete all the access rights given to the doctor
+                query = "DELETE FROM " + dbName + " WHERE EXISTS " +
+                       "(SELECT * FROM " + schema + ".Patient AS pa " +
+                       "WHERE pa.DoctorUsername = \"" + doctorName + "\"" +
+                        " AND " + dbName + ".PatientUsername = pa.PatientUsername);";
                 stmt.executeUpdate(query);
                 
                 return("<p><font color=\"green\">Update successful</font></p>");

@@ -64,11 +64,10 @@ public class AccessRightsServlet extends SecureHTTPServlet {
         out.println("<p>Update</p>");
         out.println(
             "<form method=\"post\">" +
-            "Remove access: <input type=\"checkbox\" name=\"deletemode\" value=\"deletemode\"><br>" +
             "  Doctor username: <input type=\"text\" value=\"\" SIZE=30 name=\"doctorname\"><br>" +
             "  Patient username: <input type=\"text\" value=\"\" SIZE=30 name=\"patientname\"><br>" +
             resultString +
-            "<input type=\"submit\" value=\"Grant access\"></form>");
+            "<input type=\"submit\" value=\"Grant access\" name=\"submitAction\"> <input type=\"submit\" value=\"Revoke access\" name=\"submitAction\"></form>");
         
         try{
             QueryResult que = UserDBAO.executeQuery("SELECT DoctorUsername AS \"Doctor\", PatientUsername AS \"Patient\" FROM " + dbName +
@@ -155,7 +154,11 @@ public class AccessRightsServlet extends SecureHTTPServlet {
             }
             
             //Also check that the entry isn't duplicate in the access chart
-            if(req.getParameter("deletemode") != null){
+            String submitAction= req.getParameter("submitAction");
+            Boolean granting = (submitAction != null && submitAction.equals("Grant access"));
+            Boolean revoking = (submitAction != null && submitAction.equals("Revoke access"));
+            if(revoking){
+                //If we're revoking rights, we want to find a duplicate
                 query = "DELETE FROM " + dbName +
                         " WHERE PatientUsername = \"" + patientName + "\"" +
                         "AND DoctorUsername = \"" + doctorName + "\"";
@@ -167,6 +170,7 @@ public class AccessRightsServlet extends SecureHTTPServlet {
                 }
             }
             else{
+                //If we're granting access, duplicate needs to return error
                 query = "SELECT * FROM " + dbName +
                         " WHERE PatientUsername = \"" + patientName + "\"" +
                         "AND DoctorUsername = \"" + doctorName + "\"";
@@ -175,8 +179,6 @@ public class AccessRightsServlet extends SecureHTTPServlet {
                     return("<p><font color=\"red\">Duplicate entry found</font></p>");
                 }
             }
-
-
             
             //Do the insert now that it's confirmed to be safe
             query = "INSERT INTO " + dbName + "(PatientUsername, DoctorUsername) " +
