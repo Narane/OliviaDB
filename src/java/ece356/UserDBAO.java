@@ -132,7 +132,7 @@ public class UserDBAO {
         return "error";
     }
     
-    public static ResultSet executeQuery(String query) 
+    public static QueryResult executeQuery(String query) 
         throws ClassNotFoundException, SQLException {
         Statement stmt;
         Connection con;
@@ -141,8 +141,13 @@ public class UserDBAO {
         stmt = con.createStatement();
         
         ResultSet rs = stmt.executeQuery(query); 
-        //con.close();
-        return rs;
+        QueryResult qResult = new QueryResult(rs);
+        
+        rs.close();
+        stmt.close();
+        con.close();
+        
+        return qResult;
     }
     
     public static int executeUpdate(String query)
@@ -155,6 +160,8 @@ public class UserDBAO {
         stmt = con.createStatement();
         
         int rowCount =  stmt.executeUpdate(query); 
+        
+        stmt.close();
         con.close();
         return rowCount;
     }

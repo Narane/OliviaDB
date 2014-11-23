@@ -20,6 +20,12 @@ import javax.servlet.http.HttpSession;
  * @author bleskows
  */
 public class UpdatePersonalInfoServlet extends SecureHTTPServlet {
+    
+    @Override
+    public String pageTitle() {
+        return "Update Personal Information";
+    }
+    
     @Override
     public void innerFunction(HttpServletRequest req, 
         HttpServletResponse res, 
@@ -62,17 +68,16 @@ public class UpdatePersonalInfoServlet extends SecureHTTPServlet {
                     + ".Patient inner join " + UserDBAO.schema
                     + ".User where Patient.PatientUsername = User.Username) "
                     + "as t where t.PatientUsername = \"" + username + "\""; 
-            ResultSet rs = UserDBAO.executeQuery(query);
-            rs.next();
+            QueryResult qr = UserDBAO.executeQuery(query);
         
             out.println("<p>Welcome to the UpdatePersonalInfo page</p>");
             out.println(
                 "<form method=\"post\">\n" +
-                "  First name: <input type=\"text\" value=\"" + rs.getString("FirstName") + "\" SIZE=30 name=\"fname\"><br>\n" +
-                "  Last name: <input type=\"text\" value=\"" + rs.getString("LastName") + "\" SIZE=30 name=\"lname\"><br>\n" +
-                "  Cell Phone: <input type=\"text\" value=\"" + rs.getString("CellNumber") + "\" SIZE=30 name=\"cellNumber\"><br>\n" +
-                "  Home Phone: <input type=\"text\" value=\"" + rs.getString("HomeNumber") + "\" SIZE=30 name=\"homeNumber\"><br>\n" +
-                "  Address: <input type=\"text\" value=\"" + rs.getString("Address") + "\" SIZE=30 name=\"address\"><br>\n" +
+                "  First name: <input type=\"text\" value=\"" + qr.getRow(0).getString("FirstName") + "\" SIZE=30 name=\"fname\"><br>\n" +
+                "  Last name: <input type=\"text\" value=\"" + qr.getRow(0).getString("LastName") + "\" SIZE=30 name=\"lname\"><br>\n" +
+                "  Cell Phone: <input type=\"text\" value=\"" + qr.getRow(0).getString("CellNumber") + "\" SIZE=30 name=\"cellNumber\"><br>\n" +
+                "  Home Phone: <input type=\"text\" value=\"" + qr.getRow(0).getString("HomeNumber") + "\" SIZE=30 name=\"homeNumber\"><br>\n" +
+                "  Address: <input type=\"text\" value=\"" + qr.getRow(0).getString("Address") + "\" SIZE=30 name=\"address\"><br>\n" +
                 "  <input type=\"submit\" value=\"Update info\">\n" +
                 "</form> ");
             
