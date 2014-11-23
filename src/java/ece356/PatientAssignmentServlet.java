@@ -65,7 +65,7 @@ public class PatientAssignmentServlet extends SecureHTTPServlet {
         if(doctorName == null){doctorName = "";}
         if(patientName == null){patientName = "";}
         
-        out.println("<p>Enter patient ID and doctor ID to search or assign the patient to the doctor.</p>");
+        out.println("<p>Enter patient ID and doctor ID to search for assignments or assign the patient to the doctor.</p>");
         out.println(
             "<form method=\"post\">" +
             "  Doctor username: <input type=\"text\" value=\"" + doctorName + "\" SIZE=30 name=\"doctorname\"><br>" +
@@ -79,7 +79,7 @@ public class PatientAssignmentServlet extends SecureHTTPServlet {
             Boolean assigning = (submitAction != null && submitAction.equals("Assign"));
             if((assigning || searching) && (doctorName != null || patientName != null)){
                 StringBuilder querySB = new StringBuilder(128);
-                querySB.append("SELECT * FROM " + schema + ".Patient ");
+                querySB.append("SELECT DoctorUsername AS \"Doctor\", PatientUsername AS \"Assigned Patient\" FROM " + schema + ".Patient ");
 
                 if(!patientName.equals("") && !doctorName.equals("")){
                     //Search with both criteria
