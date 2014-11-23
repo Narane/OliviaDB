@@ -26,7 +26,11 @@ import javax.servlet.http.HttpSession;
  * @author bleskows
  */
 public class AccessRightsServlet extends SecureHTTPServlet {
-  
+    
+    public String pageTitle(){
+        return "Grant patient access rights";
+    }
+    
     @Override
     public void innerFunction(
             HttpServletRequest req, 

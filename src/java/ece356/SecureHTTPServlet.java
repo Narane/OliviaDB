@@ -40,7 +40,7 @@ public class SecureHTTPServlet extends HttpServlet {
 
         res.setContentType("text/html");
         ServletOutputStream out = res.getOutputStream();
-        out.println(MarkupHelper.HeadOpen("Main Menu", role));
+        out.println(MarkupHelper.HeadOpen(pageTitle(), role));
         
         innerFunction(req, res, out);
         
@@ -50,5 +50,9 @@ public class SecureHTTPServlet extends HttpServlet {
     public void doGet(HttpServletRequest req, HttpServletResponse res)
         throws ServletException, IOException {
         doPost(req, res);
+    }
+    
+    public String pageTitle(){
+        return "St. Olivia Hospital Staff Access Page";
     }
 }

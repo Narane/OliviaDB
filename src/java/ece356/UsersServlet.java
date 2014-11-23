@@ -22,15 +22,10 @@ import javax.servlet.http.HttpSession;
  */
 public class UsersServlet extends SecureHTTPServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+    public String pageTitle(){
+        return "View Users";
+    }
+    
      @Override
     public void innerFunction(HttpServletRequest request,
             HttpServletResponse response,
@@ -76,17 +71,7 @@ public class UsersServlet extends SecureHTTPServlet {
             rs = UserDBAO.getColumns("User");
             String col_name = "FirstName";
 
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Users Servlet</title>");
-            out.println("</head>");
-
             // generic user information screen
-            out.println("<div>");
-            out.println("<body>");
-
-            
 
             if (role.toLowerCase().equals("doctor")){
                 out.println("<h3>List of Current Patients</h3>");
@@ -125,14 +110,9 @@ public class UsersServlet extends SecureHTTPServlet {
             out.println("");
             out.println("</table>");
 
-            out.println("</body>");
-            out.println("</div>");
-
             if (role.toLowerCase().equals("doctor")) {
                 // doctor can query its patients
 
-                out.println("<div>");
-                out.println("<body>");
                 out.println("<h3>Patient Search</h3>");
                 out.println("<form>");
 
@@ -161,8 +141,6 @@ public class UsersServlet extends SecureHTTPServlet {
                 out.println("<input type=\"submit\" value=\"Submit\">");
 
                 out.println("</form>");
-                out.println("</body>");
-                out.println("</div>");
             }
 
             if (is_query) {
@@ -174,12 +152,8 @@ public class UsersServlet extends SecureHTTPServlet {
                 ResultSet rs_patient_info = rd.rs;
                 //rs_patient_info = UserDBAO.executeQuery("select * from ece356_22_2014.User;");
                 c_count = rd.l.size();
-                
-                out.println("<div>");
-                out.println("<body>");
 
                 out.println("<h3>Search Results</h3>");
-
                 out.println("<table border=1>");
                 // first row for column names
                 out.println("<tr>");
@@ -203,11 +177,7 @@ public class UsersServlet extends SecureHTTPServlet {
                 out.println("");
                 out.println("</table>");
 
-                out.println("</div>");
-                out.println("</body>");
             }
-
-            out.println("</html>");
         } catch (Exception e) {
             request.setAttribute("exception", e);
             // Set the name of jsp to be displayed if connection fails
