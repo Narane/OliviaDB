@@ -1,17 +1,5 @@
 CREATE PROCEDURE `addOneDummyUserForEachRole`()
 BEGIN
-INSERT INTO `ece356_22_2014`.`User`
-(`Username`,
-`FirstName`,
-`LastName`,
-`Password`,
-`Role`)
-VALUES
-('h86kim',
-'Heesang',
-'Kim',
-'hkim',
-'patient');
 
 INSERT INTO `ece356_22_2014`.`User`
 (`Username`,
@@ -25,6 +13,34 @@ VALUES
 'Yin',
 'kmyin',
 'doctor');
+
+INSERT INTO `ece356_22_2014`.`Doctor`
+(`DoctorUsername`)
+VALUES
+('kmyin');
+
+INSERT INTO `ece356_22_2014`.`User`
+(`Username`,
+`FirstName`,
+`LastName`,
+`Password`,
+`Role`)
+VALUES
+('h86kim',
+'Heesang',
+'Kim',
+'hkim',
+'patient');
+
+INSERT INTO `ece356_22_2014`.`Patient` (PatientUsername, DoctorUsername, CellNumber, HomeNumber, PatientNumber, Address, SIN)
+VALUES
+('h86kim', 
+'kmyin', 
+1234567890, 
+5195726925, 
+0, 
+'200 University Ave. West', 
+123456789);
 
 INSERT INTO `ece356_22_2014`.`User`
 (`Username`,
