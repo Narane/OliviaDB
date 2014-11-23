@@ -2,6 +2,7 @@ package ece356;
 
 import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,17 +17,86 @@ public class UserDBAO {
     public static final String pwd = "user_h86kim";
     public static final String schema = "ece356_22_2014";
     
-    public static ResultSet getColumns(String tablename)
-    throws ClassNotFoundException, SQLException {
-            String query = "show columns from "+
-                    tablename +
+    public static ResultSet getColumns(String table_name)
+        throws ClassNotFoundException, SQLException {
+            String query = "show columns from " +
+                    table_name +
                     " in ece356_22_2014;";
             Connection con;
             Statement stmt;
+            
             Class.forName("com.mysql.jdbc.Driver");
+            
             con = DriverManager.getConnection(url, user, pwd);
+            
             stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
+            
+            //con.close();
+            
+            return rs;
+    }
+    
+    public static ResultData getPatientInfo(String doctor_username,
+            String f_name, String l_name, String p_num, String v_date, String username)
+        throws ClassNotFoundException, SQLException {
+            String query = "";
+            
+            query = "select 	* from ( 	select 		U.FirstName,         U.LastName,         P.PatientNumber,         V.* 	from 		ece356_22_2014.Patient as P 	inner join 		ece356_22_2014.Visits as V 	inner join 		ece356_22_2014.User as U 	on 		V.PatientUsername = P.PatientUsername 	and 		U.Username = P.PatientUsername ) as PV where 	PatientUsername 	in 	( 	select 		PatientUsername 	from 		ece356_22_2014.DoctorPatientAccess 	where 		DoctorUsername = \'" + username + "\' 	)";
+            
+            if (f_name != null && !f_name.trim().isEmpty())
+                query += "and PV.FirstName" + " like" + "(\'" + f_name + "\') ";
+            if (l_name != null && !l_name.trim().isEmpty())
+                query += "and PV.LastName" + " like" + "(\'" + l_name + "\') ";
+            if (p_num != null && !p_num.trim().isEmpty())
+                query += "and PV.PatientNumber" + " like" + "(\'" + p_num + "\') ";
+            if (v_date != null && !v_date.trim().isEmpty())
+                query += "and PV.EndTime" + " like" + "(\'" + v_date +  "\') ";
+            
+            Connection con;
+            Statement stmt;
+            
+            Class.forName("com.mysql.jdbc.Driver");
+            
+            con = DriverManager.getConnection(url, user, pwd);
+            
+            stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            ArrayList l = new ArrayList();
+            ResultSetMetaData md = rs.getMetaData();
+            int c_count = md.getColumnCount();
+            
+            for (int i = 1; i < c_count; i++) {
+                l.add(md.getColumnLabel(i));
+            }
+            
+            ResultData rd = new ResultData();
+            rd.l = l;
+            rd.rs = rs;
+
+            //con.close();
+            
+            return rd;
+    }
+    
+    public static ResultSet getPatientUsername(String doctor_username)
+        throws ClassNotFoundException, SQLException {
+            String query = "select PatientUsername from" +
+                    "ece358_22_2014.DoctorPatientAccess" +
+                    "where DoctorUsername like \'" +
+                    doctor_username +
+                    "\'";
+            Connection con;
+            Statement stmt;
+            
+            Class.forName("com.mysql.jdbc.Driver");
+            
+            con = DriverManager.getConnection(url, user, pwd);
+            
+            stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            
+            con.close();
             
             return rs;
     }
@@ -61,7 +131,7 @@ public class UserDBAO {
         stmt = con.createStatement();
         
         ResultSet rs = stmt.executeQuery(query); 
-        con.close();
+        //con.close();
         return rs;
     }
     
