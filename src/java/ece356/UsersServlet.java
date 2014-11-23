@@ -183,7 +183,7 @@ public class UsersServlet extends SecureHTTPServlet {
                 out.println("<table border=1>");
                 // first row for column names
                 out.println("<tr>");
-                for (int j = 0; j <= c_count; j++){
+                for (int j = 0; j < c_count; j++){
                     out.println("<th>");
                     out.println(rd.l.get(j).toString());
                 }    
@@ -203,8 +203,8 @@ public class UsersServlet extends SecureHTTPServlet {
                 out.println("");
                 out.println("</table>");
 
-                out.println("<div>");
-                out.println("<body>");
+                out.println("</div>");
+                out.println("</body>");
             }
 
             out.println("</html>");
