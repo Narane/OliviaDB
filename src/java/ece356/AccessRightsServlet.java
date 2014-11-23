@@ -5,82 +5,138 @@
  */
 package ece356;
 
+import static ece356.UserDBAO.pwd;
+import static ece356.UserDBAO.schema;
+import static ece356.UserDBAO.url;
+import static ece356.UserDBAO.user;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author bleskows
  */
-public class AccessRightsServlet extends HttpServlet {
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet AccessRightsServlet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet AccessRightsServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+public class AccessRightsServlet extends SecureHTTPServlet {
+  
+    @Override
+    public void innerFunction(
+            HttpServletRequest req, 
+            HttpServletResponse res, 
+            ServletOutputStream out)
+        throws ServletException,  IOException {
+        
+        HttpSession session = req.getSession();
+        String username = (String) session.getAttribute("username");
+        String role = "SOMETHING BROKE PLEASE FIX";
+        String resultString = "";
+        
+        try{
+            role = UserDBAO.getRole(username);
+            if(!(role.equals("doctor") || role.equals("superuser"))){
+                session.invalidate();
+                res.sendRedirect("LoginServlet");
+            }
+            
+            //Work on the request
+            resultString = grantAccess(username, req);
+        } catch (Exception e){
+            req.setAttribute("exception", e);
+            // Set the name of jsp to be displayed if connection fails
+            String url = "/error.jsp";
+            getServletContext().getRequestDispatcher(url).forward(req, res);
         }
+        
+        out.println("<p>Update</p>");
+        out.println(
+            "<form method=\"post\">\n" +
+            "  Doctor username: <input type=\"text\" value=\"\" SIZE=30 name=\"doctorname\"><br>\n" +
+            "  Patient username: <input type=\"text\" value=\"\" SIZE=30 name=\"patientname\"><br>\n" +
+            resultString +
+            "  <input type=\"submit\" value=\"Grant access\">\n" +
+            "</form> ");
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+    private String grantAccess(String username, HttpServletRequest req) 
+            throws ClassNotFoundException, SQLException{
+        
+            String doctorName = req.getParameter("doctorname");
+            String patientName = req.getParameter("patientname");
+        
+            if (doctorName == null) {
+                // NOT SUBMITTED?
+                return "";
+            }
+            
+            doctorName = doctorName.trim();
+            patientName = patientName.trim();
+            
+            if (doctorName.equals("") || patientName.equals("")) {
+                // NEED BOTH FIELDS
+                return "<p><font color=\"red\">Both inputs are required</font></p>";
+            }
+            
+            //Manipulate DB
+            Statement stmt;
+            Connection con;
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection(url, user, pwd);
+            stmt = con.createStatement();
+            String query = "";
+            String compareRole = "";
+            
+            StringBuilder sb = new StringBuilder(128);
+            //First check that the doctor exists in the DB
+            compareRole = "doctor";
+            query = "SELECT role FROM " + schema +".User " +
+                   "WHERE Username = \"" + doctorName + "\"";
+            ResultSet rs = stmt.executeQuery(query);
+            if (!(rs.next() && compareRole.equals((String)rs.getString("role")))) {
+                //Input doctor isn't actually a doctor... or user doesn't exist
+                sb.append("Invalid doctor username");
+            }
+            
+            //Now check for the patient in the DB
+            compareRole = "patient";
+            query = "SELECT role FROM " + schema +".User " +
+                   "WHERE Username = \"" + patientName + "\"";
+            rs = stmt.executeQuery(query);
+            if (!(rs.next() && compareRole.equals((String)rs.getString("role")))) {
+                //Input doctor isn't actually a doctor... or user doesn't exist
+                if(sb.length() > 0){
+                    sb.append("</br>");
+                }
+                sb.append("Invalid patient username");
+            }
+            
+            if(sb.length() > 0){
+                return("<p><font color=\"red\">" + sb.toString() + "</font></p>");
+            }
+            
+            //Also check that the entry isn't duplicate in the access chart
+            query = "SELECT * FROM " + schema +".DoctorPatientAccess " +
+                   "WHERE PatientUsername = \"" + patientName + "\"" +
+                   "AND DoctorUsername = \"" + doctorName + "\"";
+            rs = stmt.executeQuery(query);
+            if (rs.next()) {
+                return("<p><font color=\"red\">Duplicate entry found</font></p>");
+            }
+            
+            //Do the insert now that it's confirmed to be safe
+            query = "INSERT INTO " + UserDBAO.schema + ".DoctorPatientAccess(PatientUsername, DoctorUsername) " +
+                    "VALUES('" + patientName + "', '" + doctorName + "');";
+            stmt.executeUpdate(query);
+            con.close();
+            
+            return "<p><font color=\"green\">Update successful</font></p>";
     }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+    
 }
