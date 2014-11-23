@@ -1,6 +1,9 @@
+CREATE PROCEDURE `createCleanDB`()
+BEGIN
+
 # SQL script to create clean database
-CREATE DATABASE IF NOT EXISTS ece356_22_2014;
-Use ece356_22_2014;
+#CREATE DATABASE IF NOT EXISTS ece356_22_2014;
+#Use ece356_22_2014;
 
 DROP TABLE IF EXISTS
    Roles, DoctorStaffAccess, Appointment, Visits, DoctorPatientAccess, Costs, Staff, Patient, Doctor, User CASCADE;
@@ -105,4 +108,5 @@ CREATE TABLE DoctorStaffAccess (
 );
 
 select * from information_schema.COLUMNS where TABLE_SCHEMA='ece356_22_2014';
+
 END
