@@ -200,6 +200,10 @@ public class UserDBAO {
     }
     
     public static String generateTable(QueryResult que){
+        if(que.getResultSet().size() <= 0){
+            return "";
+        }
+        
         StringBuilder sb = new StringBuilder(256);
         
         QueryResult.QueryRow row = null;

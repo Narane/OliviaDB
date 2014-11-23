@@ -26,6 +26,8 @@ import javax.servlet.http.HttpSession;
  * @author bleskows
  */
 public class AccessRightsServlet extends SecureHTTPServlet {
+    private String dbName = UserDBAO.schema + ".DoctorPatientAccess";
+    
     
     public String pageTitle(){
         return "Grant patient access rights";
@@ -69,8 +71,14 @@ public class AccessRightsServlet extends SecureHTTPServlet {
             "<input type=\"submit\" value=\"Grant access\"></form>");
         
         try{
-            QueryResult que = UserDBAO.executeQuery("SELECT PatientUsername AS \"Patients\" FROM " + UserDBAO.schema + ".DoctorPatientAccess " + 
-                    "WHERE DoctorUsername = \"" + username + "\"");
+            QueryResult que = UserDBAO.executeQuery("SELECT DoctorUsername AS \"Doctor\", PatientUsername AS \"Patient\" FROM " + dbName +
+                    " AS acc WHERE EXISTS (SELECT * FROM " + schema + ".Patient AS pa" +
+                    " WHERE pa.DoctorUsername = \"" + username + 
+                    "\" and acc.PAtientUsername = pa.PatientUsername);");
+           out.println("<br>You have given these acceses to other doctors:<br>" + UserDBAO.generateTable(que));         
+            
+            que = UserDBAO.executeQuery("SELECT PatientUsername AS \"Patients\" FROM " + dbName + 
+                    " WHERE DoctorUsername = \"" + username + "\"");
             out.println("<br>Other doctors have granted you granted access to the following patients:<br>" + UserDBAO.generateTable(que));
         }
         catch (Exception e) {
@@ -148,8 +156,8 @@ public class AccessRightsServlet extends SecureHTTPServlet {
             
             //Also check that the entry isn't duplicate in the access chart
             if(req.getParameter("deletemode") != null){
-                query = "DELETE FROM " + schema +".DoctorPatientAccess " +
-                        "WHERE PatientUsername = \"" + patientName + "\"" +
+                query = "DELETE FROM " + dbName +
+                        " WHERE PatientUsername = \"" + patientName + "\"" +
                         "AND DoctorUsername = \"" + doctorName + "\"";
                 int ret = stmt.executeUpdate(query);
                 if(ret > 0){
@@ -159,8 +167,8 @@ public class AccessRightsServlet extends SecureHTTPServlet {
                 }
             }
             else{
-                query = "SELECT * FROM " + schema +".DoctorPatientAccess " +
-                        "WHERE PatientUsername = \"" + patientName + "\"" +
+                query = "SELECT * FROM " + dbName +
+                        " WHERE PatientUsername = \"" + patientName + "\"" +
                         "AND DoctorUsername = \"" + doctorName + "\"";
                 rs = stmt.executeQuery(query);
                 if (rs.next()) {
@@ -171,7 +179,7 @@ public class AccessRightsServlet extends SecureHTTPServlet {
 
             
             //Do the insert now that it's confirmed to be safe
-            query = "INSERT INTO " + schema + ".DoctorPatientAccess(PatientUsername, DoctorUsername) " +
+            query = "INSERT INTO " + dbName + "(PatientUsername, DoctorUsername) " +
                     "VALUES('" + patientName + "', '" + doctorName + "');";
             stmt.executeUpdate(query);
             con.close();

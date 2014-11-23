@@ -68,7 +68,7 @@ public class MarkupHelper {
         }
         
         if(role.equals("doctor") || role.equals("superuser")){
-            sb.append(buildSidebarHelper("AccessRightsServlet", "Change peer access rights"));
+            sb.append(buildSidebarHelper("AccessRightsServlet", "Patient log access rights"));
         }
         
         if(role.equals("finance") || role.equals("superuser")){
