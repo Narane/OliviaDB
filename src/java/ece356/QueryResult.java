@@ -64,7 +64,7 @@ public class QueryResult {
         
         int colCount = md.getColumnCount();
         ArrayList<String> header = new ArrayList<String>(0);
-        for (int i = 1; i < colCount; i++) {
+        for (int i = 1; i <= colCount; i++) {
             header.add(md.getColumnLabel(i));
         }
         
