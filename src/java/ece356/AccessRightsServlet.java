@@ -67,6 +67,18 @@ public class AccessRightsServlet extends SecureHTTPServlet {
             "  Patient username: <input type=\"text\" value=\"\" SIZE=30 name=\"patientname\"><br>" +
             resultString +
             "<input type=\"submit\" value=\"Grant access\"></form>");
+        
+        try{
+            QueryResult que = UserDBAO.executeQuery("SELECT PatientUsername AS \"Patients\" FROM " + UserDBAO.schema + ".DoctorPatientAccess " + 
+                    "WHERE DoctorUsername = \"" + username + "\"");
+            out.println("<br>Other doctors have granted you granted access to the following patients:<br>" + UserDBAO.generateTable(que));
+        }
+        catch (Exception e) {
+            req.setAttribute("exception", e);
+            // Set the name of jsp to be displayed if connection fails
+            String url = "/error.jsp";
+            getServletContext().getRequestDispatcher(url).forward(req, res);
+        }
     }
 
     private String grantAccess(String username, HttpServletRequest req) 

@@ -198,4 +198,44 @@ public class UserDBAO {
         con.close();
         return false;
     }
+    
+    public static String generateTable(QueryResult que){
+        StringBuilder sb = new StringBuilder(256);
+        
+        QueryResult.QueryRow row = null;
+        ArrayList header;
+        ArrayList r_data;
+        
+        sb.append("<table border=1><tr>");
+        
+        ArrayList result = que.getResultSet();
+        row = (QueryResult.QueryRow) result.get(0);
+        header = row.getHeader();
+        int c_count = header.size();
+        int r_count = result.size();
+
+        //print headers
+        for (int j = 0; j < c_count; j++) {
+            sb.append("<th>");
+            sb.append((String) header.get(j));
+        }
+        sb.append("</tr>");
+        
+        for (int i = 0; i < r_count; i++) {
+                row = (QueryResult.QueryRow) result.get(i);
+                r_data = row.getRow();
+                sb.append("<tr>");
+                for (int j = 0; j < c_count; j++) {
+
+                    sb.append("<td>");
+                    sb.append((String) r_data.get(j));
+                    
+                }
+                sb.append("</tr>");
+            }
+            
+            sb.append("</table>");
+        
+        return sb.toString();
+    }
 }
