@@ -13,10 +13,6 @@
         <servlet-class>ece356.UpdatePersonalInfoServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>VisitationServlet</servlet-name>
-        <servlet-class>ece356.VisitationServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>AppointmentServlet</servlet-name>
         <servlet-class>ece356.AppointmentServlet</servlet-class>
     </servlet>
@@ -59,10 +55,6 @@
     <servlet-mapping>
         <servlet-name>UpdatePersonalInfoServlet</servlet-name>
         <url-pattern>/UpdatePersonalInfoServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>VisitationServlet</servlet-name>
-        <url-pattern>/VisitationServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>AppointmentServlet</servlet-name>
