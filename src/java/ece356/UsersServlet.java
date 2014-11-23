@@ -5,9 +5,11 @@
  */
 package ece356;
 
+import ece356.QueryResult.QueryRow;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -55,62 +57,78 @@ public class UsersServlet extends SecureHTTPServlet {
                 is_query = true;
             }
             
-            /*
             if(!UserDBAO.securityCheck(request, response)){
-            //if (false){
                 response.sendRedirect("LoginServlet");
                 return;
             }
-            */
+            
             role = UserDBAO.getRole(username);
 
-            ResultSet rs_user_dir = null;
-            //ResultSet rs_patient_info = null;
-            ResultSet rs = null;
-
-            rs = UserDBAO.getColumns("User");
-            String col_name = "FirstName";
+            QueryResult rs_user_dir = null;
+            String col_name = "";
 
             // generic user information screen
 
             if (role.toLowerCase().equals("doctor")){
                 out.println("<h3>List of Current Patients</h3>");
-                rs_user_dir = UserDBAO.executeQuery("select * from ece356_22_2014.Patient where DoctorUsername = \'" +
+                rs_user_dir = UserDBAO.executeQuery("select * from ece356_22_2014.Patient "
+                        + "where DoctorUsername = \'" +
                         username +
                         "\';");
+                
             } else if (role.toLowerCase().equals("patient")) {
                 out.println("<h3>Patient User Directory</h3>");
-                rs_user_dir = UserDBAO.executeQuery("select FirstName, LastName, Role from ece356_22_2014.User where Username like(\'" + username + "\')");
+                rs_user_dir = UserDBAO.executeQuery("select FirstName, LastName, "
+                        + "Role from ece356_22_2014.User where Username like(\'"
+                        + username + "\')");
+                
             } else if (role.toLowerCase().equals("staff")) {
                 out.println("<h3>Staff User Directory</h3>");
-                rs_user_dir = UserDBAO.executeQuery("select FirstName, LastName, Role from ece356_22_2014.User where role in (\'doctor\', \'staff\')");
+                rs_user_dir = UserDBAO.executeQuery("select FirstName, LastName, "
+                        + "Role from ece356_22_2014.User where role in "
+                        + "(\'doctor\', \'staff\')");
+                
             } else if (role.toLowerCase().equals("superuser")){
                 out.println("<h3>Admin User Directory</h3>");
-                rs_user_dir = UserDBAO.executeQuery("select * from ece356_22_2014.User");
+                rs_user_dir = UserDBAO.executeQuery("select * "
+                        + "from ece356_22_2014.User");
+                
             }
 
-            ResultSetMetaData md_user = rs_user_dir.getMetaData();
-            int c_count = md_user.getColumnCount();
+            ArrayList result = rs_user_dir.getResultSet();
+            int r_count = result.size();
+            int c_count = 0;
+            
+            QueryRow r = null;
+            ArrayList header;
+            ArrayList r_data;
 
             out.println("<table border=1>");
-
             out.println("<tr>");
-            for (int j = 1; j <= c_count; j++){
+            
+            r = (QueryRow) result.get(0);
+            header = r.getHeader();
+            c_count = header.size();
+            
+            for (int j = 0; j < c_count; j++) {
                 out.println("<th>");
-                out.println(md_user.getColumnLabel(j));
-            }    
+                out.println((String) header.get(j));
+            }
             out.println("</tr>");
-
-            while (rs_user_dir.next()) {
+            
+            for (int i = 0; i < r_count; i++) {
+                r = (QueryRow) result.get(i);
+                r_data = r.getRow();
                 out.println("<tr>");
-                for (int j = 1; j <= c_count; j++) {
+                for (int j = 0; j < c_count; j++) {
+
                     out.println("<td>");
-                    out.println(rs_user_dir.getString(j));
+                    out.println((String) r_data.get(j));
+                    
                 }
                 out.println("</tr>");
             }
-            out.println("");
-            out.println("");
+            
             out.println("</table>");
 
             if (role.toLowerCase().equals("doctor")) {
