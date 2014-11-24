@@ -82,7 +82,7 @@ public class MarkupHelper {
         }
         
         if(role.equals("superuser")) {
-            sb.append(buildSidebarHelper("CreateProcedureServlet", "Create Procedures"));
+            sb.append(buildSidebarHelper("ProcedureServlet", "Hospital Procedures"));
         }
         
         sb.append("</sidebar>");
