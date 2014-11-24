@@ -44,7 +44,14 @@ public class UserDBAO {
         throws ClassNotFoundException, SQLException {
             String query = "";
             
-            query = "select 	* from ( 	select 		U.FirstName,         U.LastName,         P.PatientNumber,         V.* 	from 		ece356_22_2014.Patient as P 	inner join 		ece356_22_2014.Visits as V 	inner join 		ece356_22_2014.User as U 	on 		V.PatientUsername = P.PatientUsername 	and 		U.Username = P.PatientUsername ) as PV where 	PatientUsername 	in 	( 	select 		PatientUsername 	from 		ece356_22_2014.DoctorPatientAccess 	where 		DoctorUsername = \'" + username + "\' 	)";
+            query = "select * from ( select U.FirstName, "
+                    + "U.LastName,         P.PatientNumber, V.* "
+                    + "from ece356_22_2014.Patient as P inner join "
+                    + "ece356_22_2014.Visits as V inner join "
+                    + "U.Username = P.PatientUsername ) as PV where PatientUsername "
+                    + "in ( select PatientUsername from "
+                    + "ece356_22_2014.DoctorPatientAccess where "
+                    + "DoctorUsername = \'" + username + "\' )";
             
             if (f_name != null && !f_name.trim().isEmpty())
                 query += "and PV.FirstName" + " like" + "(\'" + f_name + "\') ";
