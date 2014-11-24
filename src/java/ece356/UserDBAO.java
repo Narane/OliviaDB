@@ -9,12 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class UserDBAO {
-    public static final String url = "jdbc:mysql://localhost:3306/";
+    public static final String url = "jdbc:mysql://192.168.56.130:3306/";
     //public static final String url = "jdbc:mysql://eceweb.uwaterloo.ca:3306/";
-    public static final String user = "root";        
-    //public static final String user = "user_h86kim";
-    public static final String pwd = "root";
-    //public static final String pwd = "user_h86kim";
+    //public static final String user = "root";        
+    public static final String user = "user_kmyin";
+    //public static final String pwd = "root";
+    public static final String pwd = "user_kmyin";
     public static final String schema = "ece356_22_2014";
     
     public static ResultSet getColumns(String table_name)
@@ -44,7 +44,14 @@ public class UserDBAO {
         throws ClassNotFoundException, SQLException {
             String query = "";
             
-            query = "select 	* from ( 	select 		U.FirstName,         U.LastName,         P.PatientNumber,         V.* 	from 		ece356_22_2014.Patient as P 	inner join 		ece356_22_2014.Visits as V 	inner join 		ece356_22_2014.User as U 	on 		V.PatientUsername = P.PatientUsername 	and 		U.Username = P.PatientUsername ) as PV where 	PatientUsername 	in 	( 	select 		PatientUsername 	from 		ece356_22_2014.DoctorPatientAccess 	where 		DoctorUsername = \'" + username + "\' 	)";
+            query = "select * from ( select U.FirstName, "
+                    + "U.LastName,         P.PatientNumber, V.* "
+                    + "from ece356_22_2014.Patient as P inner join "
+                    + "ece356_22_2014.Visits as V inner join "
+                    + "U.Username = P.PatientUsername ) as PV where PatientUsername "
+                    + "in ( select PatientUsername from "
+                    + "ece356_22_2014.DoctorPatientAccess where "
+                    + "DoctorUsername = \'" + username + "\' )";
             
             if (f_name != null && !f_name.trim().isEmpty())
                 query += "and PV.FirstName" + " like" + "(\'" + f_name + "\') ";
