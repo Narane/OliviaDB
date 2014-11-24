@@ -155,7 +155,7 @@ public class ProcedureServlet extends SecureHTTPServlet {
         df.setMaximumFractionDigits(2);
         BigDecimal decimalCost = new BigDecimal(df.format(Double.parseDouble(cost)));
         
-        String query = "UPDATE " + UserDBAO.schema + ".`costs` SET `Cost` = " + 
+        String query = "UPDATE " + UserDBAO.schema + ".Costs SET `Cost` = " + 
                 decimalCost.toString() + " WHERE `ProcedureName` = \"" +  pName +"\"";        
         int returnValue = UserDBAO.executeUpdate(query);
         
@@ -170,7 +170,7 @@ public class ProcedureServlet extends SecureHTTPServlet {
             return -1;
         }
         
-        String query = "DELETE FROM " + UserDBAO.schema + ".`costs` "
+        String query = "DELETE FROM " + UserDBAO.schema + ".Costs "
             + "WHERE ProcedureName = \"" + pName + "\"";
         
         int returnValue = UserDBAO.executeUpdate(query);
@@ -188,7 +188,7 @@ public class ProcedureServlet extends SecureHTTPServlet {
         DecimalFormat df = new DecimalFormat("#.00");
         df.setMaximumFractionDigits(2);
         BigDecimal decimalCost = new BigDecimal(df.format(Double.parseDouble(cost)));
-        String query = "INSERT INTO " + UserDBAO.schema + ".`costs` " +
+        String query = "INSERT INTO " + UserDBAO.schema + ".Costs " +
             "(`ProcedureName`, `Cost`) VALUES " +
             "('" + pName +"', " + decimalCost.toString() + ")";
         
