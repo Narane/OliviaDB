@@ -9,12 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class UserDBAO {
-    //public static final String url = "jdbc:mysql://localhost:3306/";
-    public static final String url = "jdbc:mysql://eceweb.uwaterloo.ca:3306/";
-    //public static final String user = "root";        
-    public static final String user = "user_h86kim";
-    //public static final String pwd = "root";
-    public static final String pwd = "user_h86kim";
+    public static final String url = "jdbc:mysql://localhost:3306/";
+    //public static final String url = "jdbc:mysql://eceweb.uwaterloo.ca:3306/";
+    public static final String user = "root";        
+    //public static final String user = "user_h86kim";
+    public static final String pwd = "root";
+    //public static final String pwd = "user_h86kim";
     public static final String schema = "ece356_22_2014";
     
     public static ResultSet getColumns(String table_name)
@@ -111,6 +111,25 @@ public class UserDBAO {
             return rs;
     }
     
+    public static ResultSet getDoctor(String patient_username)
+        throws ClassNotFoundException, SQLException {
+            String query = "select DoctorUsername from" +
+                    "ece358_22_2014.DoctorPatientAccess" +
+                    "where PatientUsername like \'" +
+                    patient_username +
+                    "\'";
+            Connection con;
+            con = DriverManager.getConnection(url, user, pwd);
+            
+            Statement stmt;
+            stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            
+            con.close();
+            
+            return rs;
+    }
+    
     public static String getRole(String username)
         throws ClassNotFoundException, SQLException {
         Statement stmt;
@@ -131,7 +150,7 @@ public class UserDBAO {
         }
         return "error";
     }
-    
+        
     public static QueryResult executeQuery(String query) 
         throws ClassNotFoundException, SQLException {
         Statement stmt;
