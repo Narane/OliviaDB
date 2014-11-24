@@ -79,7 +79,7 @@ public class AppointmentServlet extends SecureHTTPServlet {
 
                 //Display past appointments            
                 String pastAppointmentsQuery = "select FirstName as \"Doctor First Name\", LastName as \"Doctor Last Name\", StartTime as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\" from " +
-                        "(" + schema + ".appointment natural join " + schema + ".user)"+
+                        "(" + schema + ".Appointment natural join " + schema + ".User)"+
                         "where PatientUsername = \"" + username + "\" and DoctorUsername = Username and StartTime < SYSDATE()" +
                         "order by StartTime desc";
 
@@ -97,7 +97,7 @@ public class AppointmentServlet extends SecureHTTPServlet {
                 //View current appointments
                 //Display most current appointment
                 String currentAppointmentQuery = "select FirstName as \"Patient First Name\", LastName as \"Patient Last Name\", min(StartTime) as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\" from " +
-                        "(" + schema + ".appointment natural join " + schema + ".user)"+
+                        "(" + schema + ".Appointment natural join " + schema + ".User)"+
                         "where DoctorUsername = \"" + username + "\" and PatientUsername = Username and StartTime > SYSDATE()";
 
                 QueryResult currentAppointment = UserDBAO.executeQuery(currentAppointmentQuery);
@@ -120,7 +120,7 @@ public class AppointmentServlet extends SecureHTTPServlet {
                 Boolean future = (appName != null && appName.equals("View Future Appointments"));
                 
                 String futureAppointmentsQuery = "select FirstName as \"Patient First Name\", LastName as \"Patient Last Name\", StartTime as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\" from " +
-                        "(" + schema + ".appointment natural join " + schema + ".user)"+
+                        "(" + schema + ".Appointment natural join " + schema + ".User)"+
                         "where DoctorUsername = \"" + username + "\" and PatientUsername = Username and StartTime > SYSDATE()" +
                         "order by StartTime desc";
 
@@ -136,7 +136,7 @@ public class AppointmentServlet extends SecureHTTPServlet {
 
                 //Display past appointments            
                 String pastAppointmentsQuery = "select FirstName as \"Patient First Name\", LastName as \"Patient Last Name\", StartTime as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\" from " +
-                        "(" + schema + ".appointment natural join " + schema + ".user)"+
+                        "(" + schema + ".Appointment natural join " + schema + ".User)"+
                         "where DoctorUsername = \"" + username + "\" and PatientUsername = Username and StartTime < SYSDATE()" +
                         "order by StartTime desc";
 
