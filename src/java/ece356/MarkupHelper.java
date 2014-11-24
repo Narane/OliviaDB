@@ -15,7 +15,7 @@ public class MarkupHelper {
                 "   <link rel=\"stylesheet\" href=\"jquery-ui.css\">\n" +
                 "   <script src=\"jquery-1.10.2.js\"></script>\n" +
                 "   <script src=\"jquery-ui.js\"></script>\n" +
-                "   <script> $(function() { $( \"input[name^=MyDate]\" ).datepicker({ dateFormat: \"yyyy-mm-dd\" }); });</script>\n" +
+                "   <script> $(function() { $( \"input[name^=MyDate]\" ).datepicker({ dateFormat: \"yy-mm-dd\" }); });</script>\n" +
                 "</head><body><div class=\"wrapper\">");
         sb.append(buildSidebar(role));
         sb.append("<section>");
