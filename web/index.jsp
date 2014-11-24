@@ -15,7 +15,7 @@
     <body>
         <h1>St. Olivia Hospital</h1>
         <ul>
-            <li><a href="LoginServlet">Staff Login Button</a></li>
+            <li><h2><center><a href="LoginServlet">Staff Login Button</a></center></h2></li>
         </ul>
     </body>
 </html>
