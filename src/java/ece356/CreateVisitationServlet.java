@@ -121,10 +121,16 @@ public class CreateVisitationServlet extends SecureHTTPServlet {
             out.println("<textarea rows=\"4\" cols=\"50\" name=\"comments\"></textarea>\n");
             out.println("<br /><br />\n");
             
-            out.println("<input type=\"submit\" value=\"Submit Visitation Entry\">\n");
+            out.println("<input type=\"submit\" value=\"Submit\" name=\"submitAction\">\n");
             out.println("</form>\n");
             
             out.println(msg);
+            
+            String submitAction = req.getParameter("submitAction");
+            Boolean submitting = submitAction != null && submitAction.equals("Submit");
+            if(submitting) {
+                createVisitation(req);
+            }
            
         }
         
@@ -134,6 +140,29 @@ public class CreateVisitationServlet extends SecureHTTPServlet {
             String url = "/error.jsp";
             getServletContext().getRequestDispatcher(url).forward(req, res);
         }   
+    }
+    
+    private void createVisitation(HttpServletRequest req) {
+        String patientUsername = req.getParameter("patient");
+        String visitDate = req.getParameter("MyDate1");
+        String visitStart = req.getParameter("visitStart");
+        String visitEnd = req.getParameter("visitEnd");
+        String procedureName = req.getParameter("procedureName");
+        String procedureTime = req.getParameter("procedureTime");
+        String currentStatus = req.getParameter("currentStatus");
+        String prescription = req.getParameter("prescription");
+        String diagnosis = req.getParameter("diagnosis");
+        String prescriptionStartDate = req.getParameter("MyDate2");
+        String prescriptionStartTime = req.getParameter("prescStartTime");
+        String prescriptionEndDate = req.getParameter("MyDate3");
+        String prescriptionEndTime = req.getParameter("prescEndTime");
+        String comments = req.getParameter("comments");
+        
+        String test = "";
+        
+        
+        
+        
     }
 
 }
