@@ -27,19 +27,13 @@ public class AppointmentServlet extends SecureHTTPServlet {
         String role = "";
         try{
             role = UserDBAO.getRole(username);
+            
             if(!(role.equals("patient") || role.equals("doctor") || role.equals("staff") || role.equals("superuser"))){
                 session.invalidate();
                 res.sendRedirect("LoginServlet");
             }
-        } catch(Exception e){
-            req.setAttribute("exception", e);
-            // TODO: Change error functionality to do something other than display error
-            String url = "/error.jsp";
-            getServletContext().getRequestDispatcher(url).forward(req, res);
-        }
         
-        StringBuilder sb = new StringBuilder(128);
-        try{
+            StringBuilder sb = new StringBuilder(128);
             if(role.equals("patient")){
 
                 //Display most current appointment
@@ -58,17 +52,29 @@ public class AppointmentServlet extends SecureHTTPServlet {
                 //Display future appointments
                 //sb.append("<form><input type=\"button\" value=\"View Future Appointments\"></form>");
                 
+                sb.append("<form method=\"post\">");
+                sb.append("<input type=\"submit\" name=\"appointmentName\" value=\"View Past Appointments\">");
+                sb.append("<input type=\"submit\" name=\"appointmentName\" value=\"View Future Appointments\">");
+                sb.append("</form>");
+                
+                String appName = req.getParameter("appointmentName");
+                
+                Boolean past = (appName != null && appName.equals("View Past Appointments"));
+                Boolean future = (appName != null && appName.equals("View Future Appointments"));
+                
                 String futureAppointmentsQuery = "select FirstName as \"Doctor First Name\", LastName as \"Doctor Last Name\", StartTime as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\" from " +
                         "(" + schema + ".appointment natural join " + schema + ".user)"+
                         "where PatientUsername = \"" + username + "\" and DoctorUsername = Username and StartTime > SYSDATE()" +
                         "order by StartTime desc";
 
                 QueryResult futureAppointments = UserDBAO.executeQuery(futureAppointmentsQuery);
-                if(futureAppointments.getResultSet().size() <= 0){
-                    sb.append("<br><h3>You currently have no future appointments</h3></br>");
-                }
-                else{
-                    sb.append("<br><h3>Your Future Appointments:</h3></br>" + UserDBAO.generateTable(futureAppointments));
+                if(future){              
+                    if(futureAppointments.getResultSet().size() <= 0){
+                        sb.append("<br><h3>You currently have no future appointments</h3></br>");
+                    }
+                    else{
+                        sb.append("<br><h3>Your Future Appointments:</h3></br>" + UserDBAO.generateTable(futureAppointments));
+                    }
                 }
 
                 //Display past appointments            
@@ -78,11 +84,13 @@ public class AppointmentServlet extends SecureHTTPServlet {
                         "order by StartTime desc";
 
                 QueryResult pastAppointments = UserDBAO.executeQuery(pastAppointmentsQuery);
-                if(pastAppointments.getResultSet().size() <= 0){
-                    sb.append("<br><h3>You currently have no past appointments</h3></br>");
-                }
-                else{
-                    sb.append("<br><h3>Your Past Appointments:</h3></br>" + UserDBAO.generateTable(pastAppointments));
+                if(past){ 
+                    if(pastAppointments.getResultSet().size() <= 0){
+                        sb.append("<br><h3>You currently have no past appointments</h3></br>");
+                    }
+                    else{
+                        sb.append("<br><h3>Your Past Appointments:</h3></br>" + UserDBAO.generateTable(pastAppointments));
+                    }
                 }
             }
             else if(role.equals("doctor")){
@@ -101,17 +109,29 @@ public class AppointmentServlet extends SecureHTTPServlet {
                 }
 
                 //Display future appointments
+                sb.append("<form method=\"post\">");
+                sb.append("<input type=\"submit\" name=\"appointmentName\" value=\"View Past Appointments\">");
+                sb.append("<input type=\"submit\" name=\"appointmentName\" value=\"View Future Appointments\">");
+                sb.append("</form>");
+                
+                String appName = req.getParameter("appointmentName");
+                
+                Boolean past = (appName != null && appName.equals("View Past Appointments"));
+                Boolean future = (appName != null && appName.equals("View Future Appointments"));
+                
                 String futureAppointmentsQuery = "select FirstName as \"Patient First Name\", LastName as \"Patient Last Name\", StartTime as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\" from " +
                         "(" + schema + ".appointment natural join " + schema + ".user)"+
                         "where DoctorUsername = \"" + username + "\" and PatientUsername = Username and StartTime > SYSDATE()" +
                         "order by StartTime desc";
 
                 QueryResult futureAppointments = UserDBAO.executeQuery(futureAppointmentsQuery);
-                if(futureAppointments.getResultSet().size() <= 0){
-                    sb.append("<br><h3>You currently have no future appointments</h3></br>");
-                }
-                else{
-                    sb.append("<br><h3>Your Future Appointments:</h3></br>" + UserDBAO.generateTable(futureAppointments));
+                if(future){              
+                    if(futureAppointments.getResultSet().size() <= 0){
+                        sb.append("<br><h3>You currently have no future appointments</h3></br>");
+                    }
+                    else{
+                        sb.append("<br><h3>Your Future Appointments:</h3></br>" + UserDBAO.generateTable(futureAppointments));
+                    }
                 }
 
                 //Display past appointments            
@@ -121,11 +141,13 @@ public class AppointmentServlet extends SecureHTTPServlet {
                         "order by StartTime desc";
 
                 QueryResult pastAppointments = UserDBAO.executeQuery(pastAppointmentsQuery);
-                if(pastAppointments.getResultSet().size() <= 0){
-                    sb.append("<br><h3>You currently have no past appointments</h3></br>");
-                }
-                else{
-                    sb.append("<br><h3>Your Past Appointments:</h3></br>" + UserDBAO.generateTable(pastAppointments));
+                if(past){ 
+                    if(pastAppointments.getResultSet().size() <= 0){
+                        sb.append("<br><h3>You currently have no past appointments</h3></br>");
+                    }
+                    else{
+                        sb.append("<br><h3>Your Past Appointments:</h3></br>" + UserDBAO.generateTable(pastAppointments));
+                    }
                 }
 
             }
