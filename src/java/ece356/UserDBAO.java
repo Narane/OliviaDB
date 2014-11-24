@@ -91,8 +91,8 @@ public class UserDBAO {
     
     public static ResultSet getPatientUsername(String doctor_username)
         throws ClassNotFoundException, SQLException {
-            String query = "select PatientUsername from" +
-                    "ece358_22_2014.DoctorPatientAccess" +
+            String query = "select PatientUsername from " +
+                    schema + ".DoctorPatientAccess " +
                     "where DoctorUsername like \'" +
                     doctor_username +
                     "\'";
@@ -113,8 +113,8 @@ public class UserDBAO {
     
     public static QueryResult getAppointments(String patient_username)
         throws ClassNotFoundException, SQLException {
-            String query = "select DocterUsername, StartTime from" +
-                    "ece358_22_2014.appointment" +
+            String query = "select DoctorUsername, StartTime from " +
+                    schema + ".appointment " +
                     "where PatientUsername = \"" +
                     patient_username +
                     "\"";
