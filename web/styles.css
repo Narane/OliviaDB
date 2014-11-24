@@ -372,8 +372,8 @@ footer {
 
   sidebar, section, footer {
     float:none;
-    position:fixed;
-    width:auto;
+    position:static;
+    width:100%;
   }
 
 	footer {
@@ -396,9 +396,10 @@ footer {
   }
 
   sidebar ul {
-    position:absolute;
+    position:static;
     right:130px;
     top:84px;
+    width:100%;
   }
 }
 
