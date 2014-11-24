@@ -57,6 +57,7 @@ public class QueryResult {
     }
     
     ArrayList<QueryRow> resultSet = new ArrayList<QueryRow>(0);
+    String message = "";
     
     public QueryResult(ResultSet rs) { 
         try {
@@ -79,6 +80,7 @@ public class QueryResult {
         catch (SQLException e) {
             // yield QueryResult with empty resultSet
             resultSet = new ArrayList<QueryRow>(0);
+            message = e.getMessage();
         }
     } 
     
@@ -92,6 +94,10 @@ public class QueryResult {
     
     public boolean hasResults() {
         return (resultSet.size() > 0);
+    }
+    
+    public String getMessage() {
+        return message;
     }
     
 }
