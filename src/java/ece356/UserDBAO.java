@@ -111,23 +111,29 @@ public class UserDBAO {
             return rs;
     }
     
-    public static ResultSet getDoctor(String patient_username)
+    public static QueryResult getAppointments(String patient_username)
         throws ClassNotFoundException, SQLException {
-            String query = "select DoctorUsername from" +
-                    "ece358_22_2014.DoctorPatientAccess" +
-                    "where PatientUsername like \'" +
+            String query = "select DocterUsername, StartTime from" +
+                    "ece358_22_2014.appointment" +
+                    "where PatientUsername = \"" +
                     patient_username +
-                    "\'";
+                    "\"";
+                       
             Connection con;
+            Class.forName("com.mysql.jdbc.Driver");
             con = DriverManager.getConnection(url, user, pwd);
             
             Statement stmt;
             stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             
+            QueryResult qResult = new QueryResult(rs);
+            
+            rs.close();
+            stmt.close();
             con.close();
             
-            return rs;
+            return qResult;
     }
     
     public static String getRole(String username)
