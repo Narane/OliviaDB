@@ -83,7 +83,8 @@ public class CreateVisitationServlet extends SecureHTTPServlet {
             out.println("</select><b>*</b>\n");
             
             out.println("<h3> Visitation Information</h3>\n");
-            out.println("Date: <input type=\"date\" name=\"visitDate\"><b>*</b>\n");
+            //visitDate
+            out.println("Date: <input type=\"text\" name=\"MyDate1\" class=\"datepicker\"><b>*</b>\n");
             out.println("Start Time: <input type=\"time\" name=\"visitStart\"><b>*</b>\n");
             out.println("End Time: <input type=\"time\" name=\"visitEnd\"><b>*</b>\n");
             out.println("<br />\n");
@@ -105,10 +106,12 @@ public class CreateVisitationServlet extends SecureHTTPServlet {
             out.println("Prescription: <input type=\"text\" name=\"prescription\">\n");
             out.println("Diagnosis: <input type=\"text\" name=\"diagnosis\">\n");
             out.println("<br />\n");
-            out.println("Start Date: <input type=\"date\" name=\"prescStartDate\">\n");
+            //prescStartDate
+            out.println("Start Date: <input type=\"text\" name=\"MyDate2\" class=\"datepicker\">\n");
             out.println("Start Time: <input type=\"time\" name=\"prescStartTime\">\n");
             out.println("<br />\n");
-            out.println("End Date: <input type=\"date\" name=\"prescEndDate\">\n");
+            //prescEndDate
+            out.println("End Date: <input type=\"text\" name=\"MyDate3\" class=\"datepicker\">\n");
             out.println("End Time: <input type=\"time\" name=\"prescEndTime\">\n");
             out.println("<br />\n");
             
