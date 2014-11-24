@@ -9,12 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class UserDBAO {
-    public static final String url = "jdbc:mysql://localhost:3306/";
+    public static final String url = "jdbc:mysql://192.168.56.130:3306/";
     //public static final String url = "jdbc:mysql://eceweb.uwaterloo.ca:3306/";
-    public static final String user = "root";        
-    //public static final String user = "user_h86kim";
-    public static final String pwd = "root";
-    //public static final String pwd = "user_h86kim";
+    //public static final String user = "root";        
+    public static final String user = "user_kmyin";
+    //public static final String pwd = "root";
+    public static final String pwd = "user_kmyin";
     public static final String schema = "ece356_22_2014";
     
     public static ResultSet getColumns(String table_name)
