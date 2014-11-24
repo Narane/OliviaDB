@@ -11,13 +11,19 @@ public class MarkupHelper {
         StringBuilder sb = new StringBuilder(256);
         sb.append("<!DOCTYPE html><html><head><title>");
         sb.append(pageTitle);
-        sb.append("</title><link rel=\"stylesheet\" href=\"styles.css\"></head><body><div class=\"wrapper\">");
+        sb.append("</title>\n   <link rel=\"stylesheet\" href=\"styles.css\">\n" +
+                "   <link rel=\"stylesheet\" href=\"jquery-ui.css\">\n" +
+                "   <script src=\"jquery-1.10.2.js\"></script>\n" +
+                "   <script src=\"jquery-ui.js\"></script>\n" +
+                "   <script> $(function() { $( \"input[name^=MyDate]\" ).datepicker({ dateFormat: \"yy-mm-dd\" }); });</script>\n" +
+                "</head><body><div class=\"wrapper\">");
         sb.append(buildSidebar(role));
         sb.append("<section>");
         sb.append("<span class=\"octicon octicon-link\"></span><h2>");
         sb.append(pageTitle);
         sb.append("</h2>");
         return sb.toString();
+        
     }
     
     public static String HeadClose(){
@@ -68,12 +74,20 @@ public class MarkupHelper {
         }
         
         if(role.equals("doctor") || role.equals("superuser")){
-            sb.append(buildSidebarHelper("AccessRightsServlet", "Change peer access rights"));
+            sb.append(buildSidebarHelper("AccessRightsServlet", "Patient log access rights"));
         }
         
         if(role.equals("finance") || role.equals("superuser")){
             sb.append(buildSidebarHelper("FinanceServlet", "Finance hub"));
-        }        
+        }
+        
+        if(role.equals("superuser")) {
+            sb.append(buildSidebarHelper("ProcedureServlet", "Hospital Procedures"));
+        }
+        
+        if(role.equals("staff")) {
+            sb.append(buildSidebarHelper("CreatePatientServlet", "New Patient"));
+        }
         
         sb.append("</sidebar>");
         return sb.toString();

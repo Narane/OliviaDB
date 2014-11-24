@@ -9,12 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class UserDBAO {
-    //public static final String url = "jdbc:mysql://localhost:3306/";
-    public static final String url = "jdbc:mysql://eceweb.uwaterloo.ca:3306/";
+    public static final String url = "jdbc:mysql://192.168.56.130:3306/";
+    //public static final String url = "jdbc:mysql://eceweb.uwaterloo.ca:3306/";
     //public static final String user = "root";        
-    public static final String user = "user_h86kim";
+    public static final String user = "user_kmyin";
     //public static final String pwd = "root";
-    public static final String pwd = "user_h86kim";
+    public static final String pwd = "user_kmyin";
     public static final String schema = "ece356_22_2014";
     
     public static ResultSet getColumns(String table_name)
@@ -98,8 +98,8 @@ public class UserDBAO {
     
     public static ResultSet getPatientUsername(String doctor_username)
         throws ClassNotFoundException, SQLException {
-            String query = "select PatientUsername from" +
-                    "ece358_22_2014.DoctorPatientAccess" +
+            String query = "select PatientUsername from " +
+                    schema + ".DoctorPatientAccess " +
                     "where DoctorUsername like \'" +
                     doctor_username +
                     "\'";
@@ -116,6 +116,31 @@ public class UserDBAO {
             con.close();
             
             return rs;
+    }
+    
+    public static QueryResult getAppointments(String patient_username)
+        throws ClassNotFoundException, SQLException {
+            String query = "select DoctorUsername, StartTime from " +
+                    schema + ".appointment " +
+                    "where PatientUsername = \"" +
+                    patient_username +
+                    "\"";
+                       
+            Connection con;
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection(url, user, pwd);
+            
+            Statement stmt;
+            stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            
+            QueryResult qResult = new QueryResult(rs);
+            
+            rs.close();
+            stmt.close();
+            con.close();
+            
+            return qResult;
     }
     
     public static String getRole(String username)
@@ -138,7 +163,7 @@ public class UserDBAO {
         }
         return "error";
     }
-    
+        
     public static QueryResult executeQuery(String query) 
         throws ClassNotFoundException, SQLException {
         Statement stmt;
@@ -204,5 +229,49 @@ public class UserDBAO {
         
         con.close();
         return false;
+    }
+    
+    public static String generateTable(QueryResult que){
+        if(que.getResultSet().size() <= 0){
+            return "";
+        }
+        
+        StringBuilder sb = new StringBuilder(256);
+        
+        QueryResult.QueryRow row = null;
+        ArrayList header;
+        ArrayList r_data;
+        
+        sb.append("<table border=1><tr>");
+        
+        ArrayList result = que.getResultSet();
+        row = (QueryResult.QueryRow) result.get(0);
+        header = row.getHeader();
+        int c_count = header.size();
+        int r_count = result.size();
+
+        //print headers
+        for (int j = 0; j < c_count; j++) {
+            sb.append("<th>");
+            sb.append((String) header.get(j));
+        }
+        sb.append("</tr>");
+        
+        for (int i = 0; i < r_count; i++) {
+                row = (QueryResult.QueryRow) result.get(i);
+                r_data = row.getRow();
+                sb.append("<tr>");
+                for (int j = 0; j < c_count; j++) {
+
+                    sb.append("<td>");
+                    sb.append((String) r_data.get(j));
+                    
+                }
+                sb.append("</tr>");
+            }
+            
+            sb.append("</table>");
+        
+        return sb.toString();
     }
 }
