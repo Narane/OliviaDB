@@ -58,23 +58,27 @@ public class QueryResult {
     
     ArrayList<QueryRow> resultSet = new ArrayList<QueryRow>(0);
     
-    public QueryResult(ResultSet rs) 
-        throws SQLException {
-        ResultSetMetaData md = rs.getMetaData();
-        
-        int colCount = md.getColumnCount();
-        ArrayList<String> header = new ArrayList<String>(0);
-        for (int i = 1; i <= colCount; i++) {
-            header.add(md.getColumnLabel(i));
-        }
-        
-        while(rs.next()) {
-            QueryRow qRow = new QueryRow();
-            qRow.setHeader(header);
-            for(String label: header) {
-                qRow.add(rs.getString(label));
+    public QueryResult(ResultSet rs) { 
+        try {
+            ResultSetMetaData md = rs.getMetaData();
+            int colCount = md.getColumnCount();
+            ArrayList<String> header = new ArrayList<String>(0);
+            for (int i = 1; i <= colCount; i++) {
+                header.add(md.getColumnLabel(i));
             }
-            resultSet.add(qRow);
+
+            while(rs.next()) {
+                QueryRow qRow = new QueryRow();
+                qRow.setHeader(header);
+                for(String label: header) {
+                    qRow.add(rs.getString(label));
+                }
+                resultSet.add(qRow);
+            }
+        }
+        catch (SQLException e) {
+            // yield QueryResult with empty resultSet
+            resultSet = new ArrayList<QueryRow>(0);
         }
     } 
     
@@ -84,6 +88,10 @@ public class QueryResult {
     
     public QueryRow getRow(int index) {
         return resultSet.get(index);
+    }
+    
+    public boolean hasResults() {
+        return (resultSet.size() > 0);
     }
     
 }
