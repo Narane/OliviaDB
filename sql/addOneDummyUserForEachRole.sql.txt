@@ -1,6 +1,5 @@
 CREATE PROCEDURE `addOneDummyUserForEachRole`()
 BEGIN
-
 INSERT INTO `ece356_22_2014`.`User`
 (`Username`,
 `FirstName`,
@@ -55,6 +54,22 @@ VALUES
 'bzhong',
 'staff');
 
+INSERT INTO `ece356_22_2014`.`Staff`
+(`StaffUsername`)
+VALUES
+(
+'bzhong'
+);
+
+INSERT INTO `ece356_22_2014`.`DoctorStaffAccess`
+(`DoctorUsername`,
+`StaffUsername`)
+VALUES
+(
+'kmyin',
+'bzhong'
+);
+
 INSERT INTO `ece356_22_2014`.`User`
 (`Username`,
 `FirstName`,
@@ -81,4 +96,16 @@ VALUES
 'a49chen',
 'finance');
 
+INSERT INTO `ece356_22_2014`.`User`
+(`Username`,
+`FirstName`,
+`LastName`,
+`Password`,
+`Role`)
+VALUES
+('su',
+'Super',
+'User',
+'su',
+'superuser');
 END

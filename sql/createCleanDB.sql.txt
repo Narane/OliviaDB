@@ -1,6 +1,5 @@
 CREATE PROCEDURE `createCleanDB`()
 BEGIN
-
 # SQL script to create clean database
 #CREATE DATABASE IF NOT EXISTS ece356_22_2014;
 #Use ece356_22_2014;

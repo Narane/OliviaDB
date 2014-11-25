@@ -85,6 +85,10 @@ public class MarkupHelper {
             sb.append(buildSidebarHelper("ProcedureServlet", "Hospital Procedures"));
         }
         
+        if(role.equals("staff")) {
+            sb.append(buildSidebarHelper("CreatePatientServlet", "New Patient"));
+        }
+        
         sb.append("</sidebar>");
         return sb.toString();
     }
