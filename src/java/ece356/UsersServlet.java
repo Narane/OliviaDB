@@ -45,7 +45,7 @@ public class UsersServlet extends SecureHTTPServlet {
             String f_name = request.getParameter("f_name");
             String l_name = request.getParameter("l_name");
             String p_num = request.getParameter("p_num");
-            String v_date = request.getParameter("v_date");
+            String v_date = request.getParameter("MyDate");
             String diagnosis = request.getParameter("diagnosis");
             String comment = request.getParameter("comment");
             String prescription = request.getParameter("prescription");
@@ -137,28 +137,20 @@ public class UsersServlet extends SecureHTTPServlet {
                 out.println("<h3>Patient Search</h3>");
                 out.println("<form>");
 
-                out.println("First Name: <input type=\"text\" name=\"f_name\">" +
-                        "<input type=\"checkbox\" name=\"f_name_cb\">");
+                out.println("First Name: <input type=\"text\" name=\"f_name\">");
                 out.println("Last Name: <input type=\"text\" name=\"l_name\">" +
-                        "<input type=\"checkbox\" name=\"l_name_cb\">" + 
                         "<br>");
-                out.println("Patient Number: <input type=\"text\" name=\"p_num\">" +
-                        "<input type=\"checkbox\" name=\"p_num_cb\">");
-                out.println("Visit Date: <input type=\"text\" name=\"v_date\">" +
-                        "<input type=\"checkbox\" name=\"v_date_cb\">" + 
-                        "<br>");
-                out.println("Diagnosis: <input type=\"text\" name=\"diagnosis\">" +
-                        "<input type=\"checkbox\" name=\"diagnosis_cb\">");
-                out.println("Comment: <input type=\"text\" name=\"comment\">" +
-                        "<input type=\"checkbox\" name=\"comment_cb\">" + 
-                        "<br>");
-                out.println("Prescription: <input type=\"text\" name=\"prescription\">" +
-                        "<input type=\"checkbox\" name=\"prescription_cb\">");
-                out.println("Surgery: <input type=\"text\" name=\"surgery\">" +
-                        "<input type=\"checkbox\" name=\"surgery_cb\">" + 
+                out.println("Patient Number: <input type=\"text\" name=\"p_num\">");
+                out.println("Date: <input type=\"text\" name=\"MyDate\" class=\"datepicker\">" +
                         "<br>");
 
-                out.println("<br>");
+                out.println("Diagnosis: <input type=\"text\" name=\"diagnosis\">");
+                out.println("Comment: <input type=\"text\" name=\"comment\">" +
+                        "<br>");
+                out.println("Prescription: <input type=\"text\" name=\"prescription\">");
+                out.println("Surgery: <input type=\"text\" name=\"surgery\">" +
+                        "<br>");
+
                 out.println("<input type=\"submit\" value=\"Submit\">");
 
                 out.println("</form>");
