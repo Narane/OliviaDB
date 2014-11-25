@@ -25,8 +25,7 @@ CREATE TABLE User (
      FirstName varchar(30),     
      LastName varchar(30),     
      Password varchar(30),     
-     Role varchar(10),
-	 Valid bit(1) NOT NULL DEFAULT b'0',
+     Role varchar(10),     
      PRIMARY KEY (Username),
      FOREIGN KEY(Role) REFERENCES Roles(Role)
      ON DELETE RESTRICT
@@ -35,7 +34,6 @@ CREATE TABLE User (
 
 CREATE TABLE Doctor ( 
 	DoctorUsername varchar(30), 
-	Valid bit(1) NOT NULL DEFAULT b'0',
     PRIMARY KEY (DoctorUsername)
 );
 
@@ -47,29 +45,25 @@ CREATE TABLE Patient (
     PatientNumber integer, 
     Address varchar(100), 
     SIN NUMERIC(9,0), 
-	Valid bit(1) NOT NULL DEFAULT b'0',
     PRIMARY KEY (PatientUsername), 
     FOREIGN KEY (DoctorUsername) REFERENCES Doctor( DoctorUsername), 
     check(CellNumber > -1 AND HomeNumber > -1)
 );
 
 CREATE TABLE Staff ( 
-	StaffUsername varchar(30),
-    Valid bit(1) NOT NULL DEFAULT b'0',	
+	StaffUsername varchar(30),      
     PRIMARY KEY (StaffUsername)
 );
 
 CREATE TABLE Costs (
      ProcedureName varchar(100),
      Cost NUMERIC(10, 2),
-	 Valid bit(1) NOT NULL DEFAULT b'0',
      PRIMARY KEY (ProcedureName)
 );
 
 CREATE TABLE DoctorPatientAccess (     
 	PatientUsername varchar(30),      
-    DoctorUsername varchar(30),
-	Valid bit(1) NOT NULL DEFAULT b'0',
+    DoctorUsername varchar(30),      
     FOREIGN KEY (DoctorUsername) REFERENCES Doctor(DoctorUsername),     
     FOREIGN KEY (PatientUsername) REFERENCES Patient(PatientUsername),     
     PRIMARY KEY (PatientUsername, DoctorUsername)     
@@ -87,8 +81,7 @@ CREATE TABLE Visits (
     Diagnosis varchar(100),     
     Prescription varchar(100),      
     Comments varchar(100),      
-    ProcedureTime datetime,
-	Valid bit(1) NOT NULL DEFAULT b'0',
+    ProcedureTime datetime,      
     PRIMARY KEY (PatientUsername, StartTime),      
     FOREIGN KEY (PatientUsername) REFERENCES Patient(PatientUserName),     
     FOREIGN KEY (ProcedureName) REFERENCES Costs(ProcedureName),      
@@ -99,8 +92,7 @@ CREATE TABLE Appointment (
 	DoctorUsername varchar(30),     
     PatientUsername varchar(30),     
     StartTime datetime,     
-    EndTime datetime,
-    Valid bit(1) NOT NULL DEFAULT b'0',
+    EndTime datetime,     
     PRIMARY Key (DoctorUsername, StartTime),     
     FOREIGN KEY (DoctorUsername) REFERENCES Doctor(DoctorUsername),     
     FOREIGN KEY (PatientUsername) REFERENCES Patient(PatientUsername)     
@@ -109,7 +101,6 @@ CREATE TABLE Appointment (
 CREATE TABLE DoctorStaffAccess (
      DoctorUsername varchar(30),
      StaffUsername varchar(30),
-	 Valid bit(1) NOT NULL DEFAULT b'0',
      PRIMARY KEY (DoctorUsername, StaffUsername),
      FOREIGN KEY (DoctorUsername) REFERENCES Doctor(DoctorUsername),
      FOREIGN KEY (StaffUsername) REFERENCES Staff(StaffUsername)
