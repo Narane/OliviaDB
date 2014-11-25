@@ -47,7 +47,7 @@ public class AppointmentServlet extends SecureHTTPServlet {
                         "(" + schema + ".appointment natural join " + schema + ".user)"+
                         "where PatientUsername = \"" + username + "\" and DoctorUsername = Username and StartTime > SYSDATE()";
 
-                QueryResult currentAppointment = UserDBAO.executeQuery(currentAppointmentQuery);
+                QueryResult currentAppointment = UserDBAO.executeQuery(currentAppointmentQuery).removeNullRows();
                 if(currentAppointment.getResultSet().size() <= 0){
                     sb.append("<br><h3>You currently have no upcoming appointments</h3></br>");
                 }

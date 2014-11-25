@@ -41,6 +41,15 @@ public class QueryResult {
             row.add(s);
         }
         
+        public boolean isRowOfNulls() {
+            for(String s: row) {
+                if (s != null) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
         public String getString(String colName) {
             int rowIndex = -1;
             for (int i = 0; i < header.size(); i++) {
@@ -58,6 +67,11 @@ public class QueryResult {
     
     ArrayList<QueryRow> resultSet = new ArrayList<QueryRow>(0);
     String message = "";
+    
+    public QueryResult() {
+        resultSet = new ArrayList<QueryRow>(0);
+        message = "";
+    }
     
     public QueryResult(ResultSet rs) { 
         try {
@@ -84,10 +98,31 @@ public class QueryResult {
         }
     } 
     
+    public QueryResult removeNullRows() {
+        QueryResult qRes = new QueryResult();
+        qRes.setMessage(this.message);
+        qRes.setResultSet(this.resultSet);
+        
+        int i = 0;
+        while (i < qRes.getResultSet().size()) {
+            if(qRes.getResultSet().get(i).isRowOfNulls()) {
+                qRes.getResultSet().remove(i);
+                i = i - 1;
+            }
+            i = i + 1;
+        }
+        
+        return qRes;
+        
+    }
+    
     public ArrayList<QueryRow> getResultSet() {
         return resultSet;
     }
     
+    public void setResultSet(ArrayList<QueryRow> resultSet) {
+        this.resultSet = resultSet;
+    }
     public QueryRow getRow(int index) {
         return resultSet.get(index);
     }
@@ -100,4 +135,7 @@ public class QueryResult {
         return message;
     }
     
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }
