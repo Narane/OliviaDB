@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class UserDBAO {
-    public static final String url = "jdbc:mysql://192.168.56.130:3306/";
-    //public static final String url = "jdbc:mysql://eceweb.uwaterloo.ca:3306/";
+    //public static final String url = "jdbc:mysql://192.168.56.130:3306/";
+    public static final String url = "jdbc:mysql://eceweb.uwaterloo.ca:3306/";
     //public static final String user = "root";        
     public static final String user = "user_kmyin";
     //public static final String pwd = "root";
@@ -43,15 +43,15 @@ public class UserDBAO {
             String surgery, String username)
         throws ClassNotFoundException, SQLException {
             String query = "";
-            
-            query = "select * from ( select U.FirstName, "
-                    + "U.LastName,         P.PatientNumber, V.* "
-                    + "from ece356_22_2014.Patient as P inner join "
-                    + "ece356_22_2014.Visits as V inner join "
-                    + "U.Username = P.PatientUsername ) as PV where PatientUsername "
-                    + "in ( select PatientUsername from "
-                    + "ece356_22_2014.DoctorPatientAccess where "
-                    + "DoctorUsername = \'" + username + "\' )";
+            query = "select  * from (  select   U.FirstName, "
+                    + "U.LastName, P.PatientNumber, V.*  from "
+                    + "ece356_22_2014.Patient as P  inner join "
+                    + "ece356_22_2014.Visits as V  inner join "
+                    + "ece356_22_2014.User as U  on   V.PatientUsername "
+                    + "= P.PatientUsername  and  U.Username = P.PatientUsername "
+                    + ") as PV where  PatientUsername  in  (  select  "
+                    + "PatientUsername  from   ece356_22_2014.Patient "
+                    + "where   DoctorUsername = 'kmyin' )";
             
             if (f_name != null && !f_name.trim().isEmpty())
                 query += "and PV.FirstName" + " like" + "(\'" + f_name + "\') ";
