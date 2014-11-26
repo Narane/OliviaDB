@@ -96,7 +96,7 @@ CREATE TABLE Visits (
     Comments varchar(100),      
     ProcedureTime DateTime,
 	EntryDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	Active BOOLEAN NOT NULL,
+	Active BOOLEAN NOT NULL DEFAULT TRUE,
     PRIMARY KEY (PatientUsername, StartTime, EntryDate),      
     FOREIGN KEY (PatientUsername) REFERENCES Patient(PatientUserName),     
     FOREIGN KEY (ProcedureName) REFERENCES Costs(ProcedureName),      
