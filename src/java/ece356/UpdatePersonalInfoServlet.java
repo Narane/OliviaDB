@@ -65,7 +65,7 @@ public class UpdatePersonalInfoServlet extends SecureHTTPServlet {
 
             // get fields to propage text boxes with current patient info
             String query = "select * from ( select * from " + UserDBAO.schema 
-                    + ".Patient inner join " + UserDBAO.schema
+                    + ".Patient natural join " + UserDBAO.schema
                     + ".User where Patient.PatientUsername = User.Username) "
                     + "as t where t.PatientUsername = \"" + username + "\""; 
             QueryResult qr = UserDBAO.executeQuery(query);
