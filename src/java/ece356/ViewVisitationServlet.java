@@ -51,14 +51,24 @@ public class ViewVisitationServlet extends SecureHTTPServlet {
                             + "\'";
                     break;
                 case "staff":
+                    query = "select 	PatientUsername, StartTime, ProcedureName,"
+                            + "DoctorUsername, EndTime, PrescriptionStart,"
+                            + "PrescriptionEnd, Diagnosis, Prescription,"
+                            + "ProcedureTime from	 	ece356_22_2014.Visits as"
+                            + " V where 	V.DoctorUsername     in     ("
+                            + " 		select 			"
+                            + "D.DoctorUsername         from 		"
+                            + "	ece356_22_2014.DoctorStaffAccess as D 		"
+                            + "where 			D.StaffUsername = \'" + username
+                            + "\' 	);";
                     break;
                 case "doctor":
                     query = "select PatientUsername, StartTime, ProcedureName, "
                             + "DoctorUsername, EndTime, CurrentStatus, "
                             + "PrescriptionStart, PrescriptionEnd, Diagnosis, "
-                            + "Prescription, Comments, ProcedureTime, "
+                            + "Prescription, Comments, ProcedureTime "
                             + "from ece356_22_2014.Visits where PatientUsername in "
-                            + "(select PatientUsername from ece356_22_2014.DoctorPatientAccess "
+                            + "(select PatientUsername from ece356_22_2014.Patient "
                             + "where DoctorUsername = \'"
                             + username
                             + "\')";
