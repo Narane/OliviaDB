@@ -60,6 +60,10 @@
         <servlet-name>CreateAppointmentServlet</servlet-name>
         <servlet-class>ece356.CreateAppointmentServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CreateUserServlet</servlet-name>
+        <servlet-class>ece356.CreateUserServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/LoginServlet</url-pattern>
@@ -119,6 +123,10 @@
     <servlet-mapping>
         <servlet-name>CreateAppointmentServlet</servlet-name>
         <url-pattern>/CreateAppointmentServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CreateUserServlet</servlet-name>
+        <url-pattern>/CreateUserServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>20</session-timeout>

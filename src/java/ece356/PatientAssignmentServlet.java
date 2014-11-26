@@ -101,14 +101,15 @@ public class PatientAssignmentServlet extends SecureHTTPServlet {
 
                 if(!patientName.equals("") && !doctorName.equals("")){
                     //Search with both criteria
-                    querySB.append("WHERE PatientUsername = \"" + patientName + "\" AND DoctorUsername = \"" + doctorName + "\";");
+                    querySB.append("WHERE PatientUsername = \"" + patientName + "\" AND DoctorUsername = \"" + doctorName + "\"");
                 } else if(!patientName.equals("")){
                     //Search with just patient name
-                    querySB.append("WHERE PatientUsername = \"" + patientName + "\";");
+                    querySB.append("WHERE PatientUsername = \"" + patientName + "\"");
                 } else{
                     //Search with just doctor name
-                    querySB.append("WHERE DoctorUsername = \"" + doctorName + "\";");
+                    querySB.append("WHERE DoctorUsername = \"" + doctorName + "\"");
                 }
+                querySB.append(" AND Active = 1;");
 
                 QueryResult que = UserDBAO.executeQuery(querySB.toString());
                 out.println("<br>Search results:<br>" + UserDBAO.generateTable(que));

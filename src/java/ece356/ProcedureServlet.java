@@ -66,14 +66,17 @@ public class ProcedureServlet extends SecureHTTPServlet {
             }
 
             res.setContentType("text/html");
-            out.println("<p>Please input Procedure Name and Cost in decimal format to define/update a new procedure.</p>");
-            out.println(
-                "<form method=\"post\">\n" +
-                "  Procedure Name:   <input type=\"text\" SIZE=30 name=\"pname\"><br>\n" +
-                "  Cost ($): <input type=\"text\"  SIZE=30 name=\"cost\"><br>\n" +
-                "  <input type=\"submit\" value=\"Create\" name=\"submitAction\">\n" +
-                "</form> ");
             
+            if(!role.equals("legal")){
+                out.println("<p>Please input Procedure Name and Cost in decimal format to define/update a new procedure.</p>");
+                out.println(
+                    "<form method=\"post\">\n" +
+                    "  Procedure Name:   <input type=\"text\" SIZE=30 name=\"pname\"><br>\n" +
+                    "  Cost ($): <input type=\"text\"  SIZE=30 name=\"cost\"><br>\n" +
+                    "  <input type=\"submit\" value=\"Create\" name=\"submitAction\">\n" +
+                    "</form> ");                
+            }
+
             int updateCount = 0;
             try {
                
