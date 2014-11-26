@@ -22,7 +22,6 @@ public class ViewAppointmentServlet extends SecureHTTPServlet {
         throws ServletException,  IOException {
         
         HttpSession session = req.getSession();
-        Boolean loggedIn = (Boolean) session.getAttribute("loggedIn");
         String username = (String) session.getAttribute("username");
         String role = "";
         try{
@@ -154,52 +153,6 @@ public class ViewAppointmentServlet extends SecureHTTPServlet {
             else if(role.equals("staff")){
                 //Enter, delete, update appointments
                 //Update patient info
-                
-                sb.append("<h2>Enter a new appointment (* is required)</h2>");
-                
-                String doctorUsername = req.getParameter("doctorUsername");
-                String patientUsername = req.getParameter("patientUsername");
-                String startTime = req.getParameter("MyDate1");
-                String endTime = req.getParameter("MyDate2");
-                if(doctorUsername == null){doctorUsername = "";}
-                if(patientUsername == null){patientUsername = "";}
-                if(startTime == null){startTime = "";}
-                if(endTime == null){endTime = "";}
-                //Enter new appointment
-                sb.append("<form method=\"post\">");
-                sb.append("Doctor username: <input type=\"text\" name=\"doctorUsername\"><br />");
-                sb.append("Patient username: <input type=\"text\" name=\"patientUsername\"><br />");
-                sb.append("Start Date/Time: <input type=\"text\" name=\"MyDate1\" class=\"datepicker\"><br />");
-                sb.append("End Date/Time (if known): <input type=\"text\" name=\"MyDate2\" class=\"datepicker\"><br />");
-                sb.append("<input type=\"submit\" value=\"Enter\" name=\"enterNewApp\">");
-                sb.append("</form>");
-                
-                String enterNewApp = req.getParameter("enterNewApp");
-                Boolean enterBool = (enterNewApp != null && enterNewApp.equals("Enter"));
-                
-                // CHECK DOCTORS AND PATIENT USER NAMES TO BE VALID
-                if(enterBool && (doctorUsername != null && patientUsername != null && startTime != null && endTime != null)){
-                    
-                    if(!doctorUsername.equals("") && !patientUsername.equals("") && !startTime.equals("")){
-                        //Search with both criteria
-                        StringBuilder query = new StringBuilder(128);
-                        query.append("INSERT INTO " + schema + ".Appointment ");
-                        query.append("(DoctorUsername, PatientUsername, StartTime");
-                        if(!endTime.equals("")){
-                            query.append(", EndTime");
-                        }
-                        query.append(") VALUES ");
-                        query.append("('" + doctorUsername + "','" + patientUsername + "','" + startTime + "'");
-                        if(!endTime.equals("")){
-                            query.append(",'" + endTime +"'");
-                        }
-                        query.append(")");
-                        UserDBAO.executeQuery(query.toString());
-                    }
-                    else{
-                        sb.append("<font color=\"red\">Incorrect data entry. Appointment not added.</font>");
-                    }
-                }
                 
                 sb.append("<hr />");
                 //Enter doctor name to view table for that doctor
