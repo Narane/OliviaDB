@@ -11,15 +11,20 @@ public class MarkupHelper {
         StringBuilder sb = new StringBuilder(256);
         sb.append("<!DOCTYPE html><html><head><title>");
         sb.append(pageTitle);
-        sb.append("</title>\n   <link rel=\"stylesheet\" href=\"styles.css\">\n" +
+        sb.append("</title>\n" +
+                "   <link rel=\"stylesheet\" href=\"css/metro-bootstrap.css\">\n" +
+                "   <link rel=\"stylesheet\" href=\"styles.css\">\n" +
                 "   <link rel=\"stylesheet\" href=\"jquery-ui.css\">\n" +
                 "   <script src=\"jquery-1.10.2.js\"></script>\n" +
                 "   <script src=\"jquery-ui.js\"></script>\n" +
                 "   <script> $(function() { $( \"input[name^=MyDate]\" ).datepicker({ dateFormat: \"yy-mm-dd\" }); });</script>\n" +
-                "</head><body><div class=\"wrapper\">");
+                "</head><body class=\"metro\">");
+        sb.append("<div class=\"grid\">");
+        sb.append("<div class=\"row\">");
         sb.append(buildSidebar(role));
-        sb.append("<section>");
-        sb.append("<span class=\"octicon octicon-link\"></span><h2>");
+        //sb.append("<span class=\"octicon octicon-link\"></span><h2>");
+        sb.append("<div class=\"span8\">");
+        sb.append("<h2>");
         sb.append(pageTitle);
         sb.append("</h2>");
         return sb.toString();
@@ -28,14 +33,14 @@ public class MarkupHelper {
     
     public static String HeadClose(){
         StringBuilder sb = new StringBuilder(32);
-        sb.append("</section></div></body></html>");
+        sb.append("</div></div></div></body></html>");
         
         return sb.toString();
     }
     
     private static String buildSidebar(String role){
         StringBuilder sb = new StringBuilder(256);
-        sb.append("<sidebar>");
+        sb.append("<div class=\"span3\"><nav class=\"sidebar dark\"><ul>");
         
         sb.append(buildSidebarHelper("MenuServlet", "Main Menu"));
         
@@ -91,11 +96,11 @@ public class MarkupHelper {
         
         sb.append("<b>" + buildSidebarHelper("LogoutServlet", "Log Out") + "</b>");
         
-        sb.append("</sidebar>");
+        sb.append("</ul></nav></div>");
         return sb.toString();
     }
     
     private static String buildSidebarHelper(String servletName, String description){
-        return("<p><a href=\"" + servletName + "\">" + description + "</a></p>");
+        return("<li><a href=\"" + servletName + "\">" + description + "</a></li>");
     }
 }
