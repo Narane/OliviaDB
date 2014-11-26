@@ -149,29 +149,29 @@ public class CreatePatientServlet extends SecureHTTPServlet {
         out.println("<form method='post' action='CreatePatientServlet'>");
 
             out.println(Metro.label("Username:"));
-            out.print(Metro.inputBoxes("username", "text", username, "Username", usernameState));
+            out.print(Metro.inputForm("username", "text", username, "Username", usernameState));
             
             out.println(Metro.label("Password:"));
-            out.print(Metro.inputBoxes("password", "password", "", "Password", passwordState));
+            out.print(Metro.inputForm("password", "password", "", "Password", passwordState));
             
             out.println(Metro.label("Repeat Password:"));
-            out.print(Metro.inputBoxes("passwordRepeat", "password", "", "Repeat Password", passwordRepeatState));
+            out.print(Metro.inputForm("passwordRepeat", "password", "", "Repeat Password", passwordRepeatState));
 
             out.println(Metro.label("First Name:"));
-            out.print(Metro.inputBoxes("firstName", "text", firstName, "First Name", firstNameState));
+            out.print(Metro.inputForm("firstName", "text", firstName, "First Name", firstNameState));
             
             out.println(Metro.label("Last Name:"));
-            out.print(Metro.inputBoxes("lastName", "text", lastName, "Last Name", lastNameState));
+            out.print(Metro.inputForm("lastName", "text", lastName, "Last Name", lastNameState));
             
             out.println(Metro.label("Cell Phone Number:"));
-            out.print(Metro.inputBoxes("cellNumber", "text", cellNumber, "Cell Phone Number", cellNumberState));
+            out.print(Metro.inputForm("cellNumber", "text", cellNumber, "Cell Phone Number", cellNumberState));
             
             out.println(Metro.label("Home Phone Number"));
-            out.print(Metro.inputBoxes("homeNumber", "text", homeNumber, "Home Phone Number", homeNumberState));
+            out.print(Metro.inputForm("homeNumber", "text", homeNumber, "Home Phone Number", homeNumberState));
             
            
             out.println(Metro.label("Ontario Health Insurance Number"));
-            out.println(Metro.inputBoxes("sin", "text", sin, "Ontario Health Insurance Number", sinState));
+            out.println(Metro.inputForm("sin", "text", sin, "Ontario Health Insurance Number", sinState));
             
             out.println(Metro.label("Address:"));
             out.println(Metro.textArea("address", ""));

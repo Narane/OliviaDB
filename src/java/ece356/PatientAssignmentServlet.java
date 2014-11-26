@@ -78,10 +78,10 @@ public class PatientAssignmentServlet extends SecureHTTPServlet {
         out.println("<form method='post'>");
         
         out.println(Metro.label("Doctor Username:"));
-        out.println(Metro.inputBoxes("doctorname", "text", doctorName, "Doctor Username", ""));
+        out.println(Metro.inputForm("doctorname", "text", doctorName, "Doctor Username", ""));
         
         out.println(Metro.label("Patient Username:"));
-        out.println(Metro.inputBoxes("patientname", "text", patientName, "Patient Username", ""));
+        out.println(Metro.inputForm("patientname", "text", patientName, "Patient Username", ""));
         
         out.print("<div class='grid fluid'>\n<div class='row'>\n<div class='span2'>\n");
         out.println(Metro.submitButton("submitAction", "Search"));

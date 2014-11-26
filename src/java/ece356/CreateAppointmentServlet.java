@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import metro.Metro;
 
 /**
  *
@@ -55,17 +56,26 @@ public class CreateAppointmentServlet extends SecureHTTPServlet {
             if(startTime == null){startTime = "";}
             if(endTime == null){endTime = "";}
             //Enter new appointment
-            sb.append("<form method=\"post\">");
+            sb.append("<form method='post'>");
+            
+            sb.append(Metro.label("Doctor Username*:") + "\n");
+            sb.append(Metro.inputForm("doctorUsername", "text", doctorUsername, "Doctor Username", "") + "\n");
+            sb.append(Metro.label("Patient Username*:") + "\n");
+            sb.append(Metro.inputForm("patientUsername", "text", patientUsername, "Patient Username", ""));
+            
+            /*
             sb.append("Doctor username*: <input type=\"text\" name=\"doctorUsername\"><br />");
             sb.append("Patient username*: <input type=\"text\" name=\"patientUsername\"><br />");
-            sb.append("Start Date*: <input type=\"text\" name=\"MyDate1\" class=\"datepicker\"> "
-                    + "Start Time*: <select name=\"appStart\">");
+            */
+            
+            sb.append("Start Date*: &nbsp;<input type=\"text\" name=\"MyDate1\" class=\"datepicker\"> "
+                    + "&nbsp;&nbsp;Start Time*:&nbsp;&nbsp;<select name=\"appStart\">");
             for (String t: MarkupHelper.generateTimes(30)) {
                 sb.append("<option value=\"" + t + "\">" + t + "</option>\n");
             }
             sb.append("</select><br />");
-            sb.append("End Date: <input type=\"text\" name=\"MyDate2\" class=\"datepicker\"> "
-                    + "End Time*: <select name=\"appEnd\">");
+            sb.append("End Date: &nbsp;&nbsp;&nbsp;&nbsp;<input type=\"text\" name=\"MyDate2\" class=\"datepicker\"> "
+                    + "&nbsp;&nbsp;End Time*:&nbsp;&nbsp;&nbsp;&nbsp;<select name=\"appEnd\">");
             for (String t: MarkupHelper.generateTimes(30)) {
                 sb.append("<option value=\"" + t + "\">" + t + "</option>\n");
             }

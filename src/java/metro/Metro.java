@@ -11,7 +11,7 @@ package metro;
  */
 public class Metro {
     
-    public static String inputBoxes(String name, String type, String value, String placeholder, String dataState) {
+    public static String inputForm(String name, String type, String value, String placeholder, String dataState) {
         
         String html = 
                 "<div class='input-control " + type + "'>\n" +
