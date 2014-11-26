@@ -90,7 +90,7 @@ public class UsersServlet extends SecureHTTPServlet {
                         + "Role from ece356_22_2014.User where role in "
                         + "(\'doctor\', \'staff\')");
                 
-            } else if (role.toLowerCase().equals("superuser")){
+            } else if (role.toLowerCase().equals("superuser") || role.toLowerCase().equals("legal")){
                 out.println("<h3>Admin User Directory</h3>");
                 rs_user_dir = UserDBAO.executeQuery("select * "
                         + "from ece356_22_2014.User");
