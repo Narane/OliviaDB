@@ -89,6 +89,8 @@ public class MarkupHelper {
             sb.append(buildSidebarHelper("CreatePatientServlet", "New Patient"));
         }
         
+        sb.append("<b>" + buildSidebarHelper("LogoutServlet", "Log Out") + "</b>");
+        
         sb.append("</sidebar>");
         return sb.toString();
     }
