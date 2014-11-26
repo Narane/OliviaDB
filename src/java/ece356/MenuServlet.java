@@ -17,11 +17,23 @@ public class MenuServlet extends SecureHTTPServlet {
         HttpSession session = req.getSession();
         Boolean loggedIn = (Boolean) session.getAttribute("loggedIn");
         String username = (String) session.getAttribute("username");
+        String firstName = "ERROR USER";
         Date lastVisit = (Date) session.getAttribute("lastVisit");;
         String role = "SOMETHING BROKE PLEASE FIX";
         
         if(loggedIn.booleanValue() == true) {
-            out.println("<p>Welcome back, " + username + "</p>");
+            try{
+                role = UserDBAO.getRole(username);
+                firstName = UserDBAO.getFirstName(username);
+            }
+            catch(Exception e){
+                req.setAttribute("exception", e);
+                // Set the name of jsp to be displayed if connection fails
+                String url = "/error.jsp";
+                getServletContext().getRequestDispatcher(url).forward(req, res);
+            }
+            
+            out.println("<p>Welcome back, " + firstName + "</p>");
             out.println("<p>You belong to group: " + role + "</p>");
             out.println("<p>You last visited on " + lastVisit + "</p>");
             lastVisit = new Date();

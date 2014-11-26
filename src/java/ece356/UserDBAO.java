@@ -167,6 +167,27 @@ public class UserDBAO {
         }
         return "error";
     }
+    
+    public static String getFirstName(String username)
+        throws ClassNotFoundException, SQLException {
+        Statement stmt;
+        Connection con;
+        Class.forName("com.mysql.jdbc.Driver");
+        con = DriverManager.getConnection(url, user, pwd);
+        stmt = con.createStatement();
+        
+        String query = "select FirstName from " + schema +".User " +
+                   "where Username = \"" + username + "\"";
+        
+        ResultSet rs = stmt.executeQuery(query);
+        String returnval = "";
+        while (rs.next()) {
+            returnval = (String)rs.getString("FirstName");
+            con.close();
+            return returnval;
+        }
+        return "error";
+    }
         
     public static QueryResult executeQuery(String query) 
         throws ClassNotFoundException, SQLException {
