@@ -1,37 +1,54 @@
 CREATE PROCEDURE `addOneDummyUserForEachRole`()
 BEGIN
 INSERT INTO `ece356_22_2014`.`User`
-(`Username`,
-`FirstName`,
-`LastName`,
-`Password`,
-`Role`)
+(Username,
+FirstName,
+LastName,
+Password,
+Role,
+EntryDate,
+Active)
 VALUES
 ('kmyin',
 'Kwang-Man',
 'Yin',
 'kmyin',
-'doctor');
+'doctor',
+Now(),
+TRUE);
 
 INSERT INTO `ece356_22_2014`.`Doctor`
-(`DoctorUsername`)
+(DoctorUsername, EntryDate, Active)
 VALUES
-('kmyin');
+('kmyin', Now(), TRUE);
 
 INSERT INTO `ece356_22_2014`.`User`
-(`Username`,
-`FirstName`,
-`LastName`,
-`Password`,
-`Role`)
+(Username,
+FirstName,
+LastName,
+Password,
+Role,
+EntryDate,
+Active)
 VALUES
 ('h86kim',
 'Heesang',
 'Kim',
 'hkim',
-'patient');
+'patient',
+Now(),
+TRUE);
 
-INSERT INTO `ece356_22_2014`.`Patient` (PatientUsername, DoctorUsername, CellNumber, HomeNumber, PatientNumber, Address, SIN)
+INSERT INTO `ece356_22_2014`.`Patient` 
+(PatientUsername, 
+DoctorUsername, 
+CellNumber, 
+HomeNumber, 
+PatientNumber, 
+Address, 
+SIN,
+EntryDate,
+Active)
 VALUES
 ('h86kim', 
 'kmyin', 
@@ -39,73 +56,98 @@ VALUES
 5195726925, 
 0, 
 '200 University Ave. West', 
-123456789);
+123456789,
+Now(),
+TRUE);
 
 INSERT INTO `ece356_22_2014`.`User`
-(`Username`,
-`FirstName`,
-`LastName`,
-`Password`,
-`Role`)
+(Username,
+FirstName,
+LastName,
+Password,
+Role,
+EntryDate,
+Active)
 VALUES
 ('bzhong',
 'Botian',
 'Zhong',
 'bzhong',
-'staff');
+'staff',
+Now(),
+TRUE);
 
 INSERT INTO `ece356_22_2014`.`Staff`
-(`StaffUsername`)
+(StaffUsername, EntryDate, Active)
 VALUES
 (
-'bzhong'
+'bzhong',
+Now(),
+TRUE
 );
 
 INSERT INTO `ece356_22_2014`.`DoctorStaffAccess`
-(`DoctorUsername`,
-`StaffUsername`)
+(DoctorUsername,
+StaffUsername,
+EntryDate,
+Active)
 VALUES
 (
 'kmyin',
-'bzhong'
+'bzhong',
+Now(),
+TRUE
 );
 
 INSERT INTO `ece356_22_2014`.`User`
-(`Username`,
-`FirstName`,
-`LastName`,
-`Password`,
-`Role`)
+(Username,
+FirstName,
+LastName,
+Password,
+Role,
+EntryDate,
+Active)
 VALUES
 ('bjleskow',
 'Blaise',
 'Leskowsky',
 'bjleskow',
-'legal');
+'legal',
+Now(),
+TRUE);
 
 INSERT INTO `ece356_22_2014`.`User`
-(`Username`,
-`FirstName`,
-`LastName`,
-`Password`,
-`Role`)
+(Username,
+FirstName,
+LastName,
+Password,
+Role,
+EntryDate,
+Active)
 VALUES
 ('a49chen',
 'Aaron',
 'Chen',
 'a49chen',
-'finance');
+'finance',
+Now(),
+TRUE);
 
 INSERT INTO `ece356_22_2014`.`User`
-(`Username`,
-`FirstName`,
-`LastName`,
-`Password`,
-`Role`)
+(Username,
+FirstName,
+LastName,
+Password,
+Role,
+EntryDate,
+Active)
 VALUES
 ('su',
 'Super',
 'User',
 'su',
-'superuser');
+'superuser',
+Now(),
+TRUE);
+
 END
