@@ -4,68 +4,54 @@ INSERT INTO `ece356_22_2014`.`Appointment`
 (DoctorUsername,
 PatientUsername,
 StartTime,
-EndTime,
-EntryDate,
-Active)
+EndTime
+)
 VALUES
 (
 'kmyin',
 'h86kim',
 '2016-05-05',
-'2016-05-06',
-Now(),
-TRUE
+'2016-05-06'
 );
 
 INSERT INTO `ece356_22_2014`.`Appointment`
 (DoctorUsername,
 PatientUsername,
 StartTime,
-EndTime,
-EntryDate,
-Active)
+EndTime)
 VALUES
 (
 'kmyin',
 'h86kim',
 '2013-05-05',
-'2013-05-06',
-Now(),
-TRUE
+'2013-05-06'
 );
 
 INSERT INTO `ece356_22_2014`.`Appointment`
 (DoctorUsername,
 PatientUsername,
 StartTime,
-EndTime,
-EntryDate,
-Active)
+EndTime
+)
 VALUES
 (
 'kmyin',
 'h86kim',
 '2012-05-05',
-'2012-05-06',
-Now(),
-TRUE
+'2012-05-06'
 );
 
 INSERT INTO `ece356_22_2014`.`Appointment`
 (DoctorUsername,
 PatientUsername,
 StartTime,
-EndTime,
-EntryDate,
-Active)
+EndTime)
 VALUES
 (
 'kmyin',
 'h86kim',
 '2017-05-05',
-'2017-05-06',
-Now(),
-TRUE
+'2017-05-06'
 );
 
 END

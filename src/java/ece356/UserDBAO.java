@@ -44,7 +44,11 @@ public class UserDBAO {
         throws ClassNotFoundException, SQLException {
             String query = "";
             query = "select  * from (  select   U.FirstName, "
-                    + "U.LastName, P.PatientNumber, V.*  from "
+                    + "U.LastName, P.PatientNumber, V.PatientUsername, "
+                    + "V. StartTime, V. ProcedureName, V. DoctorUsername, "
+                    + "V. EndTime, V. CurrentStatus, V. PrescriptionStart, "
+                    + "V. PrescriptionEnd, V. Diagnosis, V. Prescription, "
+                    + "V. Comments, V. ProcedureTime from "
                     + "ece356_22_2014.Patient as P  inner join "
                     + "ece356_22_2014.Visits as V  inner join "
                     + "ece356_22_2014.User as U  on   V.PatientUsername "

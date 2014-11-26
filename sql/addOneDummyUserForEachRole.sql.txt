@@ -1,43 +1,36 @@
 CREATE PROCEDURE `addOneDummyUserForEachRole`()
 BEGIN
+
 INSERT INTO `ece356_22_2014`.`User`
 (Username,
 FirstName,
 LastName,
 Password,
-Role,
-EntryDate,
-Active)
+Role)
 VALUES
 ('kmyin',
 'Kwang-Man',
 'Yin',
 'kmyin',
-'doctor',
-Now(),
-TRUE);
+'doctor');
 
 INSERT INTO `ece356_22_2014`.`Doctor`
-(DoctorUsername, EntryDate, Active)
+(DoctorUsername)
 VALUES
-('kmyin', Now(), TRUE);
+('kmyin');
 
 INSERT INTO `ece356_22_2014`.`User`
 (Username,
 FirstName,
 LastName,
 Password,
-Role,
-EntryDate,
-Active)
+Role)
 VALUES
 ('h86kim',
 'Heesang',
 'Kim',
 'hkim',
-'patient',
-Now(),
-TRUE);
+'patient');
 
 INSERT INTO `ece356_22_2014`.`Patient` 
 (PatientUsername, 
@@ -46,9 +39,7 @@ CellNumber,
 HomeNumber, 
 PatientNumber, 
 Address, 
-SIN,
-EntryDate,
-Active)
+SIN)
 VALUES
 ('h86kim', 
 'kmyin', 
@@ -56,47 +47,35 @@ VALUES
 5195726925, 
 0, 
 '200 University Ave. West', 
-123456789,
-Now(),
-TRUE);
+123456789);
 
 INSERT INTO `ece356_22_2014`.`User`
 (Username,
 FirstName,
 LastName,
 Password,
-Role,
-EntryDate,
-Active)
+Role)
 VALUES
 ('bzhong',
 'Botian',
 'Zhong',
 'bzhong',
-'staff',
-Now(),
-TRUE);
+'staff');
 
 INSERT INTO `ece356_22_2014`.`Staff`
-(StaffUsername, EntryDate, Active)
+(StaffUsername)
 VALUES
 (
-'bzhong',
-Now(),
-TRUE
+'bzhong'
 );
 
 INSERT INTO `ece356_22_2014`.`DoctorStaffAccess`
 (DoctorUsername,
-StaffUsername,
-EntryDate,
-Active)
+StaffUsername)
 VALUES
 (
 'kmyin',
-'bzhong',
-Now(),
-TRUE
+'bzhong'
 );
 
 INSERT INTO `ece356_22_2014`.`User`
@@ -104,50 +83,41 @@ INSERT INTO `ece356_22_2014`.`User`
 FirstName,
 LastName,
 Password,
-Role,
-EntryDate,
-Active)
+Role)
 VALUES
 ('bjleskow',
 'Blaise',
 'Leskowsky',
 'bjleskow',
-'legal',
-Now(),
-TRUE);
+'legal'
+);
 
 INSERT INTO `ece356_22_2014`.`User`
 (Username,
 FirstName,
 LastName,
 Password,
-Role,
-EntryDate,
-Active)
+Role)
 VALUES
 ('a49chen',
 'Aaron',
 'Chen',
 'a49chen',
-'finance',
-Now(),
-TRUE);
+'finance'
+);
 
 INSERT INTO `ece356_22_2014`.`User`
 (Username,
 FirstName,
 LastName,
 Password,
-Role,
-EntryDate,
-Active)
+Role)
 VALUES
 ('su',
 'Super',
 'User',
 'su',
-'superuser',
-Now(),
-TRUE);
+'superuser'
+);
 
 END
