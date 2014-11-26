@@ -52,8 +52,16 @@ public class ViewAppointmentServlet extends SecureHTTPServlet {
                 //sb.append("<form><input type=\"button\" value=\"View Future Appointments\"></form>");
                 
                 sb.append("<form method=\"post\">");
+
+
+
+                
+                sb.append("<div class='grid fluid'>\n<div class='row'>\n<div class='span4'>\n");
                 sb.append("<input type=\"submit\" name=\"appointmentName\" value=\"View Past Appointments\">");
+                sb.append("</div><div class='span4'>");
                 sb.append("<input type=\"submit\" name=\"appointmentName\" value=\"View Future Appointments\">");
+                sb.append("</div></div></div>");
+                
                 sb.append("</form>");
                 
                 String appName = req.getParameter("appointmentName");
@@ -109,8 +117,17 @@ public class ViewAppointmentServlet extends SecureHTTPServlet {
 
                 //Display future appointments
                 sb.append("<form method=\"post\">");
+
+
+
+                
+                
+                sb.append("<div class='grid fluid'>\n<div class='row'>\n<div class='span4'>\n");
                 sb.append("<input type=\"submit\" name=\"appointmentName\" value=\"View Past Appointments\">");
+                sb.append("</div><div class='span4'>");
                 sb.append("<input type=\"submit\" name=\"appointmentName\" value=\"View Future Appointments\">");
+                sb.append("</div></div></div>");
+                
                 sb.append("</form>");
                 
                 String appName = req.getParameter("appointmentName");
