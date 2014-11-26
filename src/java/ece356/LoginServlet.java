@@ -17,33 +17,45 @@ public class LoginServlet extends HttpServlet {
         
         String username = req.getParameter("username");
         String password = req.getParameter("password");
-        Date lastVisit;
         res.setContentType("text/html");
         ServletOutputStream out = res.getOutputStream();
+        out.println("<!DOCTYPE html>");
         out.println("<html>");
-        out.println("<body>");
         out.print("<head><title>Login Page</title>");
+        out.print("<link href=\"css/metro-bootstrap.css\" rel=\"stylesheet\">");
+        out.print("<link href=\"styles.css\" rel=\"stylesheet\">");
         
         if (loggedIn.booleanValue() == true) {
             // user is already logged in
             res.sendRedirect("MenuServlet");
             out.print("<meta http-equiv=\"refresh\" content=\"1;url=\"MenuServlet\"></head>");
-            out.println("");
+            out.println("<body>");
             
         } else {
             if (username == null) {
                 // user has not submitted the form required to log in
-                out.println("<h1>Log In</h1>");
+                out.println("</head>");
+                out.println("<body class=\"metro\"><div class=\"container\"><div class=\"grid\"><div class=\"row\"><div class=\"span1\"></div>");
+                out.println("<div class=\"span10\">");
+                out.println("<legend>Log In</legend>");
                 out.println("<form action=\"LoginServlet\" " +
-                    "method=\"POST\">");
-                out.println("<p>Username:");
+                    "method=\"POST\"><fieldset>");
+                
+                out.println("<label>Username</label>");
+                out.println("<div class=\"input-control text\" data-role=\"input-control\">");
                 out.println("<input type=\"text\" name=\"username\" " +
-                    "value=\"\" SIZE=30>");
-                out.println("<p>Password:");
+                                    "value=\"\" SIZE=30>");
+                out.println("</div>");
+
+                out.println("<label>Password</label>");
+                out.println("<div class=\"input-control text\" data-role=\"input-control\">");
                 out.println("<input type=\"password\" name=\"password\" " +
                     "value=\"\" SIZE=30>");
+                out.println("</div>");
+                
                 out.println("<p><input type=\"submit\" value=\"log in\">");
-                out.println("</form>");
+
+                out.println("</fieldset></form>");
                 
                 Boolean failedLogin = (Boolean) session.getAttribute("failedLogin");
                 Boolean sessionExpired = (Boolean) session.getAttribute("sessionExpired");
@@ -80,7 +92,7 @@ public class LoginServlet extends HttpServlet {
                     getServletContext().getRequestDispatcher(url).forward(req, res);
                 }
             }
-            out.println("</body>");
+            out.println("</div></div></div></div></body>");
             out.println("</html>");
         }
     }
