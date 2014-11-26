@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import metro.Metro;
+
 /**
  *
  * @author bleskows
@@ -101,23 +103,22 @@ public class CreateVisitationServlet extends SecureHTTPServlet {
             out.println("<p>Except for Comments, all fields MUST be specified!</p>");
             
             out.println("<form method=\"post\" />\n");
-            out.println("Patient username: <input type=\"text\" name=\"patient\" value=\""+ patientUsername +"\"/><br />");
+            
+            out.println(Metro.label("Patient Username:"));
+            out.println(Metro.inputForm("patient", "text", patientUsername, "Patient Username", ""));
+            //out.println("Patient username: <input type=\"text\" name=\"patient\" value=\""+ patientUsername +"\"/><br />");
             
             out.println("<h3>Visitation Information</h3>\n");
             //visitDate
-            out.println("Date: <input type=\"text\" name=\"MyDate1\" class=\"datepicker\" value=\""+ visitDate +"\"/><br />\n");
-            out.println("Start Time: <select name=\"visitStart\" value=\""+ visitStart +"\"/>\n");
-            for (String t: MarkupHelper.generateTimes(30)) {
+                       
+            out.print("<div class='grid fluid'>\n<div class='row'>\n<div class='span6'>\n");
+            out.println("Date: <input type=\"text\" name=\"MyDate1\" class=\"datepicker\" value=\""+ visitDate +"\"/><br>\n");
+            out.println("Start Time: <select name=\"visitStart\" value=\"" + visitStart + "\"/>\n"); 
+            for (String t : MarkupHelper.generateTimes(30)) {
                 out.println("<option value=\"" + t + "\">" + t + "</option>\n");
-            }
-            out.println("</select>");
-            out.println("End Time: <select name=\"visitEnd\" value=\""+ visitEnd +"\"/><br />\n");
-            for (String t: MarkupHelper.generateTimes(30)) {
-                out.println("<option value=\"" + t + "\">" + t + "</option>\n");
-            }
-            out.println("</select>");
-            out.println("<br />\n");
-             
+            }  
+            out.println("</select><br>");
+            
             // query to get available procedures
             query = "select ProcedureName from " + UserDBAO.schema + ".Costs";
             qRes = UserDBAO.executeQuery(query);
@@ -127,40 +128,71 @@ public class CreateVisitationServlet extends SecureHTTPServlet {
                 out.println("<option value=\"" + procName + "\">" + procName + "</option>\n");
             }
             out.println("</select>\n");
+
+            out.println("</div><div class='span6'>");
+            out.println("<br>");
+            out.println("End Time: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name=\"visitEnd\" value=\"" + visitEnd + "\"/><br />\n");
+            for (String t : MarkupHelper.generateTimes(30)) {
+                out.println("<option value=\"" + t + "\">" + t + "</option>\n");
+            }
+            out.println("</select><br>");
             out.println("Procedure Time: <select name=\"procedureTime\" />\n");
             for (String t: MarkupHelper.generateTimes(30)) {
                 out.println("<option value=\"" + t + "\">" + t + "</option>\n");
             }
-            out.println("</select><br />");
-            out.println("Current Status: <input type=\"text\" name=\"currentStatus\" /><br />\n");
+            out.println("</select>");
+            
+            out.println("</div></div></div>");
+
+            
+            out.println(Metro.label("Current Status:"));
+            out.println(Metro.inputForm("currentStatus", "text", "", "Current Status", ""));
+            //out.println("Current Status: <input type=\"text\" name=\"currentStatus\" /><br />\n");
             
             out.println("<h3> Prescription Information</h3>\n");
-            out.println("Prescription: <input type=\"text\" name=\"prescription\" value=\""+ prescription +"\"/><br />\n");
-            out.println("Diagnosis: <input type=\"text\" name=\"diagnosis\" value=\""+ diagnosis +"\"/><br />\n");
+            
+            out.println(Metro.label("Prescription:"));
+            out.println(Metro.inputForm("prescription", "text", prescription, "Prescription", ""));
+            
+            //out.println("Prescription: <input type=\"text\" name=\"prescription\" value=\""+ prescription +"\"/><br />\n");
+            
+            out.println(Metro.label("Diagnossis:"));
+            out.println(Metro.inputForm("diagnosis", "text", diagnosis, "Diagnosis", ""));
+            //out.println("Diagnosis: <input type=\"text\" name=\"diagnosis\" value=\""+ diagnosis +"\"/><br />\n");
             out.println("<br />\n");
-            //prescStartDate
-            out.println("Start Date: <input type=\"text\" name=\"MyDate2\" class=\"datepicker\" value=\""+ prescriptionStartDate +"\"/>\n");
+            
+            
+            
+            out.print("<div class='grid fluid'>\n<div class='row'>\n<div class='span6'>\n");
+
+            out.println("Start Date: <input type=\"text\" name=\"MyDate2\" class=\"datepicker\" value=\"" + prescriptionStartDate + "\"/><br>\n");
+            out.println("End Date: &nbsp;&nbsp;<input type=\"text\" name=\"MyDate3\" class=\"datepicker\" value=\"" + prescriptionEndDate + "\"/>\n");
+            out.println("</div><div class='span6'>");
+
             out.println("Start Time: <select name=\"prescStartTime\" /><br />\n");
-            for (String t: MarkupHelper.generateTimes(30)) {
+            for (String t : MarkupHelper.generateTimes(30)) {
                 out.println("<option value=\"" + t + "\">" + t + "</option>\n");
             }
             out.println("</select>");
             out.println("<br />\n");
-            //prescEndDate
-            out.println("End Date: <input type=\"text\" name=\"MyDate3\" class=\"datepicker\" value=\""+ prescriptionEndDate +"\"/>\n");
-            out.println("End Time: <select name=\"prescEndTime\" /><br />\n");
-            for (String t: MarkupHelper.generateTimes(30)) {
+            out.println("End Time: &nbsp;<select name=\"prescEndTime\" /><br />\n");
+            for (String t : MarkupHelper.generateTimes(30)) {
                 out.println("<option value=\"" + t + "\">" + t + "</option>\n");
             }
             out.println("</select>");
+
             out.println("<br />\n");
+            out.println("</div></div></div>");
             
             out.println("<h3>Comments</h3>\n");
             out.println("100 character limit\n");
+            
             out.println("<br />\n");
-            out.println("<textarea rows=\"4\" cols=\"50\" name=\"comments\">" + 
-                comments + "</textarea>\n");
-            out.println("<br /><br />\n");
+            out.println(Metro.textArea("comments", comments));
+            
+            //out.println("<textarea rows=\"4\" cols=\"50\" name=\"comments\">" + 
+            //    comments + "</textarea>\n");
+            out.println("<br />\n");
             
             out.println("<input type=\"submit\" value=\"Submit\" name=\"submitAction\" />\n");
             out.println("</form>\n");
