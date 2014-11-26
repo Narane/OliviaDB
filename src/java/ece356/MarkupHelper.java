@@ -56,7 +56,7 @@ public class MarkupHelper {
         }
  
         if(role.equals("patient") || role.equals("doctor") || role.equals("staff") || role.equals("superuser")){
-            sb.append(buildSidebarHelper("AppointmentServlet", "View appointments"));
+            sb.append(buildSidebarHelper("ViewAppointmentServlet", "View appointments"));
         }
         
         if(role.equals("patient")){
@@ -87,6 +87,10 @@ public class MarkupHelper {
         
         if(role.equals("staff")) {
             sb.append(buildSidebarHelper("CreatePatientServlet", "New Patient"));
+        }
+        
+        if(role.equals("staff") || role.equals("superuser")) {
+            sb.append(buildSidebarHelper("CreateAppointmentServlet", "Create Appointments"));
         }
         
         sb.append("<b>" + buildSidebarHelper("LogoutServlet", "Log Out") + "</b>");
