@@ -63,18 +63,18 @@ public class MarkupHelper {
             sb.append(buildSidebarHelper("CreateVisitationServlet", "Create visitation records"));
         }
         
-        if(role.equals("patient")){
+        if(role.equals("patient") || role.equals("doctor") || role.equals("staff") || role.equals("legal")){
             sb.append(buildSidebarHelper("ViewVisitationServlet", "View visitation records"));
         }
  
-        if(role.equals("patient") || role.equals("doctor") || role.equals("staff") || role.equals("superuser")){
+        if(role.equals("patient") || role.equals("doctor") || role.equals("staff") || role.equals("superuser")|| role.equals("legal")){
             sb.append(buildSidebarHelper("ViewAppointmentServlet", "View appointments"));
         }
         
         if(role.equals("patient")){
             sb.append(buildSidebarHelper("UsersServlet", "View your profile"));
         }
-        else if(role.equals("doctor") || role.equals("superuser")){
+        else if(role.equals("doctor") || role.equals("superuser")|| role.equals("legal")){
             sb.append(buildSidebarHelper("UsersServlet", "View hospital profiles"));
         }
         else if(role.equals("staff")){
@@ -89,11 +89,11 @@ public class MarkupHelper {
             sb.append(buildSidebarHelper("AccessRightsServlet", "Patient log access rights"));
         }
         
-        if(role.equals("finance") || role.equals("superuser")){
+        if(role.equals("finance") || role.equals("superuser") || role.equals("legal")){
             sb.append(buildSidebarHelper("FinanceServlet", "Finance hub"));
         }
         
-        if(role.equals("superuser")) {
+        if(role.equals("superuser") || role.equals("legal")) {
             sb.append(buildSidebarHelper("ProcedureServlet", "Hospital Procedures"));
         }
         
