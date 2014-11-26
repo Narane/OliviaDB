@@ -19,7 +19,9 @@ INSERT INTO ece356_22_2014.Visits(
     Diagnosis,
     Prescription,
     Comments,
-    ProcedureTime
+    ProcedureTime,
+    EntryDate,
+    Active
 )
 VALUES(
 	@patientName,
@@ -33,7 +35,9 @@ VALUES(
     @stat,
     @stat,
     @stat,
-    adddate(@starttime, INTERVAL 10 DAY)
+    adddate(@starttime, INTERVAL 10 DAY),
+    Now(),
+    TRUE
 );
 
 SELECT * FROM ece356_22_2014.Visits
