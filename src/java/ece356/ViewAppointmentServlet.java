@@ -36,9 +36,9 @@ public class ViewAppointmentServlet extends SecureHTTPServlet {
             if(role.equals("patient")){
 
                 //Display most current appointment
-                String currentAppointmentQuery = "select DoctorUsername as \"Doctor Username\", FirstName as \"Doctor First Name\", LastName as \"Doctor Last Name\", min(StartTime) as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\" from " +
-                        "(" + schema + ".Appointment natural join " + schema + ".User)"+
-                        "where PatientUsername = \"" + username + "\" and DoctorUsername = Username and StartTime > SYSDATE()";
+                String currentAppointmentQuery = "select DoctorUsername as \"Doctor Username\", FirstName as \"Doctor First Name\", LastName as \"Doctor Last Name\", min(StartTime) as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\""
+                        + " from " + schema + ".Appointment inner join " + schema + ".User on Appointment.DoctorUsername = User.Username"
+                        + " where PatientUsername = \"" + username + "\" and StartTime > SYSDATE()";
 
                 QueryResult currentAppointment = UserDBAO.executeQuery(currentAppointmentQuery).removeNullRows();
                 if(currentAppointment.getResultSet().size() <= 0){
@@ -60,12 +60,12 @@ public class ViewAppointmentServlet extends SecureHTTPServlet {
                 
                 Boolean past = (appName != null && appName.equals("View Past Appointments"));
                 Boolean future = (appName != null && appName.equals("View Future Appointments"));
-                
-                String futureAppointmentsQuery = "select DoctorUsername as \"Doctor Username\", FirstName as \"Doctor First Name\", LastName as \"Doctor Last Name\", StartTime as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\" from " +
-                        "(" + schema + ".Appointment natural join " + schema + ".User)"+
-                        "where PatientUsername = \"" + username + "\" and DoctorUsername = Username and StartTime > SYSDATE()" +
-                        "order by StartTime desc";
 
+                String futureAppointmentsQuery = "select DoctorUsername as \"Doctor Username\", FirstName as \"Doctor First Name\", LastName as \"Doctor Last Name\", StartTime as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\""
+                        + " from " + schema + ".Appointment inner join " + schema + ".User on Appointment.DoctorUsername = User.Username"
+                        + " where PatientUsername = \"" + username + "\" and StartTime > SYSDATE()"
+                        + " order by StartTime desc";
+                
                 QueryResult futureAppointments = UserDBAO.executeQuery(futureAppointmentsQuery);
                 if(future){              
                     if(futureAppointments.getResultSet().size() <= 0){
@@ -77,11 +77,11 @@ public class ViewAppointmentServlet extends SecureHTTPServlet {
                 }
 
                 //Display past appointments            
-                String pastAppointmentsQuery = "select DoctorUsername as \"Doctor Username\", FirstName as \"Doctor First Name\", LastName as \"Doctor Last Name\", StartTime as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\" from " +
-                        "(" + schema + ".Appointment natural join " + schema + ".User)"+
-                        "where PatientUsername = \"" + username + "\" and DoctorUsername = Username and StartTime < SYSDATE()" +
-                        "order by StartTime desc";
-
+                String pastAppointmentsQuery = "select DoctorUsername as \"Doctor Username\", FirstName as \"Doctor First Name\", LastName as \"Doctor Last Name\", StartTime as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\""
+                        + " from " + schema + ".Appointment inner join " + schema + ".User on Appointment.DoctorUsername = User.Username"
+                        + " where PatientUsername = \"" + username + "\" and StartTime < SYSDATE()"
+                        + " order by StartTime desc";
+                
                 QueryResult pastAppointments = UserDBAO.executeQuery(pastAppointmentsQuery);
                 if(past){ 
                     if(pastAppointments.getResultSet().size() <= 0){
@@ -95,10 +95,10 @@ public class ViewAppointmentServlet extends SecureHTTPServlet {
             else if(role.equals("doctor")){
                 //View current appointments
                 //Display most current appointment
-                String currentAppointmentQuery = "select PatientUsername as \"Patient Username\", FirstName as \"Patient First Name\", LastName as \"Patient Last Name\", min(StartTime) as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\" from " +
-                        "(" + schema + ".Appointment natural join " + schema + ".User)"+
-                        "where DoctorUsername = \"" + username + "\" and PatientUsername = Username and StartTime > SYSDATE()";
-
+                String currentAppointmentQuery = "select PatientUsername as \"Patient Username\", FirstName as \"Patient First Name\", LastName as \"Patient Last Name\", min(StartTime) as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\""
+                        + " from " + schema + ".Appointment inner join " + schema + ".User on Appointment.PatientUsername = User.Username"
+                        + " where DoctorUsername = \"" + username + "\" and StartTime > SYSDATE()";
+                
                 QueryResult currentAppointment = UserDBAO.executeQuery(currentAppointmentQuery);
                 if(currentAppointment.getResultSet().size() <= 0){
                     sb.append("<br><h3>You currently have no upcoming appointments</h3></br>");
@@ -117,12 +117,12 @@ public class ViewAppointmentServlet extends SecureHTTPServlet {
                 
                 Boolean past = (appName != null && appName.equals("View Past Appointments"));
                 Boolean future = (appName != null && appName.equals("View Future Appointments"));
-                
-                String futureAppointmentsQuery = "select PatientUsername as \"Patient Username\", FirstName as \"Patient First Name\", LastName as \"Patient Last Name\", StartTime as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\" from " +
-                        "(" + schema + ".Appointment natural join " + schema + ".User)"+
-                        "where DoctorUsername = \"" + username + "\" and PatientUsername = Username and StartTime > SYSDATE()" +
-                        "order by StartTime desc";
 
+                String futureAppointmentsQuery = "select PatientUsername as \"Patient Username\", FirstName as \"Patient First Name\", LastName as \"Patient Last Name\", StartTime as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\""
+                        + " from " + schema + ".Appointment inner join " + schema + ".User on Appointment.PatientUsername = User.Username"
+                        + " where DoctorUsername = \"" + username + "\" and StartTime > SYSDATE()"
+                        + "order by StartTime desc";
+                
                 QueryResult futureAppointments = UserDBAO.executeQuery(futureAppointmentsQuery);
                 if(future){              
                     if(futureAppointments.getResultSet().size() <= 0){
@@ -134,11 +134,11 @@ public class ViewAppointmentServlet extends SecureHTTPServlet {
                 }
 
                 //Display past appointments            
-                String pastAppointmentsQuery = "select PatientUsername as \"Patient Username\", FirstName as \"Patient First Name\", LastName as \"Patient Last Name\", StartTime as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\" from " +
-                        "(" + schema + ".Appointment natural join " + schema + ".User)"+
-                        "where DoctorUsername = \"" + username + "\" and PatientUsername = Username and StartTime < SYSDATE()" +
-                        "order by StartTime desc";
-
+                String pastAppointmentsQuery = "select PatientUsername as \"Patient Username\", FirstName as \"Patient First Name\", LastName as \"Patient Last Name\", StartTime as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\""
+                        + " from " + schema + ".Appointment inner join " + schema + ".User on Appointment.PatientUsername = User.Username"
+                        + " where DoctorUsername = \"" + username + "\" and StartTime < SYSDATE()"
+                        + "order by StartTime desc";
+                
                 QueryResult pastAppointments = UserDBAO.executeQuery(pastAppointmentsQuery);
                 if(past){ 
                     if(pastAppointments.getResultSet().size() <= 0){
@@ -161,8 +161,8 @@ public class ViewAppointmentServlet extends SecureHTTPServlet {
                 sb.append("<h2>Enter doctor name to view his/her appointments</h2>");
                 sb.append("<form method=\"post\">");
                 sb.append("Doctor username: <input type=\"text\" name=\"doctorUsernameApp\" value=\"" + doctorUsernameApp + "\">");
-                sb.append("<input type=\"submit\" name=\"appointmentName\" value=\"View Past Appointments\">");
-                sb.append("<input type=\"submit\" name=\"appointmentName\" value=\"View Future Appointments\">");
+                sb.append("<br /><input type=\"submit\" name=\"appointmentName\" value=\"View Past Appointments\">");
+                sb.append(" <input type=\"submit\" name=\"appointmentName\" value=\"View Future Appointments\">");
                 sb.append("</form>");
               
                 String appName = req.getParameter("appointmentName");
@@ -170,14 +170,20 @@ public class ViewAppointmentServlet extends SecureHTTPServlet {
                 Boolean past = (appName != null && appName.equals("View Past Appointments"));
                 Boolean future = (appName != null && appName.equals("View Future Appointments"));
 
+                StringBuilder inputCheck = new StringBuilder(128);
+                inputCheck.append("SELECT DoctorUsername "
+                    + "from " + schema + ".Doctor "
+                    + "where DoctorUsername = \"" + doctorUsernameApp + "\"");
+                QueryResult inputCheckResult = UserDBAO.executeQuery(inputCheck.toString());
+                
                 //Display future appointments
-                String futureAppointmentsQuery = "select FirstName as \"Patient First Name\", LastName as \"Patient Last Name\", StartTime as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\", EndTime as \"Appointment Endtime (yyyy-mm-dd hh:mm:ss)\" from " +
-                        "(" + schema + ".Appointment natural join " + schema + ".User) " +
-                        "where DoctorUsername = \"" + doctorUsernameApp + "\" and DoctorUsername = Username and StartTime > SYSDATE() " +
-                        "order by StartTime desc";
-
+                String futureAppointmentsQuery = "select PatientUsername as \"Patient Username\", FirstName as \"Patient First Name\", LastName as \"Patient Last Name\", StartTime as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\", EndTime as \"Appointment Endtime (yyyy-mm-dd hh:mm:ss)\""
+                        + " from " + schema + ".Appointment inner join " + schema + ".User on Appointment.DoctorUsername = User.Username"
+                        + " where DoctorUsername = \"" + doctorUsernameApp + "\" and StartTime > SYSDATE()"
+                        + "order by StartTime desc";
+                
                 QueryResult futureAppointments = UserDBAO.executeQuery(futureAppointmentsQuery);
-                if(future && !doctorUsernameApp.equals("") && !doctorUsernameApp.equals(null)){              
+                if(future && !doctorUsernameApp.equals("") && !doctorUsernameApp.equals(null) && inputCheckResult.getResultSet().size() > 0){              
                     if(futureAppointments.getResultSet().size() <= 0){
                         sb.append("<br><h3>" + doctorUsernameApp + " currently has no future appointments</h3></br>");
                     }
@@ -190,13 +196,13 @@ public class ViewAppointmentServlet extends SecureHTTPServlet {
                 }
 
                 //Display past appointments
-                String pastAppointmentsQuery = "select FirstName as \"Patient First Name\", LastName as \"Patient Last Name\", StartTime as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\", EndTime as \"Appointment Endtime (yyyy-mm-dd hh:mm:ss)\" from " +
-                        "(" + schema + ".Appointment natural join " + schema + ".User) "+
-                        "where DoctorUsername = \"" + doctorUsernameApp + "\" and DoctorUsername = Username and StartTime < SYSDATE() " +
-                        "order by StartTime desc";
-
+                String pastAppointmentsQuery = "select PatientUsername as \"Patient Username\", FirstName as \"Patient First Name\", LastName as \"Patient Last Name\", StartTime as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\", EndTime as \"Appointment Endtime (yyyy-mm-dd hh:mm:ss)\""
+                        + " from " + schema + ".Appointment inner join " + schema + ".User on Appointment.DoctorUsername = User.Username"
+                        + " where DoctorUsername = \"" + doctorUsernameApp + "\" and StartTime < SYSDATE()"
+                        + "order by StartTime desc";
+                
                 QueryResult pastAppointments = UserDBAO.executeQuery(pastAppointmentsQuery);
-                if(past && !doctorUsernameApp.equals("") && !doctorUsernameApp.equals(null)){ 
+                if(past && !doctorUsernameApp.equals("") && !doctorUsernameApp.equals(null) && inputCheckResult.getResultSet().size() > 0){ 
                     if(pastAppointments.getResultSet().size() <= 0){
                         sb.append("<br><h3>" + doctorUsernameApp + " currently has no past appointments</h3></br>");
                     }
