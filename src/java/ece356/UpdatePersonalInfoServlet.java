@@ -6,7 +6,6 @@
 package ece356;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import javax.servlet.ServletException;
@@ -43,6 +42,7 @@ public class UpdatePersonalInfoServlet extends SecureHTTPServlet {
         // errors from the function but that's going to override return type
         // of this function; that is NOT POSSIBLE
         String role = "";
+        String msg = "";
         try {
             if(UserDBAO.securityCheck(req, res)){
                 role = UserDBAO.getRole(username);
@@ -58,32 +58,44 @@ public class UpdatePersonalInfoServlet extends SecureHTTPServlet {
             if(!loggedIn){
                 res.sendRedirect("LoginServlet");
             }
-            
-            int updateCount = updatePersonalInfo(username, req);
 
             res.setContentType("text/html");
 
-            // get fields to propage text boxes with current patient info
-            String query = "select * from ( select * from " + UserDBAO.schema 
-                    + ".Patient natural join " + UserDBAO.schema
-                    + ".User where Patient.PatientUsername = User.Username) "
-                    + "as t where t.PatientUsername = \"" + username + "\""; 
-            QueryResult qr = UserDBAO.executeQuery(query);
-        
+            if (req.getParameter("submitAction") != null && req.getParameter("submitAction").equals("Update info")) {
+                msg = updatePersonalInfo(username, req);
+            }
+            
+            String firstName = "";
+            String lastName = "";
+            String cellNumber = "";
+            String homeNumber = "";
+            String address = "";
+            QueryResult qr = null;
+            if (req.getParameter("submitAction") != null && req.getParameter("submitAction").equals("Display current info")) {
+                qr = displayCurrentInfo(username);
+            }
+            if (qr != null && !qr.getResultSet().isEmpty()) {
+                firstName = qr.getRow(0).getString("FirstName");
+                lastName = qr.getRow(0).getString("LastName");
+                cellNumber = qr.getRow(0).getString("CellNumber");
+                homeNumber = qr.getRow(0).getString("HomeNumber");
+                address = qr.getRow(0).getString("Address");
+            }
+            
             out.println("<p>Welcome to the UpdatePersonalInfo page</p>");
             out.println(
                 "<form method=\"post\">\n" +
-                "  First name: <input type=\"text\" value=\"" + qr.getRow(0).getString("FirstName") + "\" SIZE=30 name=\"fname\"><br>\n" +
-                "  Last name: <input type=\"text\" value=\"" + qr.getRow(0).getString("LastName") + "\" SIZE=30 name=\"lname\"><br>\n" +
-                "  Cell Phone: <input type=\"text\" value=\"" + qr.getRow(0).getString("CellNumber") + "\" SIZE=30 name=\"cellNumber\"><br>\n" +
-                "  Home Phone: <input type=\"text\" value=\"" + qr.getRow(0).getString("HomeNumber") + "\" SIZE=30 name=\"homeNumber\"><br>\n" +
-                "  Address: <input type=\"text\" value=\"" + qr.getRow(0).getString("Address") + "\" SIZE=30 name=\"address\"><br>\n" +
-                "  <input type=\"submit\" value=\"Update info\">\n" +
+                "  First name: <input type=\"text\" value=\"" + firstName + "\" SIZE=30 name=\"fname\"><br>\n" +
+                "  Last name: <input type=\"text\" value=\"" + lastName + "\" SIZE=30 name=\"lname\"><br>\n" +
+                "  Cell Phone: <input type=\"text\" value=\"" + cellNumber + "\" SIZE=30 name=\"cellNumber\"><br>\n" +
+                "  Home Phone: <input type=\"text\" value=\"" + homeNumber + "\" SIZE=30 name=\"homeNumber\"><br>\n" +
+                "  Address: <input type=\"text\" value=\"" + address + "\" SIZE=30 name=\"address\"><br>\n" +
+                "  <input type=\"submit\" value=\"Update info\" name=\"submitAction\">\n" +
+                "  <input type=\"submit\" value=\"Display current info\" name=\"submitAction\">\n" +
                 "</form> ");
             
-            if (updateCount > 0) {
-                out.println("Personal information successfully updated");
-            }
+            
+            out.println(msg);
             
         }
         catch (Exception e) {
@@ -93,8 +105,22 @@ public class UpdatePersonalInfoServlet extends SecureHTTPServlet {
             getServletContext().getRequestDispatcher(url).forward(req, res);
         }   
     }
+        
+        private QueryResult displayCurrentInfo(String username)
+            throws ClassNotFoundException, SQLException {
+        
+            String query = "SELECT * FROM " + UserDBAO.schema +".User AS U " +
+                "JOIN " + UserDBAO.schema + ".Patient as P " +
+                "WHERE U.Username = P.PatientUsername " +
+                "AND U.Username = \"" + username + "\"" +
+                "AND U.Active = P.Active " + 
+                "AND U.Active = TRUE";
+            
+            QueryResult qr = UserDBAO.executeQuery(query);
+            return qr;
+        }
 
-        private int updatePersonalInfo(String username, HttpServletRequest request) 
+        private String updatePersonalInfo(String username, HttpServletRequest request) 
             throws ClassNotFoundException, SQLException{
             String fName = request.getParameter("fname");
             String lName = request.getParameter("lname");
@@ -102,60 +128,76 @@ public class UpdatePersonalInfoServlet extends SecureHTTPServlet {
             String homeNumber = request.getParameter("homeNumber");
             String address = request.getParameter("address");
            
-            if (fName == null && lName == null && cellNumber == null 
-                    && homeNumber == null && address == null) {
-                // all fields are null -> don't call UPDATE
-                return 0;
+            if (fName == null || fName.trim().isEmpty() || 
+                    lName == null || lName.trim().isEmpty() || 
+                    cellNumber == null || cellNumber.trim().isEmpty() || 
+                    homeNumber == null || homeNumber.trim().isEmpty() || 
+                    address == null || address.trim().isEmpty()) {
+                return "Need all fields to update. Try pressing \"Display current info\" first";
             }
-            boolean hasPrevCondition;
-            int patientUpdateResult = 0;
-            int userUpdateResult = 0;
-            if (validUpdatedText(cellNumber) || validUpdatedText(homeNumber)
-                || validUpdatedText(address)) {
-                // at least one field is valid for update
-                StringBuilder patientQuery = new StringBuilder();
-                hasPrevCondition = false;
-                patientQuery.append("Update " + UserDBAO.schema + ".Patient set ");
-                if (cellNumber != null && !cellNumber.trim().isEmpty()) {
-                    patientQuery.append("CellNumber = " + cellNumber);
-                    hasPrevCondition = true;
-                }
-                if (homeNumber != null && !homeNumber.trim().isEmpty()) {
-                    if (hasPrevCondition) {
-                        patientQuery.append(", ");
-                    }
-                    patientQuery.append("HomeNumber = " + homeNumber);
-                    hasPrevCondition = true;
-                }
-                if (address != null && !address.trim().isEmpty()) {
-                    if (hasPrevCondition) {
-                        patientQuery.append(", ");
-                    }
-                    patientQuery.append("Address = \"" + address + "\"");
-                }
-                patientQuery.append(" where PatientUsername = \"" + username + "\"");
-                patientUpdateResult = UserDBAO.executeUpdate(patientQuery.toString());
-            }
-           
-            if (validUpdatedText(fName) || validUpdatedText(lName)) {
-                // at least one field is valid for update
-                StringBuilder userQuery = new StringBuilder();
-                hasPrevCondition = false;
-                userQuery.append("Update " + UserDBAO.schema + ".User set ");
-                if (fName != null && !fName.trim().isEmpty()) {
-                    userQuery.append("FirstName = \"" + fName + "\"");
-                    hasPrevCondition = true;
-                }
-                if (lName != null && !lName.trim().isEmpty()) {
-                    if (hasPrevCondition) {
-                        userQuery.append(", ");
-                    }
-                    userQuery.append("LastName = \"" + lName + "\"");
-                }
-                userQuery.append(" where Username = \"" + username + "\"");
-                userUpdateResult = UserDBAO.executeUpdate(userQuery.toString());
-            }
-            return patientUpdateResult + userUpdateResult;
+            
+            // get copy of info to be updated
+            String query = "SELECT * FROM " + UserDBAO.schema +".User AS U " +
+                "JOIN " + UserDBAO.schema + ".Patient as P " +
+                "WHERE U.Username = P.PatientUsername " +
+                "AND U.Username = \"" + username + "\"" +
+                "AND U.Active = P.Active " + 
+                "AND U.Active = TRUE";
+            QueryResult qr = UserDBAO.executeQuery(query);
+            
+            // invalidate existing User entry
+            query = "UPDATE " + UserDBAO.schema + ".User " +
+                "SET " +
+                "Active = FALSE " +
+                "WHERE Username = '" + username + "' AND Active = TRUE";
+            UserDBAO.executeUpdate(query);
+            
+            // insert new User entry
+            query = "INSERT INTO " + UserDBAO.schema + ".User " +
+                "(Username, " +
+                "FirstName, " +
+                "LastName, " +
+                "Password, " +
+                "Role ) " +
+                "VALUES " +
+                "( " +
+                "\"" + username + "\", " +
+                "\"" + fName + "\", " +
+                "\"" + lName + "\", " +
+                "\"" + qr.getRow(0).getString("Password") + "\", " +
+                "\"" + qr.getRow(0).getString("Role") + "\""+
+                " )";
+            UserDBAO.executeUpdate(query);
+            
+            // invalidate existing Patient entry
+            query = "UPDATE " + UserDBAO.schema + ".Patient " +
+                "SET " +
+                "Active = FALSE " +
+                "WHERE PatientUsername = '" + username + "' AND Active = TRUE";
+            UserDBAO.executeUpdate(query);
+            
+            // insert new Patient entry
+            query = "INSERT INTO " + UserDBAO.schema +".Patient " +
+                "(PatientUsername, " +
+                "DoctorUsername, " +
+                "CellNumber, " +
+                "HomeNumber, " +
+                "PatientNumber, " +
+                "Address, " +
+                "SIN ) " +
+                "VALUES " +
+                "( " +
+                "\"" + qr.getRow(0).getString("PatientUsername") + "\", " +
+                "\"" + qr.getRow(0).getString("DoctorUsername") + "\", " +
+                "\"" + cellNumber + "\", " +
+                "\"" + homeNumber + "\", " +
+                "\"" + qr.getRow(0).getString("PatientNumber") + "\", " +
+                "\"" + address + "\", " +
+                "\"" + qr.getRow(0).getString("SIN") + "\"" +
+                " )";
+            UserDBAO.executeUpdate(query);
+            
+            return "Personal info successfully updated";
             
        }
         
