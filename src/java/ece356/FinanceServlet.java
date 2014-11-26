@@ -137,7 +137,7 @@ public class FinanceServlet extends SecureHTTPServlet {
                                 + "%' group by 	"
                                 + "ProcedureName";
                     }
-                    else if (g_bill.equals("on")) {
+                    else if (g_bill != null && g_bill.equals("on")) {
                         query = "select sum(C.Cost) + count(*) * (select Cost from ece356_22_2014.Costs where ProcedureName like '%Visit%') as BillAmount "
                                 + "from (SELECT * FROM ece356_22_2014.Doctor WHERE Active = 1) as D "
                                 + "inner join (SELECT * FROM ece356_22_2014.Visits WHERE Active = 1) as V "
