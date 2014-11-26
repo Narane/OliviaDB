@@ -63,6 +63,21 @@ public class QueryResult {
             }
             return row.get(rowIndex);
         }
+        
+        public boolean setString(String colName, String value) {
+            int rowIndex = -1;
+            for (int i = 0; i < header.size(); i++) {
+                if (header.get(i).equals(colName)) {
+                    rowIndex = i;
+                    break;
+                }
+            }
+            if (rowIndex == -1) {
+                return false;
+            }
+            row.set(rowIndex, value);
+            return true;
+        }
     }
     
     ArrayList<QueryRow> resultSet = new ArrayList<QueryRow>(0);

@@ -75,11 +75,12 @@ public class CreateAppointmentServlet extends SecureHTTPServlet {
             }
             sb.append("</select><br />");
             sb.append("End Date: &nbsp;&nbsp;&nbsp;&nbsp;<input type=\"text\" name=\"MyDate2\" class=\"datepicker\"> "
-                    + "&nbsp;&nbsp;End Time*:&nbsp;&nbsp;&nbsp;&nbsp;<select name=\"appEnd\">");
+                    + "&nbsp;&nbsp;End Time:&nbsp;&nbsp;&nbsp;&nbsp;<select name=\"appEnd\">");
             for (String t: MarkupHelper.generateTimes(30)) {
                 sb.append("<option value=\"" + t + "\">" + t + "</option>\n");
             }
             sb.append("</select><br />");
+            sb.append("<p>(default to 1 hour after start)</p>");
             sb.append("<input type=\"submit\" value=\"Enter\" name=\"enterNewApp\">");
             sb.append("</form>");
 
@@ -103,14 +104,14 @@ public class CreateAppointmentServlet extends SecureHTTPServlet {
                       //Search with both criteria
                       StringBuilder update = new StringBuilder(128);
                       update.append("INSERT INTO " + schema + ".Appointment ");
-                      update.append("(DoctorUsername, PatientUsername, StartTime");
-                      if(!endTime.equals("")){
-                          update.append(", EndTime");
-                      }
+                      update.append("(DoctorUsername, PatientUsername, StartTime, EndTime");
                       update.append(") VALUES ");
                       update.append("('" + doctorUsername + "','" + patientUsername + "','" + startTime + "'");
                       if(!endTime.equals("")){
                           update.append(",'" + endTime +"'");
+                      }
+                      else{
+                          update.append(",'ADDDATE('" + startTime + "', INTERVAL 1 HOUR)");
                       }
                       update.append(")");
                       UserDBAO.executeUpdate(update.toString());
