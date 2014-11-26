@@ -16,14 +16,14 @@ time, mark, audio, video {
   margin: 0;
   padding: 0;
   border: 0;
-  font: georgia;
+  font: Georgia;
   vertical-align: baseline;
 }
 
 body {
   padding:10px 50px 0 0;
   font-family:"Helvetica Neue", Georgia, serif;
-	font-size: 15px;
+	font-size: 14px;
 	color: #232323;
 	background-color: #FFFFFF;
 	margin: 0;
@@ -33,7 +33,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color:#003366;
+  color:#232323;
   margin:30px 0 2px;
 }
 
@@ -210,10 +210,10 @@ td {
 
 /* Sidebar */
 
-sidebar {
+sidebarhkim {
 	background-color: #000066;
 	color: #FDFDFB;
-  width:180px;
+  width:240px;
   height:100%;
   float:left;
   position:fixed;
@@ -224,17 +224,17 @@ sidebar {
 	-moz-border-radius-bottomright: 4px;
 	border-top-right-radius: 4px;
 	border-bottom-right-radius: 4px;
-	padding: 34px 25px 22px 50px;
-	margin: 30px 25px 0 0;
+	padding: 20px 25px 22px 50px;
+	margin: 8px 0 0 0;
 	-webkit-font-smoothing: antialiased;
         overflow: auto;
 }
 
-p.sidebar {
+p.sidebarhkim {
 	font-size: 15px;
 }
 
-h1.sidebar {
+h1.sidebarhkim {
 	font-family: Georgia, serif;
 	font-size: 30px;
 	font-weight: 300;
@@ -244,12 +244,12 @@ h1.sidebar {
 }
 
 
-h1.sidebar, a.sidebar, a.name, sidebar a{
+h1.sidebarhkim, a.sidebarhkim, a.name, sidebarhkim a{
 	color: #fff;
         font-size: 20px;
 }
 
-a.sidebar {
+a.sidebarhkim {
 	text-decoration: underline;
 }
 
@@ -257,12 +257,12 @@ a.name {
 	white-space: wrap;
 }
 
-sidebar ul {
+sidebarhkim ul {
   list-style:none;
   padding:0;
 }
 
-sidebar li {
+sidebarhkim li {
 	list-style-type: none;
   width:132px;
   height:15px;
@@ -287,7 +287,7 @@ sidebar li {
 
 }
 
-sidebar li:hover {
+sidebarhkim li:hover {
 	background: #C3001D;
 	background: -moz-linear-gradient(top, #C3001D 0%, #950119 100%);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f8f8f8), color-stop(100%,#dddddd));
@@ -370,7 +370,7 @@ footer {
     margin:0;
   }
 
-  sidebar, section, footer {
+  sidebarhkim, section, footer {
     float:none;
     position:static;
     width:100%;
@@ -382,7 +382,7 @@ footer {
 		padding:0;
 	}
 
-  sidebar {
+  sidebarhkim {
     padding-right:320px;
   }
 
@@ -391,11 +391,11 @@ footer {
     margin:0 0 20px;
   }
 
-  sidebar a small {
+  sidebarhkim a small {
     display:inline-block;
   }
 
-  sidebar ul {
+  sidebarhkim ul {
     position:static;
     right:130px;
     top:84px;
@@ -408,7 +408,7 @@ footer {
     word-wrap:break-word;
   }
 
-  sidebar {
+  sidebarhkim {
     padding:10px 20px 0;
 		margin-right: 0;
   }
@@ -422,14 +422,14 @@ footer {
 		margin: 0 0 0 30px;
 	}
 
-  sidebar ul, sidebar p.view {
+  sidebarhkim ul, sidebarhkim p.view {
     position:static;
   }
 }
 
 @media print, screen and (max-width: 480px) {
 
-  sidebar ul li.download {
+  sidebarhkim ul li.download {
     display:none;
   }
 
