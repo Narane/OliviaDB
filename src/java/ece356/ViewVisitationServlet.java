@@ -7,12 +7,8 @@ package ece356;
 
 import ece356.QueryResult.QueryRow;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.*;
-import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -36,7 +32,6 @@ public class ViewVisitationServlet extends SecureHTTPServlet {
             String role = UserDBAO.getRole(username);
             String query = "";
             QueryResult rs = null;
-            int c_count = 0;
             
             out.println("<h3>Patient Visitation Records</h3>");
             
@@ -46,7 +41,8 @@ public class ViewVisitationServlet extends SecureHTTPServlet {
                             + "DoctorUsername, EndTime, PrescriptionStart,"
                             + "PrescriptionEnd, Diagnosis, Prescription,"
                             + "ProcedureTime from ece356_22_2014.Visits "
-                            + "where PatientUsername = \'"
+                            + "where Active = 1 AND "
+                            + "PatientUsername = \'"
                             + username
                             + "\'";
                     break;
@@ -54,12 +50,14 @@ public class ViewVisitationServlet extends SecureHTTPServlet {
                     query = "select 	PatientUsername, StartTime, ProcedureName,"
                             + "DoctorUsername, EndTime, PrescriptionStart,"
                             + "PrescriptionEnd, Diagnosis, Prescription,"
-                            + "ProcedureTime from	 	ece356_22_2014.Visits as"
-                            + " V where 	V.DoctorUsername     in     ("
+                            + "ProcedureTime from "
+                            + "(SELECT * FROM ece356_22_2014.Visits WHERE Active = 1) as V "
+                            + "where 	V.DoctorUsername     in     ("
                             + " 		select 			"
                             + "D.DoctorUsername         from 		"
                             + "	ece356_22_2014.DoctorStaffAccess as D 		"
-                            + "where 			D.StaffUsername = \'" + username
+                            + "where Active = 1 AND "
+                            + "D.StaffUsername = \'" + username
                             + "\' 	);";
                     break;
                 case "doctor":
@@ -67,53 +65,26 @@ public class ViewVisitationServlet extends SecureHTTPServlet {
                             + "DoctorUsername, EndTime, CurrentStatus, "
                             + "PrescriptionStart, PrescriptionEnd, Diagnosis, "
                             + "Prescription, Comments, ProcedureTime "
-                            + "from ece356_22_2014.Visits where PatientUsername in "
+                            + "from ece356_22_2014.Visits "
+                            + "where Active = 1 AND "
+                            + "PatientUsername in "
                             + "(select PatientUsername from ece356_22_2014.Patient "
                             + "where DoctorUsername = \'"
                             + username
                             + "\')";
                     break;
+                case "legal":
+                    query = "select * from ece356_22_2014.Visits "
+                            + "where Active = 1;";
             }
             rs = UserDBAO.executeQuery(query);
-            ArrayList result = rs.getResultSet();
-            int r_count = result.size();
-            c_count = 0;
-            QueryRow r = null;
-            ArrayList header;
-            ArrayList r_data;
-            
-            out.println("<table border=1>");
-            out.println("<tr>");
-            
-            //output headers
-            r = (QueryRow) result.get(0);
-            header = r.getHeader();
-            c_count = header.size();
-            for (int j = 0; j < c_count; j++) {
-                out.println("<th>");
-                out.println((String) header.get(j));
-            }
-            out.println("</tr>");
-            
-            for (int i = 0; i < r_count; i++) {
-                r = (QueryRow) result.get(i);
-                r_data = r.getRow();
-                out.println("<tr>");
-                for (int j = 0; j < c_count; j++) {
+            out.println(UserDBAO.generateTable(rs));
 
-                    out.println("<td>");
-                    out.println((String) r_data.get(j));
-                    
-                }
-                out.println("</tr>");
-            }
-            
-            out.println("</table>");
-            
-           
-            
         } catch (Exception e) {
-            
+            request.setAttribute("exception", e);
+            // Set the name of jsp to be displayed if connection fails
+            String url = "/error.jsp";
+            getServletContext().getRequestDispatcher(url).forward(request, response);
         }
    }
    
