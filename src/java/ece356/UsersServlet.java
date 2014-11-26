@@ -71,12 +71,11 @@ public class UsersServlet extends SecureHTTPServlet {
 
             if (role.toLowerCase().equals("doctor")){
                 out.println("<h3>List of Current Patients</h3>");
-                rs_user_dir = UserDBAO.executeQuery("select PatientUsername, "
+                rs_user_dir = UserDBAO.executeQuery("SELECT PatientUsername, "
                         + "DoctorUsername, CellNumber, HomeNumber, PatientNumber, "
-                        + "Address, SIN  from ece356_22_2014.Patient "
-                        + "where Active = 1 AND DoctorUsername = \'" +
-                        username +
-                        "\';");
+                        + "Address, SIN  from ece356_22_2014.Patient as P "
+                        + "WHERE Active = 1 "
+                        + "AND DoctorUsername = '" + username +"';");
                 
             } else if (role.toLowerCase().equals("patient")) {
                 out.println("<h3>Patient User Directory</h3>");
@@ -101,37 +100,50 @@ public class UsersServlet extends SecureHTTPServlet {
             int r_count = result.size();
             int c_count = 0;
             
-            QueryRow r = null;
-            ArrayList header;
-            ArrayList r_data;
+            if(r_count > 0){
+                QueryRow r = null;
+                ArrayList header;
+                ArrayList r_data;
 
-            out.println("<table border=1>");
-            out.println("<tr>");
-            
-            r = (QueryRow) result.get(0);
-            header = r.getHeader();
-            c_count = header.size();
-            
-            for (int j = 0; j < c_count; j++) {
-                out.println("<th>");
-                out.println((String) header.get(j));
-            }
-            out.println("</tr>");
-            
-            for (int i = 0; i < r_count; i++) {
-                r = (QueryRow) result.get(i);
-                r_data = r.getRow();
+                out.println("<table border=1>");
                 out.println("<tr>");
-                for (int j = 0; j < c_count; j++) {
 
-                    out.println("<td>");
-                    out.println((String) r_data.get(j));
-                    
+                r = (QueryRow) result.get(0);
+                header = r.getHeader();
+                c_count = header.size();
+
+                for (int j = 0; j < c_count; j++) {
+                    out.println("<th>");
+                    out.println((String) header.get(j));
                 }
                 out.println("</tr>");
+
+                for (int i = 0; i < r_count; i++) {
+                    r = (QueryRow) result.get(i);
+                    r_data = r.getRow();
+                    out.println("<tr>");
+                    for (int j = 0; j < c_count; j++) {
+
+                        out.println("<td>");
+                        out.println((String) r_data.get(j));
+
+                    }
+                    out.println("</tr>");
+                }
+
+                out.println("</table>");
             }
-            
-            out.println("</table>");
+                
+            out.println("<h3>List of Granted Access Patients</h3>");
+            rs_user_dir = UserDBAO.executeQuery("SELECT PatientUsername, "
+                    + "DoctorUsername, CellNumber, HomeNumber, PatientNumber, "
+                    + "Address, SIN  from ece356_22_2014.Patient as P "
+                    + "WHERE Active = 1 "
+                    + "AND EXISTS "
+                    + "(SELECT * from ece356_22_2014.DoctorPatientAccess as A "
+                    + "WHERE P.PatientUsername = A.PatientUsername "
+                    + "AND '" + username + "' = A.DoctorUsername);");
+            out.println(UserDBAO.generateTable(rs_user_dir));
 
             if (role.toLowerCase().equals("doctor")) {
                 // doctor can query its patients
@@ -191,7 +203,6 @@ public class UsersServlet extends SecureHTTPServlet {
                 out.println("");
                 out.println("");
                 out.println("</table>");
-
             }
         } catch (Exception e) {
             request.setAttribute("exception", e);

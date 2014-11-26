@@ -49,13 +49,13 @@ public class UserDBAO {
                     + "V. EndTime, V. CurrentStatus, V. PrescriptionStart, "
                     + "V. PrescriptionEnd, V. Diagnosis, V. Prescription, "
                     + "V. Comments, V. ProcedureTime from "
-                    + "ece356_22_2014.Patient as P  inner join "
-                    + "ece356_22_2014.Visits as V  inner join "
-                    + "ece356_22_2014.User as U  on   V.PatientUsername "
-                    + "= P.PatientUsername  and  U.Username = P.PatientUsername "
+                    + "(SELECT * FROM ece356_22_2014.Patient where Active = 1) as P  inner join "
+                    + "(SELECT * FROM ece356_22_2014.Visits where Active = 1) as V  inner join "
+                    + "(SELECT * FROM ece356_22_2014.User where Active = 1) as U  on"
+                    + " V.PatientUsername = P.PatientUsername  and  U.Username = P.PatientUsername "
                     + ") as PV where  PatientUsername  in  (  select  "
                     + "PatientUsername  from   ece356_22_2014.Patient "
-                    + "where   DoctorUsername = 'kmyin' )";
+                    + "where   DoctorUsername = '" + doctor_username + "' )";
             
             if (f_name != null && !f_name.trim().isEmpty())
                 query += "and PV.FirstName" + " like" + "(\'%" + f_name + "%\') ";
