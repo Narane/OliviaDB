@@ -129,11 +129,11 @@ public class UpdatePersonalInfoServlet extends SecureHTTPServlet {
             String address = request.getParameter("address");
            
             if (fName == null || fName.trim().isEmpty() || 
-                    lName == null || lName.trim().isEmpty() || 
-                    cellNumber == null || cellNumber.trim().isEmpty() || 
-                    homeNumber == null || homeNumber.trim().isEmpty() || 
-                    address == null || address.trim().isEmpty()) {
-                return "Need all fields to update. Try pressing \"Display current info\" first";
+                lName == null || lName.trim().isEmpty() || 
+                cellNumber == null || cellNumber.trim().isEmpty() || 
+                homeNumber == null || homeNumber.trim().isEmpty() || 
+                address == null || address.trim().isEmpty()) {
+                    return "Need all fields to update. Try pressing \"Display current info\" first";
             }
             
             // get copy of info to be updated
