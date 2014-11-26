@@ -74,7 +74,7 @@ public class CreateAppointmentServlet extends SecureHTTPServlet {
                 sb.append("<option value=\"" + t + "\">" + t + "</option>\n");
             }
             sb.append("</select><br />");
-            sb.append("End Date: &nbsp;&nbsp;&nbsp;&nbsp;<input type=\"text\" name=\"MyDate2\" class=\"datepicker\"> "
+            sb.append("End Date*: &nbsp;&nbsp;&nbsp;&nbsp;<input type=\"text\" name=\"MyDate2\" class=\"datepicker\"> "
                     + "&nbsp;&nbsp;End Time:&nbsp;&nbsp;&nbsp;&nbsp;<select name=\"appEnd\">");
             for (String t: MarkupHelper.generateTimes(30)) {
                 sb.append("<option value=\"" + t + "\">" + t + "</option>\n");
@@ -96,7 +96,7 @@ public class CreateAppointmentServlet extends SecureHTTPServlet {
             // CHECK DOCTORS AND PATIENT USER NAMES TO BE VALID
             if(enterBool && (doctorUsername != null && patientUsername != null && startTime != null && endTime != null)){
 
-                if(!doctorUsername.equals("") && !patientUsername.equals("") && !startTime.equals("")){
+                if(!doctorUsername.equals("") && !patientUsername.equals("") && !startTime.equals("") && !endTime.equals("")){
                     startTime = req.getParameter("MyDate1") + " " + req.getParameter("appStart");
                     endTime = req.getParameter("MyDate2") + " " + req.getParameter("appEnd");
                     
@@ -106,13 +106,15 @@ public class CreateAppointmentServlet extends SecureHTTPServlet {
                       update.append("INSERT INTO " + schema + ".Appointment ");
                       update.append("(DoctorUsername, PatientUsername, StartTime, EndTime");
                       update.append(") VALUES ");
-                      update.append("('" + doctorUsername + "','" + patientUsername + "','" + startTime + "'");
+                      update.append("('" + doctorUsername + "','" + patientUsername + "','" + startTime + "','" + endTime + "'");
+                      /*
                       if(!endTime.equals("")){
                           update.append(",'" + endTime +"'");
                       }
                       else{
                           update.append(",'ADDDATE('" + startTime + "', INTERVAL 1 HOUR)");
                       }
+                      */
                       update.append(")");
                       UserDBAO.executeUpdate(update.toString());
                       sb.append("Appointment between Doctor " + doctorUsername + " and Patient " + patientUsername + " at " + startTime + " was successful");

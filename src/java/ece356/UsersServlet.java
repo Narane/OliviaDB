@@ -133,8 +133,9 @@ public class UsersServlet extends SecureHTTPServlet {
 
                 out.println("</table>");
             }
-                
-            out.println("<h3>List of Granted Access Patients</h3>");
+            if (!role.toLowerCase().equals("patient")) {
+                out.println("<h3>List of Granted Access Patients</h3>");
+            
             rs_user_dir = UserDBAO.executeQuery("SELECT PatientUsername, "
                     + "DoctorUsername, CellNumber, HomeNumber, PatientNumber, "
                     + "Address, SIN  from ece356_22_2014.Patient as P "
@@ -144,7 +145,7 @@ public class UsersServlet extends SecureHTTPServlet {
                     + "WHERE P.PatientUsername = A.PatientUsername "
                     + "AND '" + username + "' = A.DoctorUsername);");
             out.println(UserDBAO.generateTable(rs_user_dir));
-
+            }
             if (role.toLowerCase().equals("doctor")) {
                 // doctor can query its patients
 
