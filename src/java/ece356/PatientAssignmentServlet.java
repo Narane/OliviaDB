@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import metro.Metro;
 
 /**
  *
@@ -65,6 +66,7 @@ public class PatientAssignmentServlet extends SecureHTTPServlet {
         if(doctorName == null){doctorName = "";}
         if(patientName == null){patientName = "";}
         
+        /*
         out.println("<p>Enter patient ID and doctor ID to search for assignments or assign the patient to the doctor.</p>");
         out.println(
             "<form method=\"post\">" +
@@ -72,6 +74,22 @@ public class PatientAssignmentServlet extends SecureHTTPServlet {
             "  Patient username: <input type=\"text\" value=\"" + patientName + "\" SIZE=30 name=\"patientname\"><br>" +
             resultString +
             "<input type=\"submit\" value=\"Search\" name=\"submitAction\"> <input type=\"submit\" value=\"Assign\" name=\"submitAction\"></form>");
+        */
+        out.println("<form method='post'>");
+        
+        out.println(Metro.label("Doctor Username:"));
+        out.println(Metro.inputBoxes("doctorname", "text", doctorName, "Doctor Username", ""));
+        
+        out.println(Metro.label("Patient Username:"));
+        out.println(Metro.inputBoxes("patientname", "text", patientName, "Patient Username", ""));
+        
+        out.print("<div class='grid fluid'>\n<div class='row'>\n<div class='span2'>\n");
+        out.println(Metro.submitButton("submitAction", "Search"));
+        out.println("</div><div class='span1'>");
+        out.println(Metro.submitButton("submitAction", "Assign"));
+        out.println("</div></div></div>");
+        out.println("</form>");
+        
         
         try{         
             String submitAction= req.getParameter("submitAction");

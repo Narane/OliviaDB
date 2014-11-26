@@ -36,6 +36,15 @@ public class Metro {
         return html;
     }
     
+    public static String submitButton(String name, String value) {
+        
+        String html = 
+                "<input name='" + name + "' type='submit' value='" + value + "'>";
+        
+        return html;
+    }
+    
+    
     public static String textArea(String name, String value) {
         String html =   "<div class='input-control textarea' data-role='input-control'>\n" + 
                             "<textarea name='" + name + "'>" + value + "</textarea>\n" +

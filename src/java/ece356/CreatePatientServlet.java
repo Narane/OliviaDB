@@ -145,6 +145,7 @@ public class CreatePatientServlet extends SecureHTTPServlet {
             getServletContext().getRequestDispatcher("/error.jsp").forward(req, res);
         }
         
+        out.println("<h4>Enter information about a new patient</h4>");
         out.println("<form method='post' action='CreatePatientServlet'>");
 
             out.println(Metro.label("Username:"));
