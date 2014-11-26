@@ -54,21 +54,21 @@ public class UserDBAO {
                     + "where   DoctorUsername = 'kmyin' )";
             
             if (f_name != null && !f_name.trim().isEmpty())
-                query += "and PV.FirstName" + " like" + "(\'" + f_name + "\') ";
+                query += "and PV.FirstName" + " like" + "(\'%" + f_name + "%\') ";
             if (l_name != null && !l_name.trim().isEmpty())
-                query += "and PV.LastName" + " like" + "(\'" + l_name + "\') ";
+                query += "and PV.LastName" + " like" + "(\'%" + l_name + "%\') ";
             if (p_num != null && !p_num.trim().isEmpty())
-                query += "and PV.PatientNumber" + " like" + "(\'" + p_num + "\') ";
+                query += "and PV.PatientNumber" + " like" + "(\'%" + p_num + "%\') ";
             if (v_date != null && !v_date.trim().isEmpty())
-                query += "and PV.EndTime" + " like" + "(\'" + v_date +  "\') ";
+                query += "and DATE_FORMAT(PV.EndTime, \'%Y-%m-%d\')" + " =" + "(\'" + v_date +  "\') ";
             if (diagnosis != null && !diagnosis.trim().isEmpty())
-                query += "and PV.Diagnosis" + " like" + "(\'" + diagnosis +  "\') ";
+                query += "and PV.Diagnosis" + " like" + "(\'%" + diagnosis +  "%\') ";
             if (comment != null && !comment.trim().isEmpty())
-                query += "and PV.Comments" + " like" + "(\'" + comment +  "\') ";
+                query += "and PV.Comments" + " like" + "(\'%" + comment +  "%\') ";
             if (prescription != null && !prescription.trim().isEmpty())
-                query += "and PV.Prescription" + " like" + "(\'" + prescription +  "\') ";
+                query += "and PV.Prescription" + " like" + "(\'%" + prescription +  "%\') ";
             if (surgery != null && !surgery.trim().isEmpty())
-                query += "and PV.ProcedureName" + " like" + "(\'" + surgery +  "\') ";
+                query += "and PV.ProcedureName" + " like" + "(\'%" + surgery +  "%\') ";
             
             Connection con;
             Statement stmt;
