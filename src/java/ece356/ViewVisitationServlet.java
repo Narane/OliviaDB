@@ -53,7 +53,11 @@ public class ViewVisitationServlet extends SecureHTTPServlet {
                 case "staff":
                     break;
                 case "doctor":
-                    query = "select * from ece356_22_2014.Visits where PatientUsername in "
+                    query = "select PatientUsername, StartTime, ProcedureName, "
+                            + "DoctorUsername, EndTime, CurrentStatus, "
+                            + "PrescriptionStart, PrescriptionEnd, Diagnosis, "
+                            + "Prescription, Comments, ProcedureTime, "
+                            + "from ece356_22_2014.Visits where PatientUsername in "
                             + "(select PatientUsername from ece356_22_2014.DoctorPatientAccess "
                             + "where DoctorUsername = \'"
                             + username

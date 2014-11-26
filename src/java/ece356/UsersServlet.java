@@ -71,7 +71,9 @@ public class UsersServlet extends SecureHTTPServlet {
 
             if (role.toLowerCase().equals("doctor")){
                 out.println("<h3>List of Current Patients</h3>");
-                rs_user_dir = UserDBAO.executeQuery("select * from ece356_22_2014.Patient "
+                rs_user_dir = UserDBAO.executeQuery("select PatientUsername, "
+                        + "x    DoctorUsername, CellNumber, HomeNumber, PatientNumber, "
+                        + "Address, SIN  from ece356_22_2014.Patient "
                         + "where DoctorUsername = \'" +
                         username +
                         "\';");
