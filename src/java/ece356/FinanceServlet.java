@@ -82,10 +82,10 @@ public class FinanceServlet extends SecureHTTPServlet {
 
                         // pull how many patients doctor has seen
                         query = "select V.DoctorUsername, count(*) as PatientSaw,     sum(C.Cost) + count(*) * (select Cost from ece356_22_2014.Costs where ProcedureName like '%Visit%') "
-                                + "as TotalRevenue from 	ece356_22_2014.Doctor "
-                                + "as D inner join 	ece356_22_2014.Visits as V inner "
-                                + "join 	ece356_22_2014.Costs as C on 	"
-                                + "D.DoctorUsername = V.DoctorUsername "
+                                + "as TotalRevenue from (SELECT * FROM ece356_22_2014.Doctor WHERE Active = 1) as D "
+                                + "inner join (SELECT * FROM ece356_22_2014.Visits WHERE Active = 1) as V "
+                                + "inner join (SELECT * FROM ece356_22_2014.Costs WHERE Active = 1) as C "
+                                + "on D.DoctorUsername = V.DoctorUsername "
                                 + "and 	V.ProcedureName = C.ProcedureName where "
                                 + "DATE_FORMAT(V.StartTime, \'%Y-%m-%d\') "
                                 + s_date
