@@ -45,6 +45,36 @@ public class CreateVisitationServlet extends SecureHTTPServlet {
         //If we don't have try/catch here, we're gonna need to put the catch
         // errors from the function but that's going to override return type
         // of this function; that is NOT POSSIBLE
+        // store, so that we can keep values in case of page reload
+        String patientUsername = req.getParameter("patient");
+        if (patientUsername == null) {patientUsername = "";}
+        String visitDate = req.getParameter("MyDate1");
+        if (visitDate == null) {visitDate = "";}
+        String visitStart = req.getParameter("visitStart");
+        if (visitStart == null) {visitStart = "";}
+        String visitEnd = req.getParameter("visitEnd");
+        if (visitEnd == null) {visitEnd = "";}
+        String procedureName = req.getParameter("procedureName");
+        if (procedureName == null) {procedureName = "";}
+        String procedureTime = req.getParameter("procedureTime");
+        if (procedureTime == null) {procedureTime = "";}
+        String currentStatus = req.getParameter("currentStatus");
+        if (currentStatus == null) {currentStatus = "";}
+        String prescription = req.getParameter("prescription");
+        if (prescription == null) {prescription = "";}
+        String diagnosis = req.getParameter("diagnosis");
+        if (diagnosis == null) {diagnosis = "";}
+        String prescriptionStartDate = req.getParameter("MyDate2");
+        if (prescriptionStartDate == null) {prescriptionStartDate = "";}
+        String prescriptionStartTime = req.getParameter("prescStartTime");
+        if (prescriptionStartTime == null) {prescriptionStartTime = "";}
+        String prescriptionEndDate = req.getParameter("MyDate3");
+        if (prescriptionEndDate == null) {prescriptionEndDate = "";}
+        String prescriptionEndTime = req.getParameter("prescEndTime");
+        if (prescriptionEndTime == null) {prescriptionEndTime = "";}
+        String comments = req.getParameter("comments");
+        if (comments == null) {comments = "";}
+        
         String role = "";
         String msg = "";
         String query;
@@ -68,20 +98,20 @@ public class CreateVisitationServlet extends SecureHTTPServlet {
 
             res.setContentType("text/html");
 
-            out.println("<p>Do not leave fields marking with * empty!</p>");
+            out.println("<p>Except for Comments, all fields MUST be specified!</p>");
             
             out.println("<form method=\"post\" />\n");
-            out.println("Patient username: <input type=\"text\" name=\"patient\" /><b>*</b>");
+            out.println("Patient username: <input type=\"text\" name=\"patient\" value=\""+ patientUsername +"\"/><br />");
             
             out.println("<h3>Visitation Information</h3>\n");
             //visitDate
-            out.println("Date: <input type=\"text\" name=\"MyDate1\" class=\"datepicker\" /><b>*</b>\n");
-            out.println("Start Time: <select name=\"visitStart\" />\n");
+            out.println("Date: <input type=\"text\" name=\"MyDate1\" class=\"datepicker\" value=\""+ visitDate +"\"/><br />\n");
+            out.println("Start Time: <select name=\"visitStart\" value=\""+ visitStart +"\"/>\n");
             for (String t: MarkupHelper.generateTimes(30)) {
                 out.println("<option value=\"" + t + "\">" + t + "</option>\n");
             }
             out.println("</select>");
-            out.println("End Time: <select name=\"visitEnd\" />\n");
+            out.println("End Time: <select name=\"visitEnd\" value=\""+ visitEnd +"\"/><br />\n");
             for (String t: MarkupHelper.generateTimes(30)) {
                 out.println("<option value=\"" + t + "\">" + t + "</option>\n");
             }
@@ -92,34 +122,33 @@ public class CreateVisitationServlet extends SecureHTTPServlet {
             query = "select ProcedureName from " + UserDBAO.schema + ".Costs";
             qRes = UserDBAO.executeQuery(query);
             out.println("Procedure: <select name=\"procedureName\" />\n");
-            out.println("<option selected value=\"\"></option>\n");
             for (QueryRow qRow: qRes.getResultSet()) {
-                String procedureName = qRow.getString("ProcedureName");
-                out.println("<option value=\"" + procedureName + "\">" + procedureName + "</option>\n");
+                String procName = qRow.getString("ProcedureName");
+                out.println("<option value=\"" + procName + "\">" + procName + "</option>\n");
             }
             out.println("</select>\n");
             out.println("Procedure Time: <select name=\"procedureTime\" />\n");
             for (String t: MarkupHelper.generateTimes(30)) {
                 out.println("<option value=\"" + t + "\">" + t + "</option>\n");
             }
-            out.println("</select>");
-            out.println("Current Status: <input type=\"text\" name=\"currentStatus\" />\n");
+            out.println("</select><br />");
+            out.println("Current Status: <input type=\"text\" name=\"currentStatus\" /><br />\n");
             
             out.println("<h3> Prescription Information</h3>\n");
-            out.println("Prescription: <input type=\"text\" name=\"prescription\" />\n");
-            out.println("Diagnosis: <input type=\"text\" name=\"diagnosis\" />\n");
+            out.println("Prescription: <input type=\"text\" name=\"prescription\" value=\""+ prescription +"\"/><br />\n");
+            out.println("Diagnosis: <input type=\"text\" name=\"diagnosis\" value=\""+ diagnosis +"\"/><br />\n");
             out.println("<br />\n");
             //prescStartDate
-            out.println("Start Date: <input type=\"text\" name=\"MyDate2\" class=\"datepicker\" />\n");
-            out.println("Start Time: <select name=\"prescStartTime\" />\n");
+            out.println("Start Date: <input type=\"text\" name=\"MyDate2\" class=\"datepicker\" value=\""+ prescriptionStartDate +"\"/>\n");
+            out.println("Start Time: <select name=\"prescStartTime\" /><br />\n");
             for (String t: MarkupHelper.generateTimes(30)) {
                 out.println("<option value=\"" + t + "\">" + t + "</option>\n");
             }
             out.println("</select>");
             out.println("<br />\n");
             //prescEndDate
-            out.println("End Date: <input type=\"text\" name=\"MyDate3\" class=\"datepicker\" />\n");
-            out.println("End Time: <select name=\"prescEndTime\" />\n");
+            out.println("End Date: <input type=\"text\" name=\"MyDate3\" class=\"datepicker\" value=\""+ prescriptionEndDate +"\"/>\n");
+            out.println("End Time: <select name=\"prescEndTime\" /><br />\n");
             for (String t: MarkupHelper.generateTimes(30)) {
                 out.println("<option value=\"" + t + "\">" + t + "</option>\n");
             }
@@ -129,7 +158,8 @@ public class CreateVisitationServlet extends SecureHTTPServlet {
             out.println("<h3>Comments</h3>\n");
             out.println("100 character limit\n");
             out.println("<br />\n");
-            out.println("<textarea rows=\"4\" cols=\"50\" name=\"comments\"></textarea>\n");
+            out.println("<textarea rows=\"4\" cols=\"50\" name=\"comments\">" + 
+                comments + "</textarea>\n");
             out.println("<br /><br />\n");
             
             out.println("<input type=\"submit\" value=\"Submit\" name=\"submitAction\" />\n");
@@ -141,7 +171,7 @@ public class CreateVisitationServlet extends SecureHTTPServlet {
                 msg = createVisitation(req);
             }
             
-             out.println(msg);
+            out.println(msg);
            
         }
         
@@ -174,11 +204,28 @@ public class CreateVisitationServlet extends SecureHTTPServlet {
         if (patientUsername == null || patientUsername.trim().isEmpty()
                 || visitDate == null || visitDate.trim().isEmpty()
                 || visitStart == null || visitStart.trim().isEmpty()
-                || visitEnd == null || visitEnd.trim().isEmpty()) {
-            return "Please enter required values (indicated by *)";
+                || visitEnd == null || visitEnd.trim().isEmpty()
+                || procedureName == null || procedureName.trim().isEmpty()
+                || procedureTime == null || procedureTime.trim().isEmpty()
+                || currentStatus == null || currentStatus.trim().isEmpty()
+                || prescription == null || prescription.trim().isEmpty()
+                || diagnosis == null || diagnosis.trim().isEmpty()
+                || prescriptionStartDate == null || prescriptionStartDate.trim().isEmpty()
+                || prescriptionStartTime == null || prescriptionStartTime.trim().isEmpty()
+                || prescriptionEndDate == null || prescriptionEndDate.trim().isEmpty()
+                || prescriptionEndTime == null || prescriptionEndTime.trim().isEmpty()
+                ) {
+            return "Error! Please enter values!";
+        }
+        String query = "SELECT PatientUsername, DoctorUsername FROM " + 
+                UserDBAO.schema + ".Patient";
+        QueryResult qRes = UserDBAO.executeQuery(query);
+        if (qRes.getResultSet().isEmpty() || !qRes.getRow(0).getString("DoctorUsername").equals(doctorUsername)
+                || !qRes.getRow(0).getString("PatientUsername").equals(patientUsername)) {
+            return "Error! You are not the assigned doctor of this user and cannot create a Visitation record";
         }
         
-        String query = "INSERT INTO " + UserDBAO.schema +".Visits\n" +
+        query = "INSERT INTO " + UserDBAO.schema +".Visits\n" +
             "(PatientUsername, " +
             "StartTime," +
             "ProcedureName, " +
@@ -212,7 +259,7 @@ public class CreateVisitationServlet extends SecureHTTPServlet {
             return "Successfully created visitation";
         }
         else {
-            return "Error creating visitation";
+            return "Error! Could not create visitation";
         }
     }
 

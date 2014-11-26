@@ -72,47 +72,25 @@ public class ProcedureServlet extends SecureHTTPServlet {
                 "  Procedure Name:   <input type=\"text\" SIZE=30 name=\"pname\"><br>\n" +
                 "  Cost ($): <input type=\"text\"  SIZE=30 name=\"cost\"><br>\n" +
                 "  <input type=\"submit\" value=\"Create\" name=\"submitAction\">\n" +
-                "  <input type=\"submit\" value=\"Delete\" name=\"submitAction\">\n" +
                 "</form> ");
             
             int updateCount = 0;
-            String submitAction = req.getParameter("submitAction");
-            Boolean modifying = (submitAction != null && submitAction.equals("Create"));
-            Boolean deleting = (submitAction != null && submitAction.equals("Delete"));
             try {
-                if (req.getParameter("cost") != null && deleting) {
-                    updateCount = deleteProcedure(req);
-                }
-                else {
-                    updateCount = createProcedure(req);
-                }
+               
+                updateCount = createProcedure(req);
             }
             catch (SQLException e) {
-                if (!e.getMessage().contains("Duplicate entry")) {
                    status = e.getMessage(); 
-                }
                 // swallow Duplicate entry exceptions, since we will update anyway
-                
             }
             
             if (updateCount > 0) {
-                if (deleting) {
-                    status = "Successfully deleted procedure \"" + 
-                        req.getParameter("pname") + "\""; 
-                }
-                else {
-                    BigDecimal decimalCost = convertStringToMonetaryFormBigDecimal(req.getParameter("cost"));
-                    status = "Successfully created procedure \"" + 
-                        req.getParameter("pname") + "\" with cost $" + decimalCost.toString();
-                }
-            }
-            
-            else if (modifying && updateCount == 0){
-                // Found duplicate. Will update entry instead
-                updateProcedure(req);
                 BigDecimal decimalCost = convertStringToMonetaryFormBigDecimal(req.getParameter("cost"));
-                status = "Successfully updated procedure \"" + 
+                status = "Successfully created procedure \"" + 
                     req.getParameter("pname") + "\" with cost $" + decimalCost.toString();
+            }
+            else if (updateCount == 0) {
+                status = "Duplicate entry not added to table";
             }
 
             out.println(status);
@@ -184,7 +162,7 @@ public class ProcedureServlet extends SecureHTTPServlet {
         if ((pName == null || pName.trim().isEmpty()) || (cost == null || cost.trim().isEmpty())) {
             return -1;
         }
-       
+        
         DecimalFormat df = new DecimalFormat("#.00");
         df.setMaximumFractionDigits(2);
         BigDecimal decimalCost = new BigDecimal(df.format(Double.parseDouble(cost)));
