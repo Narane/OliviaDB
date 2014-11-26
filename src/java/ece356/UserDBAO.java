@@ -55,7 +55,7 @@ public class UserDBAO {
                     + "= P.PatientUsername  and  U.Username = P.PatientUsername "
                     + ") as PV where  PatientUsername  in  (  select  "
                     + "PatientUsername  from   ece356_22_2014.Patient "
-                    + "where   DoctorUsername = 'kmyin' )";
+                    + "where   DoctorUsername = '" + doctor_username + "' )";
             
             if (f_name != null && !f_name.trim().isEmpty())
                 query += "and PV.FirstName" + " like" + "(\'%" + f_name + "%\') ";

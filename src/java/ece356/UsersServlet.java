@@ -101,97 +101,98 @@ public class UsersServlet extends SecureHTTPServlet {
             int r_count = result.size();
             int c_count = 0;
             
-            QueryRow r = null;
-            ArrayList header;
-            ArrayList r_data;
+            if(r_count > 0){
+                QueryRow r = null;
+                ArrayList header;
+                ArrayList r_data;
 
-            out.println("<table border=1>");
-            out.println("<tr>");
-            
-            r = (QueryRow) result.get(0);
-            header = r.getHeader();
-            c_count = header.size();
-            
-            for (int j = 0; j < c_count; j++) {
-                out.println("<th>");
-                out.println((String) header.get(j));
-            }
-            out.println("</tr>");
-            
-            for (int i = 0; i < r_count; i++) {
-                r = (QueryRow) result.get(i);
-                r_data = r.getRow();
+                out.println("<table border=1>");
                 out.println("<tr>");
-                for (int j = 0; j < c_count; j++) {
 
-                    out.println("<td>");
-                    out.println((String) r_data.get(j));
-                    
+                r = (QueryRow) result.get(0);
+                header = r.getHeader();
+                c_count = header.size();
+
+                for (int j = 0; j < c_count; j++) {
+                    out.println("<th>");
+                    out.println((String) header.get(j));
                 }
                 out.println("</tr>");
-            }
-            
-            out.println("</table>");
 
-            if (role.toLowerCase().equals("doctor")) {
-                // doctor can query its patients
-
-                out.println("<h3>Patient Search</h3>");
-                out.println("<form>");
-
-                out.println("First Name: <input type=\"text\" name=\"f_name\">");
-                out.println("Last Name: <input type=\"text\" name=\"l_name\">" +
-                        "<br>");
-                out.println("Patient Number: <input type=\"text\" name=\"p_num\">");
-                out.println("Date: <input type=\"text\" name=\"MyDate\" class=\"datepicker\">" +
-                        "<br>");
-
-                out.println("Diagnosis: <input type=\"text\" name=\"diagnosis\">");
-                out.println("Comment: <input type=\"text\" name=\"comment\">" +
-                        "<br>");
-                out.println("Prescription: <input type=\"text\" name=\"prescription\">");
-                out.println("Surgery: <input type=\"text\" name=\"surgery\">" +
-                        "<br>");
-
-                out.println("<input type=\"submit\" value=\"Submit\">");
-
-                out.println("</form>");
-            }
-
-            if (is_query) {
-
-                // returns queried results
-                is_query = false;
-                ResultData rd = UserDBAO.getPatientInfo(username, f_name, l_name,
-                        p_num, v_date, diagnosis, comment, prescription, surgery, username);
-                ResultSet rs_patient_info = rd.rs;
-                //rs_patient_info = UserDBAO.executeQuery("select * from ece356_22_2014.User;");
-                c_count = rd.l.size();
-
-                out.println("<h3>Search Results</h3>");
-                out.println("<table border=1>");
-                // first row for column names
-                out.println("<tr>");
-                for (int j = 0; j < c_count; j++){
-                    out.println("<th>");
-                    out.println(rd.l.get(j).toString());
-                }    
-                out.println("</tr>");
-
-                // now for data
-
-                while (rs_patient_info.next()) {
+                for (int i = 0; i < r_count; i++) {
+                    r = (QueryRow) result.get(i);
+                    r_data = r.getRow();
                     out.println("<tr>");
-                    for (int j = 1; j <= c_count; j++) {
+                    for (int j = 0; j < c_count; j++) {
+
                         out.println("<td>");
-                        out.println(rs_patient_info.getString(j));
+                        out.println((String) r_data.get(j));
+
                     }
                     out.println("</tr>");
                 }
-                out.println("");
-                out.println("");
+
                 out.println("</table>");
 
+                if (role.toLowerCase().equals("doctor")) {
+                    // doctor can query its patients
+
+                    out.println("<h3>Patient Search</h3>");
+                    out.println("<form>");
+
+                    out.println("First Name: <input type=\"text\" name=\"f_name\">");
+                    out.println("Last Name: <input type=\"text\" name=\"l_name\">" +
+                            "<br>");
+                    out.println("Patient Number: <input type=\"text\" name=\"p_num\">");
+                    out.println("Date: <input type=\"text\" name=\"MyDate\" class=\"datepicker\">" +
+                            "<br>");
+
+                    out.println("Diagnosis: <input type=\"text\" name=\"diagnosis\">");
+                    out.println("Comment: <input type=\"text\" name=\"comment\">" +
+                            "<br>");
+                    out.println("Prescription: <input type=\"text\" name=\"prescription\">");
+                    out.println("Surgery: <input type=\"text\" name=\"surgery\">" +
+                            "<br>");
+
+                    out.println("<input type=\"submit\" value=\"Submit\">");
+
+                    out.println("</form>");
+                }
+
+                if (is_query) {
+
+                    // returns queried results
+                    is_query = false;
+                    ResultData rd = UserDBAO.getPatientInfo(username, f_name, l_name,
+                            p_num, v_date, diagnosis, comment, prescription, surgery, username);
+                    ResultSet rs_patient_info = rd.rs;
+                    //rs_patient_info = UserDBAO.executeQuery("select * from ece356_22_2014.User;");
+                    c_count = rd.l.size();
+
+                    out.println("<h3>Search Results</h3>");
+                    out.println("<table border=1>");
+                    // first row for column names
+                    out.println("<tr>");
+                    for (int j = 0; j < c_count; j++){
+                        out.println("<th>");
+                        out.println(rd.l.get(j).toString());
+                    }    
+                    out.println("</tr>");
+
+                    // now for data
+
+                    while (rs_patient_info.next()) {
+                        out.println("<tr>");
+                        for (int j = 1; j <= c_count; j++) {
+                            out.println("<td>");
+                            out.println(rs_patient_info.getString(j));
+                        }
+                        out.println("</tr>");
+                    }
+                    out.println("");
+                    out.println("");
+                    out.println("</table>");
+                }
             }
         } catch (Exception e) {
             request.setAttribute("exception", e);
