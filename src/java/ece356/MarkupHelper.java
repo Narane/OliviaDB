@@ -59,7 +59,7 @@ public class MarkupHelper {
             sb.append(buildSidebarHelper("UpdatePersonalInfoServlet", "Update personal information"));
         }
         
-        if(role.equals("staff") || role.equals("superuser")){
+        if(role.equals("doctor") || role.equals("superuser")){
             sb.append(buildSidebarHelper("CreateVisitationServlet", "Create visitation records"));
         }
         

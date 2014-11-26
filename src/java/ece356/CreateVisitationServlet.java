@@ -135,13 +135,13 @@ public class CreateVisitationServlet extends SecureHTTPServlet {
             out.println("<input type=\"submit\" value=\"Submit\" name=\"submitAction\" />\n");
             out.println("</form>\n");
             
-            out.println(msg);
-            
             String submitAction = req.getParameter("submitAction");
             Boolean submitting = submitAction != null && submitAction.equals("Submit");
             if(submitting) {
-                createVisitation(req);
+                msg = createVisitation(req);
             }
+            
+             out.println(msg);
            
         }
         
@@ -153,7 +153,8 @@ public class CreateVisitationServlet extends SecureHTTPServlet {
         }   
     }
     
-    private String createVisitation(HttpServletRequest req) {
+    private String createVisitation(HttpServletRequest req) 
+        throws ClassNotFoundException, SQLException {
         String patientUsername = req.getParameter("patient");
         String doctorUsername = (String)req.getSession().getAttribute("username");
         String visitDate = req.getParameter("MyDate1");
@@ -178,35 +179,41 @@ public class CreateVisitationServlet extends SecureHTTPServlet {
         }
         
         String query = "INSERT INTO " + UserDBAO.schema +".Visits\n" +
-            "(PatientUsername,\n" +
-            "StartTime,\n" +
-            "ProcedureName,\n" +
-            "DoctorUsername,\n" +
-            "EndTime,\n" +
-            "CurrentStatus,\n" +
-            "PrescriptionStart,\n" +
-            "PrescriptionEnd,\n" +
-            "Diagnosis,\n" +
-            "Prescription,\n" +
-            "Comments,\n" +
-            "ProcedureTime,\n" +
-            "VALUES\n" +
-            "(\n" +
-            patientUsername + "<{PatientUsername,\n" +
-            "<{StartTime: 0000-00-00 00:00:00}>,\n" +
-            "<{ProcedureName: }>,\n" +
-            "<{DoctorUsername: }>,\n" +
-            "<{EndTime: }>,\n" +
-            "<{CurrentStatus: }>,\n" +
-            "<{PrescriptionStart: }>,\n" +
-            "<{PrescriptionEnd: }>,\n" +
-            "<{Diagnosis: }>,\n" +
-            "<{Prescription: }>,\n" +
-            "<{Comments: }>,\n" +
-            "<{ProcedureTime: }>\n" +
+            "(PatientUsername, " +
+            "StartTime," +
+            "ProcedureName, " +
+            "DoctorUsername, " +
+            "EndTime, " +
+            "CurrentStatus, " +
+            "PrescriptionStart, " +
+            "PrescriptionEnd, " +
+            "Diagnosis, " +
+            "Prescription, " +
+            "Comments, " +
+            "ProcedureTime )" +
+            "VALUES " +
+            "( " +
+            "'" + patientUsername + "' , " +
+            "'" + visitDate + " " + visitStart + "', " +
+            "'" + procedureName + "', " +
+            "'" + doctorUsername + "', " +
+            "'" + visitDate + " " + visitEnd + "', " +
+            "'" + currentStatus + "', " +
+            "'" + prescriptionStartDate + " " + prescriptionStartTime + "', " +
+            "'" + prescriptionEndDate + " " + prescriptionEndTime + "', " +
+            "'" + diagnosis + "', " +
+            "'" + prescription + "', " +
+            "'" + comments + "', " +
+            "'" + visitDate + " " + procedureTime + "'" + 
             ");";
         
-        return "";
+        int returnValue = UserDBAO.executeUpdate(query);
+        if (returnValue > 0) {
+            return "Successfully created visitation";
+        }
+        else {
+            return "Error creating visitation";
+        }
     }
 
 }
