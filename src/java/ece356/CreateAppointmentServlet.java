@@ -5,82 +5,124 @@
  */
 package ece356;
 
+import static ece356.UserDBAO.schema;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author Aaron
  */
-public class CreateAppointmentServlet extends HttpServlet {
+public class CreateAppointmentServlet extends SecureHTTPServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet CreateAppointmentServlet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet CreateAppointmentServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+    public String pageTitle(){
+        return "Create Appointments";
+    }
+
+    @Override
+    public void innerFunction(
+            HttpServletRequest req, 
+            HttpServletResponse res, 
+            ServletOutputStream out)
+        throws ServletException,  IOException {
+        
+        HttpSession session = req.getSession();
+        String username = (String) session.getAttribute("username");
+        String role = "";
+        try{
+            role = UserDBAO.getRole(username);
+            
+            if(!(role.equals("staff") || !role.equals("superuser"))){
+                session.invalidate();
+                res.sendRedirect("LoginServlet");
+            }
+        
+            StringBuilder sb = new StringBuilder(128);
+            sb.append("<h2>Enter a new appointment (* is required)</h2>");
+                
+            String doctorUsername = req.getParameter("doctorUsername");
+            String patientUsername = req.getParameter("patientUsername");
+            String startTime = req.getParameter("MyDate1");
+            String endTime = req.getParameter("MyDate2");
+            if(doctorUsername == null){doctorUsername = "";}
+            if(patientUsername == null){patientUsername = "";}
+            if(startTime == null){startTime = "";}
+            if(endTime == null){endTime = "";}
+            //Enter new appointment
+            sb.append("<form method=\"post\">");
+            sb.append("Doctor username*: <input type=\"text\" name=\"doctorUsername\"><br />");
+            sb.append("Patient username*: <input type=\"text\" name=\"patientUsername\"><br />");
+            sb.append("Start Date*: <input type=\"text\" name=\"MyDate1\" class=\"datepicker\"> "
+                    + "Start Time*: <select name=\"appStart\">");
+            for (String t: MarkupHelper.generateTimes(30)) {
+                sb.append("<option value=\"" + t + "\">" + t + "</option>\n");
+            }
+            sb.append("</select><br />");
+            sb.append("End Date: <input type=\"text\" name=\"MyDate2\" class=\"datepicker\"> "
+                    + "End Time*: <select name=\"appEnd\">");
+            for (String t: MarkupHelper.generateTimes(30)) {
+                sb.append("<option value=\"" + t + "\">" + t + "</option>\n");
+            }
+            sb.append("</select><br />");
+            sb.append("<input type=\"submit\" value=\"Enter\" name=\"enterNewApp\">");
+            sb.append("</form>");
+
+            String enterNewApp = req.getParameter("enterNewApp");
+            Boolean enterBool = (enterNewApp != null && enterNewApp.equals("Enter"));
+            
+            StringBuilder inputCheck = new StringBuilder(128);
+            inputCheck.append("SELECT PatientUsername, DoctorUsername "
+                    + "from " + schema + ".Patient "
+                    + "where DoctorUsername = \"" + doctorUsername + "\" and PatientUsername = \"" + patientUsername + "\"");
+            QueryResult inputCheckResult = UserDBAO.executeQuery(inputCheck.toString());
+
+            // CHECK DOCTORS AND PATIENT USER NAMES TO BE VALID
+            if(enterBool && (doctorUsername != null && patientUsername != null && startTime != null && endTime != null)){
+
+                if(!doctorUsername.equals("") && !patientUsername.equals("") && !startTime.equals("")){
+                    startTime = req.getParameter("MyDate1") + " " + req.getParameter("appStart");
+                    endTime = req.getParameter("MyDate2") + " " + req.getParameter("appEnd");
+                    
+                    if(inputCheckResult.getResultSet().size() > 0){
+                      //Search with both criteria
+                      StringBuilder update = new StringBuilder(128);
+                      update.append("INSERT INTO " + schema + ".Appointment ");
+                      update.append("(DoctorUsername, PatientUsername, StartTime");
+                      if(!endTime.equals("")){
+                          update.append(", EndTime");
+                      }
+                      update.append(") VALUES ");
+                      update.append("('" + doctorUsername + "','" + patientUsername + "','" + startTime + "'");
+                      if(!endTime.equals("")){
+                          update.append(",'" + endTime +"'");
+                      }
+                      update.append(")");
+                      UserDBAO.executeUpdate(update.toString());
+                      sb.append("Appointment between Doctor " + doctorUsername + " and Patient " + patientUsername + " at " + startTime + " was successful");
+                    }
+                    else{
+                        sb.append("<font color=\"red\">Doctor and/or Patient usernames are incorrect.</font>");
+                    }
+                    
+                }
+                else{
+                    sb.append("<font color=\"red\">Incorrect data entry. Appointment not added.</font>");
+                }
+            }
+            out.println(sb.toString());
+        }
+        catch(Exception e){
+            req.setAttribute("exception", e);
+            // TODO: Change error functionality to do something other than display error
+            String url = "/error.jsp";
+            getServletContext().getRequestDispatcher(url).forward(req, res);
         }
     }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
 
 }
