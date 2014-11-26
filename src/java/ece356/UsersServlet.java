@@ -74,20 +74,20 @@ public class UsersServlet extends SecureHTTPServlet {
                 rs_user_dir = UserDBAO.executeQuery("select PatientUsername, "
                         + "DoctorUsername, CellNumber, HomeNumber, PatientNumber, "
                         + "Address, SIN  from ece356_22_2014.Patient "
-                        + "where DoctorUsername = \'" +
+                        + "where Active = 1 AND DoctorUsername = \'" +
                         username +
                         "\';");
                 
             } else if (role.toLowerCase().equals("patient")) {
                 out.println("<h3>Patient User Directory</h3>");
                 rs_user_dir = UserDBAO.executeQuery("select FirstName, LastName, "
-                        + "Role from ece356_22_2014.User where Username like(\'"
+                        + "Role from ece356_22_2014.User where Active = 1 AND Username like(\'"
                         + username + "\')");
                 
             } else if (role.toLowerCase().equals("staff")) {
                 out.println("<h3>Staff User Directory</h3>");
                 rs_user_dir = UserDBAO.executeQuery("select FirstName, LastName, "
-                        + "Role from ece356_22_2014.User where role in "
+                        + "Role from ece356_22_2014.User where Active = 1 AND role in "
                         + "(\'doctor\', \'staff\')");
                 
             } else if (role.toLowerCase().equals("superuser") || role.toLowerCase().equals("legal")){
