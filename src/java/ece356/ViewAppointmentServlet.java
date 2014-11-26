@@ -49,7 +49,7 @@ public class ViewAppointmentServlet extends SecureHTTPServlet {
                 //Display most current appointment
                 String currentAppointmentQuery = "select DoctorUsername as \"Doctor Username\", FirstName as \"Doctor First Name\", LastName as \"Doctor Last Name\", min(StartTime) as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\""
                         + " from " + schema + ".Appointment join " + schema + ".User on Appointment.DoctorUsername = User.Username"
-                        + " where PatientUsername = \"" + username + "\" and StartTime > SYSDATE()";
+                        + " where PatientUsername = \"" + username + "\" and StartTime > SYSDATE() and " + schema + ".Appointment.Active = 1";
 
                 QueryResult currentAppointment = UserDBAO.executeQuery(currentAppointmentQuery).removeNullRows();
                 if(currentAppointment.getResultSet().size() <= 0){
@@ -82,7 +82,7 @@ public class ViewAppointmentServlet extends SecureHTTPServlet {
 
                 String futureAppointmentsQuery = "select DoctorUsername as \"Doctor Username\", FirstName as \"Doctor First Name\", LastName as \"Doctor Last Name\", StartTime as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\""
                         + " from " + schema + ".Appointment join " + schema + ".User on Appointment.DoctorUsername = User.Username"
-                        + " where PatientUsername = \"" + username + "\" and StartTime > SYSDATE()"
+                        + " where PatientUsername = \"" + username + "\" and StartTime > SYSDATE() and " + schema + ".Appointment.Active = 1"
                         + " order by StartTime desc";
                 
                 QueryResult futureAppointments = UserDBAO.executeQuery(futureAppointmentsQuery);
@@ -98,7 +98,7 @@ public class ViewAppointmentServlet extends SecureHTTPServlet {
                 //Display past appointments            
                 String pastAppointmentsQuery = "select DoctorUsername as \"Doctor Username\", FirstName as \"Doctor First Name\", LastName as \"Doctor Last Name\", StartTime as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\""
                         + " from " + schema + ".Appointment join " + schema + ".User on Appointment.DoctorUsername = User.Username"
-                        + " where PatientUsername = \"" + username + "\" and StartTime < SYSDATE()"
+                        + " where PatientUsername = \"" + username + "\" and StartTime < SYSDATE() and " + schema + ".Appointment.Active = 1"
                         + " order by StartTime desc";
                 
                 QueryResult pastAppointments = UserDBAO.executeQuery(pastAppointmentsQuery);
@@ -116,7 +116,7 @@ public class ViewAppointmentServlet extends SecureHTTPServlet {
                 //Display most current appointment
                 String currentAppointmentQuery = "select PatientUsername as \"Patient Username\", FirstName as \"Patient First Name\", LastName as \"Patient Last Name\", min(StartTime) as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\""
                         + " from " + schema + ".Appointment join " + schema + ".User on Appointment.PatientUsername = User.Username"
-                        + " where DoctorUsername = \"" + username + "\" and StartTime > SYSDATE()";
+                        + " where DoctorUsername = \"" + username + "\" and StartTime > SYSDATE() and " + schema + ".Appointment.Active = 1";
                 
                 QueryResult currentAppointment = UserDBAO.executeQuery(currentAppointmentQuery);
                 if(currentAppointment.getResultSet().size() <= 0){
@@ -148,7 +148,7 @@ public class ViewAppointmentServlet extends SecureHTTPServlet {
 
                 String futureAppointmentsQuery = "select PatientUsername as \"Patient Username\", FirstName as \"Patient First Name\", LastName as \"Patient Last Name\", StartTime as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\""
                         + " from " + schema + ".Appointment join " + schema + ".User on Appointment.PatientUsername = User.Username"
-                        + " where DoctorUsername = \"" + username + "\" and StartTime > SYSDATE()"
+                        + " where DoctorUsername = \"" + username + "\" and StartTime > SYSDATE() and " + schema + ".Appointment.Active = 1"
                         + " order by StartTime desc";
                 
                 QueryResult futureAppointments = UserDBAO.executeQuery(futureAppointmentsQuery);
@@ -164,7 +164,7 @@ public class ViewAppointmentServlet extends SecureHTTPServlet {
                 //Display past appointments            
                 String pastAppointmentsQuery = "select PatientUsername as \"Patient Username\", FirstName as \"Patient First Name\", LastName as \"Patient Last Name\", StartTime as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\""
                         + " from " + schema + ".Appointment join " + schema + ".User on Appointment.PatientUsername = User.Username"
-                        + " where DoctorUsername = \"" + username + "\" and StartTime < SYSDATE()"
+                        + " where DoctorUsername = \"" + username + "\" and StartTime < SYSDATE() and " + schema + ".Appointment.Active = 1"
                         + " order by StartTime desc";
                 
                 QueryResult pastAppointments = UserDBAO.executeQuery(pastAppointmentsQuery);
@@ -183,38 +183,117 @@ public class ViewAppointmentServlet extends SecureHTTPServlet {
                 //Update patient info
                 
                 sb.append("<hr />");
-                //Enter doctor name to view table for that doctor
-                String doctorUsernameApp = null;
-                String appName = null;
+                    
+                sb.append("Enter old appointment to be replaced");
+                sb.append("<form method=\"post\">");
+                sb.append("<br />Doctor Username*: <input type=\"text\" name=\"updateDoctor\">");
+                sb.append("<br />Patient Username*: <input type=\"text\" name=\"updatePatient\">");
+                sb.append("</select><br />");
+                sb.append("Start Date*: &nbsp;&nbsp;&nbsp;&nbsp;<input type=\"text\" name=\"MyDate1\" class=\"datepicker\">"
+                        + "&nbsp;&nbsp;Start Time*:&nbsp;&nbsp;&nbsp;&nbsp;<select name=\"updateAppStart\">");
+                for (String t: MarkupHelper.generateTimes(30)) {
+                    sb.append("<option value=\"" + t + "\">" + t + "</option>\n");
+                }
+                sb.append("</select><br />");
+                sb.append("End Date*: &nbsp;&nbsp;&nbsp;&nbsp;<input type=\"text\" name=\"MyDate2\" class=\"datepicker\">"
+                        + "&nbsp;&nbsp;End Time*:&nbsp;&nbsp;&nbsp;&nbsp;<select name=\"updateAppEnd\">");
+                for (String t: MarkupHelper.generateTimes(30)) {
+                    sb.append("<option value=\"" + t + "\">" + t + "</option>\n");
+                }
+                sb.append("</select><br />");  
                 
-                String savedDoctorUsernameApp = (String)session.getAttribute("savedDoctorUsernameApp");
-                String savedAppName = (String)session.getAttribute("savedAppName");
-              
-                if (savedDoctorUsernameApp != null) {
-                    doctorUsernameApp = savedDoctorUsernameApp;
-                } else {
-                    doctorUsernameApp = req.getParameter("doctorUsernameApp");
+                sb.append("Enter new data appointment to be replace to (ignore for deletion)");
+                sb.append("<form method=\"post\">");
+                sb.append("<br />Doctor Username*: <input type=\"text\" name=\"updateDoctor2\">");
+                sb.append("<br />Patient Username*: <input type=\"text\" name=\"updatePatient2\">");
+                sb.append("</select><br />");
+                sb.append("Start Date*: &nbsp;&nbsp;&nbsp;&nbsp;<input type=\"text\" name=\"MyDate3\" class=\"datepicker\">"
+                        + "&nbsp;&nbsp;Start Time*:&nbsp;&nbsp;&nbsp;&nbsp;<select name=\"updateAppStart2\">");
+                for (String t: MarkupHelper.generateTimes(30)) {
+                    sb.append("<option value=\"" + t + "\">" + t + "</option>\n");
+                }
+                sb.append("</select><br />");
+                sb.append("End Date*: &nbsp;&nbsp;&nbsp;&nbsp;<input type=\"text\" name=\"MyDate4\" class=\"datepicker\">"
+                        + "&nbsp;&nbsp;End Time*:&nbsp;&nbsp;&nbsp;&nbsp;<select name=\"updateAppEnd2\">");
+                for (String t: MarkupHelper.generateTimes(30)) {
+                    sb.append("<option value=\"" + t + "\">" + t + "</option>\n");
+                }
+                sb.append("</select><br />"); 
+
+                sb.append("<input type=\"submit\" name=\"update\" value=\"Update\">");
+                sb.append("<input type=\"submit\" name=\"update\" value=\"Delete\">");
+                sb.append("</form>");
+                
+                String update = req.getParameter("update"); 
+                String updateDoctor = req.getParameter("updateDoctor"); 
+                String updatePatient = req.getParameter("updatePatient"); 
+                String updateStartTime = req.getParameter("MyDate1") + " " + req.getParameter("updateAppStart"); 
+                String updateEndTime = req.getParameter("MyDate2") + " " + req.getParameter("updateAppEnd");
+                String updateDoctor2 = req.getParameter("updateDoctor2"); 
+                String updatePatient2 = req.getParameter("updatePatient2"); 
+                String updateStartTime2 = req.getParameter("MyDate3") + " " + req.getParameter("updateAppStart2"); 
+                String updateEndTime2 = req.getParameter("MyDate3") + " " + req.getParameter("updateAppEnd2");
+                
+                Boolean updateBool = (update != null && update.equals("Update")); 
+                Boolean deleteBool = (update != null && update.equals("Delete")); 
+                
+                if(updateBool)
+                {
+                    StringBuilder inputCheck = new StringBuilder(128);
+                    inputCheck.append("SELECT * "
+                    + "from " + schema + ".Appointment "
+                    + "WHERE DoctorUsername= \"" + updateDoctor + "\" and StartTime= \"" + updateStartTime + "\"");
+                    QueryResult inputCheckResult = UserDBAO.executeQuery(inputCheck.toString());
+                    if(inputCheckResult.getResultSet().size() > 0){
+                        StringBuilder updateInfo = new StringBuilder(128);
+                        StringBuilder updateInfo2 = new StringBuilder(128);
+                        updateInfo.append("UPDATE " + schema + ".Appointment SET Active=\"0\" WHERE DoctorUsername= \"" + updateDoctor + "\" and StartTime= \"" + updateStartTime + "\" ");
+                        updateInfo2.append("INSERT INTO " + schema + ".Appointment ");
+                        updateInfo2.append("(DoctorUsername, PatientUsername, StartTime, EndTime");
+                        updateInfo2.append(") VALUES ");
+                        updateInfo2.append("(\"" + updateDoctor2 + "\",\"" + updatePatient2 + "\",\"" + updateStartTime2 + "\",\"" + updateEndTime2 + "\")");
+                        UserDBAO.executeUpdate(updateInfo.toString());
+                        UserDBAO.executeUpdate(updateInfo2.toString());
+                        sb.append("Appointment updated to Doctor " + updateDoctor2 + " and Patient " + updatePatient2 + " at " + updateStartTime2 + " to " + updateEndTime2 + " was successful");
+                        sb.append("<br />It replaced appointment between Doctor " + updateDoctor + " and Patient " + updatePatient + " at " + updateStartTime + " to " + updateEndTime + " was successful");
+                    }
+                    else{
+                        sb.append("The listed \"existing appointment\" does not exist");
+                    }
+                }
+                else if(deleteBool){
+                    StringBuilder inputCheck = new StringBuilder(128);
+                    inputCheck.append("SELECT * "
+                    + "from " + schema + ".Appointment "
+                    + "WHERE DoctorUsername= \"" + updateDoctor + "\" and StartTime= \"" + updateStartTime + "\"");
+                    QueryResult inputCheckResult = UserDBAO.executeQuery(inputCheck.toString());
+                    if(inputCheckResult.getResultSet().size() > 0){
+                        StringBuilder updateInfo = new StringBuilder(128);
+                        updateInfo.append("UPDATE " + schema + ".Appointment SET Active=\"0\" WHERE DoctorUsername= \"" + updateDoctor + "\" and StartTime= \"" + updateStartTime + "\" ");
+                        UserDBAO.executeUpdate(updateInfo.toString());
+                        sb.append("Deleted appointment where Doctor " + updateDoctor2 + " and Patient " + updatePatient2 + " at " + updateStartTime2 + " to " + updateEndTime2 + " was successful");
+                    }
+                    else{
+                        sb.append("The listed \"existing appointment\" does not exist");
+                    }
                 }
                 
-                if(savedAppName != null){
-                    appName = savedAppName;
-                } else {
-                    appName = req.getParameter("appointmentName");
-                }
-               
                 
+                sb.append("<hr />");
+                sb.append("<hr />");
+                
+                String doctorUsernameApp = req.getParameter("doctorUsernameApp");
+                if(doctorUsernameApp == null){doctorUsernameApp = "";}                
                 sb.append("<h2>Enter doctor name to view his/her appointments</h2>");
                 sb.append("<form method=\"post\">");
-                sb.append("Doctor username: <input type=\"text\" name=\"doctorUsernameApp\">");
-                sb.append("<br /><input type=\"submit\" name=\"appointmentName\" value=\"View Past Appointments\">");
-                sb.append(" <input type=\"submit\" name=\"appointmentName\" value=\"View Future Appointments\">");
+                sb.append("Doctor username: <input type=\"text\" name=\"doctorUsernameApp\" value=\"" + doctorUsernameApp + "\">");
+                sb.append("<br /><input type=\"submit\" name=\"updateQuery\" value=\"View Past Appointments\">");
+                sb.append(" <input type=\"submit\" name=\"updateQuery\" value=\"View Future Appointments\">");
                 sb.append("</form>");
              
-                session.setAttribute("savedDoctorUsernameApp", doctorUsernameApp);
-                session.setAttribute("savedAppName", appName);
-                
-                Boolean past = (appName != null && appName.equals("View Past Appointments"));
-                Boolean future = (appName != null && appName.equals("View Future Appointments"));
+                String updateQuery = req.getParameter("updateQuery");
+                Boolean past = (updateQuery != null && updateQuery.equals("View Past Appointments"));
+                Boolean future = (updateQuery != null && updateQuery.equals("View Future Appointments"));
 
                 StringBuilder inputCheck = new StringBuilder(128);
                 inputCheck.append("SELECT DoctorUsername "
@@ -225,157 +304,31 @@ public class ViewAppointmentServlet extends SecureHTTPServlet {
                 //Display future appointments
                 String futureAppointmentsQuery = "select PatientUsername as \"Patient Username\", FirstName as \"Patient First Name\", LastName as \"Patient Last Name\", StartTime as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\", EndTime as \"Appointment Endtime (yyyy-mm-dd hh:mm:ss)\""
                         + " from " + schema + ".Appointment join " + schema + ".User on Appointment.DoctorUsername = User.Username"
-                        + " where DoctorUsername = \"" + doctorUsernameApp + "\" and StartTime > SYSDATE()"
-                        + " order by StartTime desc";
-                
-                QueryResult futureAppointments = UserDBAO.executeQuery(futureAppointmentsQuery);
-                if(future && doctorUsernameApp != null && inputCheckResult.getResultSet().size() > 0){              
+                        + " where DoctorUsername = \"" + doctorUsernameApp + "\" and StartTime > SYSDATE() and " + schema + ".Appointment.Active = 1"
+                        + " order by StartTime desc";               
+                QueryResult futureAppointments = UserDBAO.executeQuery(futureAppointmentsQuery);              
+                if(future && !doctorUsernameApp.equals("") && doctorUsernameApp != null && inputCheckResult.getResultSet().size() > 0){              
                     if(futureAppointments.getResultSet().size() <= 0){
-                        sb.append("<br><h3>" + doctorUsernameApp + " currently has no future appointments</h3></br>");
+                        sb.append("<br><h3>You currently have no future appointments</h3></br>");
                     }
                     else{
-                        //String updatePatient = req.getParameter("updatePatient");
-                        //String updateStartTime = req.getParameter("MyDate1");
-                        //String updateEndTime = req.getParameter("MyDate2");
-                        String updateStartTime = null;
-                        String updateEndTime = null;
-                        String updatePatient = null;
-                        String updateQuery = null;
-                        
-                        String savedUpdatePatient = (String)session.getAttribute("savedUpdatePatient");
-                        String savedStartTime = (String)session.getAttribute("savedStartTime");
-                        String savedEndTime = (String)session.getAttribute("savedEndTime");
-                        String savedUpdateQuery = (String)session.getAttribute("savedUpdateQuery");
-                        
-                        if(savedUpdatePatient != null){
-                            updatePatient = savedUpdatePatient;
-                        } else {
-                            updatePatient = req.getParameter("updatePatient");
-                        }
-                        if(savedStartTime != null){
-                            updateStartTime = savedStartTime;
-                        } else {
-                            updateStartTime = req.getParameter("MyDate1");
-                        }
-                        if(savedEndTime != null){
-                            updateEndTime = savedEndTime;
-                        } else {
-                            updateEndTime = req.getParameter("MyDate2");
-                        }
-                        if(savedUpdateQuery != null){
-                            updateQuery = savedUpdateQuery;
-                        } else {
-                            updateQuery = req.getParameter("updateQuery");
-                        }
-                        //if(updatePatient == null){updatePatient = "";}
-                        //if(updateStartTime == null){updateStartTime = "";}
-                        //if(updateEndTime == null){updateEndTime = "";}
-                        sb.append("Query appointment for this update/deletion");
-                        req.setAttribute("appointmentName", "View Future Appointments");
-                        sb.append("<form method=\"post\">");
-                        sb.append("<br />Patient Username*: <input type=\"text\" name=\"updatePatient\" value=\"" + updatePatient + "\">");
-                        sb.append("</select><br />");
-                        sb.append("Start Date*: &nbsp;&nbsp;&nbsp;&nbsp;<input type=\"text\" name=\"MyDate1\" class=\"datepicker\" value=\"" + updateStartTime + "\">"
-                                + "&nbsp;&nbsp;Start Time*:&nbsp;&nbsp;&nbsp;&nbsp;<select name=\"updateAppStart\">");
-                        for (String t: MarkupHelper.generateTimes(30)) {
-                            sb.append("<option value=\"" + t + "\">" + t + "</option>\n");
-                        }
-                        sb.append("</select><br />");
-                        sb.append("End Date*: &nbsp;&nbsp;&nbsp;&nbsp;<input type=\"text\" name=\"MyDate2\" class=\"datepicker\" value=\"" + updateEndTime + "\">"
-                                + "&nbsp;&nbsp;End Time*:&nbsp;&nbsp;&nbsp;&nbsp;<select name=\"updateAppEnd\">");
-                        for (String t: MarkupHelper.generateTimes(30)) {
-                            sb.append("<option value=\"" + t + "\">" + t + "</option>\n");
-                        }
-                        sb.append("</select><br />");                     
-                        
-                        sb.append("<input type=\"submit\" name=\"updateQuery\" value=\"Search\">");
-                        sb.append("</form>");
-                        
-                        String submitAction = req.getParameter("updateQuery");
-                        Boolean updateQueryBool = (updateQuery != null && updateQuery.equals(submitAction));
-
-                        
-                            session.setAttribute("savedUpdateQuery", savedUpdateQuery);
-                            session.setAttribute("savedStartTime", savedStartTime);
-                            session.setAttribute("savedEndTime", savedEndTime);
-                        if(submitAction != null){
-                            session.setAttribute("savedUpdatePatient", savedUpdatePatient);
-                        }
-
-                        if(updateQueryBool){
-                            
-                            StringBuilder inputCheck2 = new StringBuilder(128);
-                            inputCheck2.append("SELECT * "
-                                + "from " + schema + ".Appointment "
-                                + "where DoctorUsername = \"" + doctorUsernameApp + "\" and PatientUsername = \"" + updatePatient + "\""
-                                + " and StartTime = \"" + req.getParameter("MyDate1") + " " + req.getParameter("updateAppStart") + "\""
-                                + " and EndTime = \"" + req.getParameter("MyDate2") + " " + req.getParameter("updateAppEnd") + "\""
-                                + " and Active = true");
-                            QueryResult inputCheckResult2 = UserDBAO.executeQuery(inputCheck2.toString());
-                            
-                            //updateStartTime = req.getParameter("MyDate1") + " " + req.getParameter("updateAppStart");
-                            //updateEndTime = req.getParameter("MyDate2") + " " + req.getParameter("updateAppEnd");
-                            //req.setAttribute("updateStartTime", updateStartTime);
-                            //req.setAttribute("updateEndTime", updateEndTime);
-                            if(inputCheckResult2.getResultSet().size() > 0){
-                            
-                                StringBuilder potentialUpdate = new StringBuilder(128);
-                                potentialUpdate.append("UPDATE " + schema + ".Appointment SET Active=\"0\" WHERE DoctorUsername= \"" + doctorUsernameApp + "\" and StartTime = \"updateStartTime\" ");
-                                
-                                
-                                sb.append("<form method=\"post\">");
-                                sb.append("<input type=\"submit\" name=\"updateQuery\" value=\"Update\">");
-                                sb.append("<input type=\"submit\" name=\"updateQuery\" value=\"Delete\">");
-                                sb.append("</form>");
-                            
-                                String update = req.getParameter("update");
-                                String delete = req.getParameter("delete");
-                                Boolean updateBool = (update != null && update.equals("Update"));
-                                Boolean deleteBool = (delete != null && delete.equals("Delete"));
-                            
-                                if(updateBool){
-                                    StringBuilder updateApp = new StringBuilder(128);
-                                    updateApp.append(potentialUpdate.toString());
-                                    //Insert "updated" entry
-                                    updateApp.append("INSERT INTO " + schema + ".Appointment ");
-                                    updateApp.append("(DoctorUsername, PatientUsername, StartTime, EndTime");
-                                    updateApp.append(") VALUES ");
-                                    updateApp.append("('" + doctorUsernameApp + "','" + updatePatient + "','" + updateStartTime + "','" + updateEndTime + "')");
-                                    UserDBAO.executeUpdate(updateApp.toString());
-                                    session.setAttribute("savedUpdateQuery", null);
-                                    
-                                    sb.append("Appointment update to Doctor " + doctorUsernameApp + " and Patient " + updatePatient + " at Start Time " + updateStartTime + " and End Time " + updateEndTime + " was successful");
-                                    session.setAttribute("savedUpdateQuery", null);
-                                    session.setAttribute("savedStartTime", null);
-                                    session.setAttribute("savedEndTime", null);
-                                }
-                                else if(deleteBool){
-                                    StringBuilder updateApp = new StringBuilder(128);
-                                    updateApp.append(potentialUpdate.toString());
-                                    UserDBAO.executeUpdate(updateApp.toString());
-                                }
-                            }
-                        }
-                        else if(updateQueryBool){
-                            sb.append("Query does not exist");
-                        }
-                        
-                        
-                        sb.append("<br><h3>" + doctorUsernameApp + "'s Future Appointments:</h3></br>" + UserDBAO.generateTable(futureAppointments));
-                    }
+                        sb.append("<br><h3>Your Future Appointments:</h3></br>" + UserDBAO.generateTable(futureAppointments));
+                    }              
                 }
                 else if(future){
                     sb.append("Please enter a doctor username");
                 }
+                
+                
 
                 //Display past appointments
                 String pastAppointmentsQuery = "select PatientUsername as \"Patient Username\", FirstName as \"Patient First Name\", LastName as \"Patient Last Name\", StartTime as \"Appointment Time (yyyy-mm-dd hh:mm:ss)\", EndTime as \"Appointment Endtime (yyyy-mm-dd hh:mm:ss)\""
                         + " from " + schema + ".Appointment join " + schema + ".User on Appointment.DoctorUsername = User.Username"
-                        + " where DoctorUsername = \"" + doctorUsernameApp + "\" and StartTime < SYSDATE()"
+                        + " where DoctorUsername = \"" + doctorUsernameApp + "\" and StartTime < SYSDATE() and " + schema + ".Appointment.Active = 1"
                         + " order by StartTime desc";
                 
                 QueryResult pastAppointments = UserDBAO.executeQuery(pastAppointmentsQuery);
-                if(past && !doctorUsernameApp.equals("") && !doctorUsernameApp.equals(null) && inputCheckResult.getResultSet().size() > 0){ 
+                if(past && !doctorUsernameApp.equals("") && doctorUsernameApp != null && inputCheckResult.getResultSet().size() > 0){ 
                     if(pastAppointments.getResultSet().size() <= 0){
                         sb.append("<br><h3>" + doctorUsernameApp + " currently has no past appointments</h3></br>");
                     }
