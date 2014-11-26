@@ -204,7 +204,8 @@ td {
 
 /* Wrapper */
 .wrapper {
-  width:1200px;
+  margin: 50px 50px 50px 50px;
+  width: 100%;
 }
 
 
