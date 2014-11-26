@@ -9,18 +9,18 @@ DROP TABLE IF EXISTS
 
 CREATE TABLE Roles (
 	Role varchar(10),
-	EntryDate DateTime,
-	Active BOOLEAN NOT NULL,
+	EntryDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	Active BOOLEAN NOT NULL DEFAULT TRUE,
     PRIMARY KEY (Role, EntryDate)
 );
 
 
-INSERT INTO `ece356_22_2014`.`Roles` (`Role`, `EntryDate`, `Active`) VALUES ('patient', Now(), TRUE);
-INSERT INTO `ece356_22_2014`.`Roles` (`Role`, `EntryDate`, `Active`) VALUES ('doctor', Now(), TRUE);
-INSERT INTO `ece356_22_2014`.`Roles` (`Role`, `EntryDate`, `Active`) VALUES ('staff', Now(), TRUE);
-INSERT INTO `ece356_22_2014`.`Roles` (`Role`, `EntryDate`, `Active`) VALUES ('legal', Now(), TRUE);
-INSERT INTO `ece356_22_2014`.`Roles` (`Role`, `EntryDate`, `Active`) VALUES ('finance', Now(), TRUE);
-INSERT INTO `ece356_22_2014`.`Roles` (`Role`, `EntryDate`, `Active`) VALUES ('superuser', Now(), TRUE);
+INSERT INTO `ece356_22_2014`.`Roles` (`Role`) VALUES ('patient');
+INSERT INTO `ece356_22_2014`.`Roles` (`Role`) VALUES ('doctor');
+INSERT INTO `ece356_22_2014`.`Roles` (`Role`) VALUES ('staff');
+INSERT INTO `ece356_22_2014`.`Roles` (`Role`) VALUES ('legal');
+INSERT INTO `ece356_22_2014`.`Roles` (`Role`) VALUES ('finance');
+INSERT INTO `ece356_22_2014`.`Roles` (`Role`) VALUES ('superuser');
 
 CREATE TABLE User (
 	Username varchar(30),     
@@ -28,8 +28,8 @@ CREATE TABLE User (
 	LastName varchar(30),     
 	Password varchar(30),     
 	Role varchar(10),
-	EntryDate DateTime,
-	Active BOOLEAN NOT NULL,
+	EntryDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	Active BOOLEAN NOT NULL DEFAULT TRUE,
 	 
 	PRIMARY KEY (Username, EntryDate),
 	FOREIGN KEY(Role) REFERENCES Roles(Role)
@@ -37,8 +37,8 @@ CREATE TABLE User (
 
 CREATE TABLE Doctor ( 
 	DoctorUsername varchar(30),
-	EntryDate DateTime,
-	Active BOOLEAN NOT NULL,
+	EntryDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	Active BOOLEAN NOT NULL DEFAULT TRUE,
     PRIMARY KEY (DoctorUsername, EntryDate)
 );
 
@@ -50,8 +50,8 @@ CREATE TABLE Patient (
     PatientNumber integer, 
     Address varchar(100), 
     SIN NUMERIC(9,0), 
-	EntryDate DateTime,
-	Active BOOLEAN NOT NULL,
+	EntryDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	Active BOOLEAN NOT NULL DEFAULT TRUE,
     PRIMARY KEY (PatientUsername, EntryDate), 
     FOREIGN KEY (DoctorUsername) REFERENCES Doctor( DoctorUsername), 
     check(CellNumber > -1 AND HomeNumber > -1)
@@ -59,24 +59,24 @@ CREATE TABLE Patient (
 
 CREATE TABLE Staff ( 
 	StaffUsername varchar(30),
-	EntryDate DateTime,
-	Active BOOLEAN NOT NULL,
+	EntryDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	Active BOOLEAN NOT NULL DEFAULT TRUE,
     PRIMARY KEY (StaffUsername, EntryDate)
 );
 
 CREATE TABLE Costs (
 	ProcedureName varchar(100),
 	Cost NUMERIC(10, 2),
-	EntryDate DateTime,
-	Active BOOLEAN NOT NULL,
+	EntryDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	Active BOOLEAN NOT NULL DEFAULT TRUE,
 	PRIMARY KEY (ProcedureName, EntryDate)
 );
 
 CREATE TABLE DoctorPatientAccess (     
 	PatientUsername varchar(30),      
     DoctorUsername varchar(30),
-	EntryDate DateTime,
-	Active BOOLEAN NOT NULL,
+	EntryDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	Active BOOLEAN NOT NULL DEFAULT TRUE,
 	PRIMARY KEY (PatientUsername, DoctorUsername, EntryDate),
     FOREIGN KEY (DoctorUsername) REFERENCES Doctor(DoctorUsername),     
     FOREIGN KEY (PatientUsername) REFERENCES Patient(PatientUsername)    
@@ -95,7 +95,7 @@ CREATE TABLE Visits (
     Prescription varchar(100),      
     Comments varchar(100),      
     ProcedureTime DateTime,
-	EntryDate DateTime,
+	EntryDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	Active BOOLEAN NOT NULL,
     PRIMARY KEY (PatientUsername, StartTime, EntryDate),      
     FOREIGN KEY (PatientUsername) REFERENCES Patient(PatientUserName),     
@@ -108,8 +108,8 @@ CREATE TABLE Appointment (
     PatientUsername varchar(30),     
     StartTime DateTime,     
     EndTime DateTime,
-	EntryDate DateTime,
-	Active BOOLEAN NOT NULL,
+	EntryDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	Active BOOLEAN NOT NULL DEFAULT TRUE,
     PRIMARY Key (DoctorUsername, StartTime, EntryDate),     
     FOREIGN KEY (DoctorUsername) REFERENCES Doctor(DoctorUsername),     
     FOREIGN KEY (PatientUsername) REFERENCES Patient(PatientUsername)     
@@ -118,14 +118,15 @@ CREATE TABLE Appointment (
 CREATE TABLE DoctorStaffAccess (
 	DoctorUsername varchar(30),
 	StaffUsername varchar(30),
-	EntryDate DateTime,
-	Active BOOLEAN NOT NULL,
+	EntryDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	Active BOOLEAN NOT NULL DEFAULT TRUE,
 	PRIMARY KEY (DoctorUsername, StaffUsername, EntryDate),
 	FOREIGN KEY (DoctorUsername) REFERENCES Doctor(DoctorUsername),
 	FOREIGN KEY (StaffUsername) REFERENCES Staff(StaffUsername)
 );
 
 select * from information_schema.COLUMNS where TABLE_SCHEMA='ece356_22_2014';
+
 
 
 END
