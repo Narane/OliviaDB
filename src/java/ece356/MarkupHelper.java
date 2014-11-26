@@ -1,5 +1,12 @@
 package ece356;
 
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
+
 /**
  *
  * @author Heesang
@@ -97,5 +104,19 @@ public class MarkupHelper {
     
     private static String buildSidebarHelper(String servletName, String description){
         return("<p><a href=\"" + servletName + "\">" + description + "</a></p>");
+    }
+    
+    public static ArrayList<String> generateTimes(int deltaMinutes) 
+        throws ParseException {
+        int MINUTES_PER_DAY = 1440;
+        ArrayList<String> times = new ArrayList<String>(); 
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH);
+        cal.setTime(sdf.parse("00:00:00"));
+        for (int i = 0; i < MINUTES_PER_DAY; i = i + deltaMinutes) {
+            times.add(sdf.format(cal.getTime()));
+            cal.add(Calendar.MINUTE, deltaMinutes);
+        }
+        return times;
     }
 }
