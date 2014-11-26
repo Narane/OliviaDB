@@ -118,7 +118,19 @@ public class CreatePatientServlet extends SecureHTTPServlet {
                     
                     String results = qr.getResultSet().get(0).getString("count");
                     
-                    if (results.equals("0")) { 
+                    if (results.equals("0")) {
+                        
+                        query = "select max(PatientNumber) from " + UserDBAO.schema + ".Patient;";
+                        long patientNumber = 0;
+                        
+                        qr = UserDBAO.executeQuery(query);
+                        results = qr.getResultSet().get(0).getString("max(PatientNumber)");
+                        
+                        
+                        Long maxPaitentNumber = longTryParse(results);
+                        if (maxPaitentNumber != null) {
+                            patientNumber = maxPaitentNumber;
+                        }
                     
                         query = "insert into " + UserDBAO.schema + ".User ("
                                 + "Username, FirstName, LastName, Password, Role) values("
@@ -128,9 +140,9 @@ public class CreatePatientServlet extends SecureHTTPServlet {
                         UserDBAO.executeUpdate(query);
 
                         query = "insert into " + UserDBAO.schema + ".Patient ("
-                                + "PatientUsername,CellNumber,HomeNumber,Address,SIN) "
+                                + "PatientUsername,CellNumber,HomeNumber,Address,SIN,PatientNumber) "
                                 + "values('" + username + "','" + cellNumber + "','"
-                                + homeNumber + "','" + address + "','" + sin + "');";
+                                + homeNumber + "','" + address + "','" + sin + "','" + patientNumber + "');";
                         UserDBAO.executeUpdate(query);
                         
                         error = 0x10000;
